@@ -36,17 +36,17 @@ _Definição de pronto por task:_ Componente renderizando no DOM, responsividade
 
 ## Decisões de arquitetura (fechadas)
 
-- **Fundação Tecnológica:** React 18 provido pelo Vite. Rigor absoluto com TypeScript; a flag `strict: true` está habilitada no `tsconfig.json`. O uso do tipo `any` é explicitamente proibido no pipeline de CI/CD.
+- **Fundação Tecnológica:** React 19 provido pelo Vite 8. Rigor absoluto com TypeScript; a flag `strict: true` está habilitada no `tsconfig.app.json`. O uso do tipo `any` é proibido e falha o pipeline de CI/CD (`@typescript-eslint/no-explicit-any` como erro).
 
-- **Estilização e Acessibilidade:** Uso exclusivo de Tailwind CSS (Utility-First). Componentes base derivam do `shadcn/ui` (Radix UI) para garantir acessibilidade (a11y) nativa, sem inchar o bundle com bibliotecas monolíticas (como Material-UI ou Ant Design).
+- **Estilização e Acessibilidade:** Uso exclusivo de Tailwind CSS v4 (Utility-First, via `@tailwindcss/vite`) com `@tailwindcss/typography`. Componentes base derivam do `shadcn/ui` (Radix UI), já inicializado em `src/components/ui`, para garantir acessibilidade (a11y) nativa, sem inchar o bundle com bibliotecas monolíticas (como Material-UI ou Ant Design).
 
 - **Gerenciamento de Estado:** Redux está descartado por ser _overengineering_ para o escopo do MVP. O estado de autenticação global e o _Tenant_ atual residem na Context API. Estados de formulário e controle de interface residem localmente (`useState` / `useReducer`).
 
-- **Comunicação de Rede:** Todas as requisições HTTP utilizam a Fetch API nativa ou Axios interceptors, isoladas no diretório `src/services/api/`. Nenhum componente React deve invocar URIs diretamente.
+- **Comunicação de Rede:** Todas as requisições HTTP utilizam a Fetch API nativa, isoladas no diretório `src/services/` (criado na `project-setup`, ainda vazio). Nenhum componente React deve invocar URIs diretamente.
 
 - **Desenvolvimento Mock-First:** Para não acoplar o progresso do frontend ao tempo de deploy dos microsserviços, todo contrato de API (Épico 1) nasce com uma implementação baseada em _Promises_ resolvidas localmente (Mocks) que retornam objetos aderentes às tipagens definidas no `DEV-57`.
 
-- **Formulários e Validação:** Formulários de captura de domínio, login e cadastro utilizam `React Hook Form` orquestrado com validação de schemas em `Zod`. O frontend rejeita _payloads_ malformados antes de encostar na rede.
+- **Formulários e Validação:** Formulários de captura de domínio, login e cadastro utilizam `React Hook Form` orquestrado com validação de schemas em `Zod` (a instalar na change que criar o primeiro formulário). O frontend rejeita _payloads_ malformados antes de encostar na rede.
 
 ## Definition of Done (todas as histórias)
 
@@ -68,7 +68,7 @@ Este épico estabelece o alicerce do repositório, garantindo que o frontend pos
 
 - Como desenvolvedor, quero um ambiente Vite+React+TS inicializado com Tailwind CSS e ESLint rigoroso, para ter uma fundação sólida de desenvolvimento.
 
-- **Critérios:** Inicialização limpa; configuração de rotas base (`react-router-dom`); estruturação de pastas (`assets`, `components`, `pages`, `contexts`, `services`).
+- **Critérios:** Base Vite + React + TS com Tailwind CSS v4, shadcn/ui e ESLint rigoroso; rotas base (`react-router-dom`); pastas `components`, `pages`, `contexts`, `services`, `types` e `lib`.
 
 **1.2 Modelagem de Contratos e Tipagem (DEV-57, Larissa Coelho)**
 

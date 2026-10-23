@@ -10,15 +10,22 @@ The frontend must communicate trust, organization, and operational maturity. Avo
 
 ## 2. Technology Stack
 
-- **Framework:** React 18.
-- **Language:** TypeScript with strict typing.
-- **Build tool:** Vite.
-- **Styling:** Tailwind CSS.
-- **UI components:** shadcn/ui.
+Instalado e verificado no repositório:
+
+- **Framework:** React 19.
+- **Language:** TypeScript 6 com `strict: true` em `tsconfig.app.json`.
+- **Build tool:** Vite 8.
+- **Styling:** Tailwind CSS v4 via `@tailwindcss/vite` (CSS-first, tokens em `src/index.css`), mais `@tailwindcss/typography`.
+- **UI components:** shadcn/ui (Radix), em `src/components/ui`, com configuração em `components.json`.
 - **Icons:** Lucide React.
-- **HTTP:** Native Fetch API or Axios, following the existing project convention.
 - **Charts:** Recharts.
+- **Routing:** React Router 7 (`createBrowserRouter` em `src/routes.tsx`).
+- **HTTP:** Native Fetch API.
 - **Architecture:** Single-page application (SPA).
+- **Import alias:** `@/*` → `src/*`, configurado em `tsconfig.json`, `tsconfig.app.json` e `vite.config.ts`.
+- **CI:** `.github/workflows/ci.yml` roda `npm ci`, `npm run lint` e `npm run build` no Node 24 (`.nvmrc`).
+
+Ainda não instalados, entram na change que primeiro precisar deles: biblioteca de formulários e validação (`React Hook Form` + `Zod`) e test runner. `src/services`, `src/contexts` e `src/types` existem vazios, reservados para as changes seguintes.
 
 Before introducing dependencies, inspect `package.json`, the lockfile, and existing implementations. Reuse installed libraries and established project conventions whenever possible.
 
