@@ -1,13 +1,7 @@
-import { createContext, useState, useContext, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import type { UserToken } from '../types/api';
-
-interface AuthContextType {
-  user: UserToken | null;
-  signIn: (data: UserToken) => void;
-  signOut: () => void;
-}
-
-const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+// Contexto e hook ficam em auth-context.ts: .tsx só pode exportar componentes (Fast Refresh).
+import { AuthContext } from './auth-context';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserToken | null>(null);
@@ -25,8 +19,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  return useContext(AuthContext);
 }
