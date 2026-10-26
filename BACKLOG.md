@@ -12,7 +12,7 @@ Cada épico corresponde a um agrupamento lógico das tarefas geridas no Jira. A 
 | -------------------- | --------- | --------------------------------------------------- | ----------------------- | ------------ | ----------- |
 | **project-setup**    | DEV-42    | Desenvolvimento (Setup Base e Infra Frontend)       | MATHEUS MARQUES COLETTI | Em andamento | 02/nov/2026 |
 | **data-modeling-ts** | DEV-57    | Modelagem Inicial de Dados (Tipagem TS e Mocks)     | Larissa Coelho          | Em andamento | 30/out/2026 |
-| **landing-page**     | DEV-58    | Implementação e Responsividade da Landing Page      | Gilvam Júnior           | A fazer      | 25/out/2026 |
+| **landing-page**     | DEV-58    | Implementação e Responsividade da Landing Page      | Gilvam Júnior           | Em revisão   | 25/out/2026 |
 | **trust-center**     | DEV-59    | Pág. de Confiança e Testes de Usabilidade           | Liam Silva Pernambuco   | A fazer      | 28/out/2026 |
 | **auth-dashboard**   | DEV-56    | Construção da Tela de Cadastro e Painel de Controle | Larissa Coelho          | A fazer      | 25/out/2026 |
 
