@@ -15,7 +15,7 @@ export function normalizeDomain(raw: string): string {
     .replace(/\.+$/, "")
 }
 
-export const domainSchema: z.ZodType<DomainFormValues> = z.object({
+export const domainSchema: z.ZodType<DomainFormValues, DomainFormValues> = z.object({
   domain: z
     .string()
     .trim()
