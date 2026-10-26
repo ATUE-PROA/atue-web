@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { domainSchema, normalizeDomain } from '@/lib/domain'
+import { LANDING_CAPTURE } from '@/content/landing'
 import type {
   DomainCaptureState,
   DomainFormValues,
@@ -35,22 +36,22 @@ export default function DomainCapture() {
       <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 via-neutral-900/60 to-neutral-950 p-8 sm:p-12">
         <div className="max-w-2xl">
           <p className="text-xs font-medium tracking-[0.2em] text-blue-400 uppercase">
-            Organize-se com a plataforma de conformidade
+            {LANDING_CAPTURE.eyebrow}
           </p>
           <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            Entenda, organize e prove a conformidade do seu negócio.
+            {LANDING_CAPTURE.title}
           </h2>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="mt-8 max-w-2xl">
           <div className="flex flex-col gap-2">
             <Label htmlFor="domain" className="text-neutral-200">
-              Conecte o seu domínio
+              {LANDING_CAPTURE.label}
             </Label>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Input
                 id="domain"
-                placeholder="suaempresa.com.br"
+                placeholder={LANDING_CAPTURE.placeholder}
                 autoComplete="url"
                 inputMode="url"
                 spellCheck={false}
@@ -64,7 +65,7 @@ export default function DomainCapture() {
                 disabled={isSubmitting}
                 className="h-11 rounded-lg bg-blue-600 px-6 font-medium text-white hover:bg-blue-500 focus-visible:ring-blue-400/60"
               >
-                Avaliar meu site agora
+                {LANDING_CAPTURE.submitLabel}
               </Button>
             </div>
             {errors.domain ? (
@@ -73,8 +74,7 @@ export default function DomainCapture() {
               </p>
             ) : null}
             <p className="text-xs text-neutral-500">
-              Leva menos de um minuto. Você será direcionado para criar sua
-              conta.
+              {LANDING_CAPTURE.helperText}
             </p>
           </div>
         </form>

@@ -1,31 +1,12 @@
 import { BadgeCheck, FolderCheck, SearchCheck } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import type { LandingStep } from '@/types/landing.types'
+import { LANDING_STEPS } from '@/content/landing'
 
-interface StepItem extends LandingStep {
-  readonly icon: LucideIcon
-}
-
-const STEPS: readonly StepItem[] = [
-  {
-    icon: SearchCheck,
-    title: 'ATUE avalia',
-    description:
-      'Informe seu domínio e receba uma leitura inicial dos riscos e oportunidades.',
-  },
-  {
-    icon: FolderCheck,
-    title: 'ATUE organiza',
-    description:
-      'Estruture documentos, evidências e pendências em um fluxo simples.',
-  },
-  {
-    icon: BadgeCheck,
-    title: 'Seja aprovado',
-    description:
-      'Apresente sua conformidade com clareza para clientes e parceiros.',
-  },
-]
+const STEP_ICONS: readonly LucideIcon[] = [
+  SearchCheck,
+  FolderCheck,
+  BadgeCheck,
+] as const
 
 export default function HowItWorks() {
   return (
@@ -37,8 +18,8 @@ export default function HowItWorks() {
         Como funciona?
       </h2>
       <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {STEPS.map((step) => {
-          const Icon = step.icon
+        {LANDING_STEPS.map((step, index) => {
+          const Icon = STEP_ICONS[index]
 
           return (
             <article

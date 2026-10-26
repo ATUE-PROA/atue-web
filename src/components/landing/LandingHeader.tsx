@@ -2,14 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { LandingNavItem } from '@/types/landing.types'
-
-const NAV_ITEMS: readonly LandingNavItem[] = [
-  { label: 'Como funciona', href: '#como-funciona' },
-  { label: 'Benefícios', href: '#beneficios' },
-  { label: 'Sobre', href: '#sobre' },
-  { label: 'Contato', href: '#contato' },
-]
+import { LANDING_NAV } from '@/content/landing'
 
 const linkClasses =
   'rounded-md text-sm text-neutral-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950'
@@ -47,7 +40,7 @@ export default function LandingHeader() {
 
         <nav aria-label="Navegação principal" className="hidden md:block">
           <ul className="flex items-center gap-6">
-            {NAV_ITEMS.map((item) => (
+            {LANDING_NAV.map((item) => (
               <li key={item.href}>
                 <a href={item.href} className={linkClasses}>
                   {item.label}
@@ -91,7 +84,7 @@ export default function LandingHeader() {
         >
           <nav aria-label="Navegação principal móvel" className="mx-auto w-full max-w-6xl px-6 py-4">
             <ul className="flex flex-col gap-1">
-              {NAV_ITEMS.map((item) => (
+              {LANDING_NAV.map((item) => (
                 <li key={item.href}>
                   <a
                     href={item.href}

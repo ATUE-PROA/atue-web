@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { LANDING_HERO } from '@/content/landing'
 
 export default function LandingHero() {
   return (
@@ -6,13 +7,13 @@ export default function LandingHero() {
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
           <p className="text-xs font-medium tracking-[0.2em] text-blue-400 uppercase">
-            Conformidade digital
+            {LANDING_HERO.eyebrow}
           </p>
           <h1 className="mt-5 text-4xl font-semibold tracking-tight text-balance text-white sm:text-5xl lg:text-6xl">
-            É possível obter um contrato mesmo após conquistar o cliente.
+            {LANDING_HERO.title}
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-neutral-400">
-            Veja os riscos e oportunidades e evite problemas de conformidade.
+            {LANDING_HERO.description}
           </p>
           <div className="mt-8">
             <Button
@@ -20,7 +21,7 @@ export default function LandingHero() {
               size="lg"
               className="rounded-full bg-white px-6 font-medium text-neutral-950 hover:bg-neutral-200"
             >
-              <a href="#capturar-dominio">Conheça o ATUE</a>
+              <a href={LANDING_HERO.ctaHref}>{LANDING_HERO.ctaLabel}</a>
             </Button>
           </div>
         </div>
