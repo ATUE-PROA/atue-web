@@ -35,7 +35,10 @@ const FEATURES: readonly FeatureItem[] = [
 
 export default function FeatureStrip() {
   return (
-    <section id="beneficios" className="border-y border-white/10 bg-neutral-950">
+    <section
+      id="beneficios"
+      className="scroll-mt-16 border-y border-white/10 bg-neutral-950"
+    >
       <h2 className="sr-only">Benefícios</h2>
       <ul className="mx-auto grid w-full max-w-6xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {FEATURES.map((feature) => {

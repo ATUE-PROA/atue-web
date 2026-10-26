@@ -28,7 +28,10 @@ export default function DomainCapture() {
   }
 
   return (
-    <section id="capturar-dominio" className="mx-auto w-full max-w-6xl px-6 py-16 sm:py-20 lg:py-24">
+    <section
+      id="capturar-dominio"
+      className="mx-auto w-full max-w-6xl scroll-mt-16 px-6 py-16 sm:py-20 lg:py-24"
+    >
       <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 via-neutral-900/60 to-neutral-950 p-8 sm:p-12">
         <div className="max-w-2xl">
           <p className="text-xs font-medium tracking-[0.2em] text-blue-400 uppercase">
