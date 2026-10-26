@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -16,6 +16,24 @@ const linkClasses =
 
 export default function LandingHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!isMenuOpen) {
+      return
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsMenuOpen(false)
+        menuButtonRef.current?.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isMenuOpen])
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-neutral-950/85 backdrop-blur">
@@ -52,6 +70,7 @@ export default function LandingHeader() {
         </div>
 
         <Button
+          ref={menuButtonRef}
           type="button"
           variant="ghost"
           size="icon"

@@ -29,7 +29,10 @@ const STEPS: readonly StepItem[] = [
 
 export default function HowItWorks() {
   return (
-    <section id="como-funciona" className="mx-auto w-full max-w-6xl px-6 py-16 sm:py-20 lg:py-24">
+    <section
+      id="como-funciona"
+      className="mx-auto w-full max-w-6xl scroll-mt-16 px-6 py-16 sm:py-20 lg:py-24"
+    >
       <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
         Como funciona?
       </h2>

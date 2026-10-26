@@ -12,7 +12,10 @@ const linkClasses =
 
 export default function LandingFooter() {
   return (
-    <footer id="contato" className="border-t border-white/10 bg-neutral-950">
+    <footer
+      id="contato"
+      className="scroll-mt-16 border-t border-white/10 bg-neutral-950"
+    >
       <div className="mx-auto w-full max-w-6xl px-6 py-12">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div>

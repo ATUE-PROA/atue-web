@@ -9,7 +9,7 @@ const COMMITMENTS: readonly string[] = [
 
 export default function BuildSection() {
   return (
-    <section id="sobre" className="border-t border-white/10">
+    <section id="sobre" className="scroll-mt-16 border-t border-white/10">
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-6 py-16 sm:py-20 lg:grid-cols-2 lg:items-center lg:gap-16 lg:py-24">
         <div>
           <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
