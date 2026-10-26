@@ -40,7 +40,6 @@ export function Dashboard() {
         </header>
 
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Card do Gráfico */}
           <div className="bg-card border rounded-xl p-6 flex flex-col items-center justify-center shadow-sm">
             <h2 className="text-lg font-semibold mb-4">Score de Conformidade</h2>
             <div className="relative w-48 h-48">
@@ -56,7 +55,6 @@ export function Dashboard() {
                 <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
                 <RadialBar background dataKey="value" cornerRadius={10} />
               </RadialBarChart>
-              {/* Texto no meio do gráfico */}
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-4xl font-bold">{relatorio?.score}</span>
                 <span className="text-sm text-muted-foreground">de 100</span>
@@ -64,7 +62,6 @@ export function Dashboard() {
             </div>
           </div>
 
-          {/* Card de Pendências */}
           <div className="bg-card border rounded-xl p-6 shadow-sm">
             <h2 className="text-lg font-semibold mb-4">Pendências Encontradas</h2>
             <ul className="space-y-3">

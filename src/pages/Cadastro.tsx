@@ -26,6 +26,7 @@ export function Cadastro() {
     });
 
     const onSubmit = async (dados: CadastroForm) => {
+        console.log("Dados preenchidos no formulário:", dados);
         setCarregando(true);
         setSucesso(false);
 
