@@ -21,7 +21,7 @@ export const LANDING_HERO = {
   description:
     'Veja os riscos e oportunidades e evite problemas de conformidade.',
   ctaLabel: 'Conheça o ATUE',
-  ctaHref: '#capturar-dominio',
+  ctaHref: '#avaliar',
 } as const satisfies LandingHeroContent
 
 export const LANDING_FEATURES = [
