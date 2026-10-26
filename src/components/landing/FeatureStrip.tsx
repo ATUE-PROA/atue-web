@@ -1,37 +1,13 @@
 import { FileText, Lock, ShieldCheck, Sparkles } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import type { LandingFeature } from '@/types/landing.types'
+import { LANDING_FEATURES } from '@/content/landing'
 
-interface FeatureItem extends LandingFeature {
-  readonly icon: LucideIcon
-}
-
-const FEATURES: readonly FeatureItem[] = [
-  {
-    icon: ShieldCheck,
-    title: 'Confiança',
-    description:
-      'Centralize evidências e demonstre maturidade para clientes e auditorias.',
-  },
-  {
-    icon: FileText,
-    title: 'Documentos',
-    description:
-      'Organize políticas, registros e comprovações em um só lugar.',
-  },
-  {
-    icon: Lock,
-    title: 'Conformidade',
-    description:
-      'Acompanhe requisitos de LGPD e segurança da informação.',
-  },
-  {
-    icon: Sparkles,
-    title: 'Mais transparência para o seu negócio',
-    description:
-      'Transforme conformidade em um diferencial comercial.',
-  },
-]
+const FEATURE_ICONS: readonly LucideIcon[] = [
+  ShieldCheck,
+  FileText,
+  Lock,
+  Sparkles,
+] as const
 
 export default function FeatureStrip() {
   return (
@@ -41,8 +17,8 @@ export default function FeatureStrip() {
     >
       <h2 className="sr-only">Benefícios</h2>
       <ul className="mx-auto grid w-full max-w-6xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        {FEATURES.map((feature) => {
-          const Icon = feature.icon
+        {LANDING_FEATURES.map((feature, index) => {
+          const Icon = FEATURE_ICONS[index]
 
           return (
             <li

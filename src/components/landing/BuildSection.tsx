@@ -1,11 +1,5 @@
 import { CheckCircle2 } from 'lucide-react'
-
-const COMMITMENTS: readonly string[] = [
-  'Privacidade e segurança',
-  'Identificar riscos e reduzir custos',
-  'Transparência e confiabilidade',
-  'Segurança e conformidade',
-]
+import { LANDING_VISION } from '@/content/landing'
 
 export default function BuildSection() {
   return (
@@ -13,16 +7,15 @@ export default function BuildSection() {
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-6 py-16 sm:py-20 lg:grid-cols-2 lg:items-center lg:gap-16 lg:py-24">
         <div>
           <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            O que queremos construir
+            {LANDING_VISION.title}
           </h2>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-neutral-400">
-            Uma plataforma acessível para pequenas e médias empresas entenderem,
-            organizarem e comprovarem sua conformidade digital.
+            {LANDING_VISION.description}
           </p>
         </div>
 
         <ul className="grid gap-4 sm:grid-cols-2">
-          {COMMITMENTS.map((commitment) => (
+          {LANDING_VISION.commitments.map((commitment) => (
             <li
               key={commitment}
               className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
