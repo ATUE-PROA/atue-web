@@ -20,10 +20,7 @@ export default function BuildSection() {
               key={commitment}
               className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
             >
-              <CheckCircle2
-                aria-hidden="true"
-                className="mt-0.5 size-5 shrink-0 text-blue-400"
-              />
+              <CheckCircle2 aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-blue-400" />
               <span className="text-sm text-neutral-200">{commitment}</span>
             </li>
           ))}

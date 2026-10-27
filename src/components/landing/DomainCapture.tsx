@@ -6,10 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { domainSchema, normalizeDomain } from '@/lib/domain'
 import { LANDING_CAPTURE } from '@/content/landing'
-import type {
-  DomainCaptureState,
-  DomainFormValues,
-} from '@/types/landing.types'
+import type { DomainCaptureState, DomainFormValues } from '@/types/landing.types'
 
 export default function DomainCapture() {
   const navigate = useNavigate()
@@ -73,9 +70,7 @@ export default function DomainCapture() {
                 {errors.domain.message}
               </p>
             ) : null}
-            <p className="text-xs text-neutral-500">
-              {LANDING_CAPTURE.helperText}
-            </p>
+            <p className="text-xs text-neutral-500">{LANDING_CAPTURE.helperText}</p>
           </div>
         </form>
       </div>

@@ -18,8 +18,7 @@ export const LANDING_NAV = [
 export const LANDING_HERO = {
   eyebrow: 'Conformidade digital',
   title: 'É possível obter um contrato mesmo após conquistar o cliente.',
-  description:
-    'Veja os riscos e oportunidades e evite problemas de conformidade.',
+  description: 'Veja os riscos e oportunidades e evite problemas de conformidade.',
   ctaLabel: 'Conheça o ATUE',
   ctaHref: '#avaliar',
 } as const satisfies LandingHeroContent
@@ -27,41 +26,34 @@ export const LANDING_HERO = {
 export const LANDING_FEATURES = [
   {
     title: 'Confiança',
-    description:
-      'Centralize evidências e demonstre maturidade para clientes e auditorias.',
+    description: 'Centralize evidências e demonstre maturidade para clientes e auditorias.',
   },
   {
     title: 'Documentos',
-    description:
-      'Organize políticas, registros e comprovações em um só lugar.',
+    description: 'Organize políticas, registros e comprovações em um só lugar.',
   },
   {
     title: 'Conformidade',
-    description:
-      'Acompanhe requisitos de LGPD e segurança da informação.',
+    description: 'Acompanhe requisitos de LGPD e segurança da informação.',
   },
   {
     title: 'Mais transparência para o seu negócio',
-    description:
-      'Transforme conformidade em um diferencial comercial.',
+    description: 'Transforme conformidade em um diferencial comercial.',
   },
 ] as const satisfies readonly LandingFeature[]
 
 export const LANDING_STEPS = [
   {
     title: 'ATUE avalia',
-    description:
-      'Informe seu domínio e receba uma leitura inicial dos riscos e oportunidades.',
+    description: 'Informe seu domínio e receba uma leitura inicial dos riscos e oportunidades.',
   },
   {
     title: 'ATUE organiza',
-    description:
-      'Estruture documentos, evidências e pendências em um fluxo simples.',
+    description: 'Estruture documentos, evidências e pendências em um fluxo simples.',
   },
   {
     title: 'Seja aprovado',
-    description:
-      'Apresente sua conformidade com clareza para clientes e parceiros.',
+    description: 'Apresente sua conformidade com clareza para clientes e parceiros.',
   },
 ] as const satisfies readonly LandingStep[]
 
@@ -83,8 +75,7 @@ export const LANDING_CAPTURE = {
   label: 'Conecte o seu domínio',
   placeholder: 'suaempresa.com.br',
   submitLabel: 'Avaliar meu site agora',
-  helperText:
-    'Leva menos de um minuto. Você será direcionado para criar sua conta.',
+  helperText: 'Leva menos de um minuto. Você será direcionado para criar sua conta.',
 } as const satisfies LandingDomainCaptureContent
 
 export const LANDING_FOOTER = {

@@ -1,33 +1,37 @@
-import { useEffect, useState } from 'react';
-import { RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts';
-import { mockGetDiagnostic } from '../mocks/api';
-import type { DiagnosticReport } from '../types/api';
+import { useEffect, useState } from 'react'
+import { RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts'
+import { mockGetDiagnostic } from '../mocks/api'
+import type { DiagnosticReport } from '../types/api'
 
 export function Dashboard() {
-  const [relatorio, setRelatorio] = useState<DiagnosticReport | null>(null);
-  const [carregando, setCarregando] = useState(true);
+  const [relatorio, setRelatorio] = useState<DiagnosticReport | null>(null)
+  const [carregando, setCarregando] = useState(true)
 
   useEffect(() => {
     async function carregarDados() {
-      const dados = await mockGetDiagnostic();
-      setRelatorio(dados);
-      setCarregando(false);
+      const dados = await mockGetDiagnostic()
+      setRelatorio(dados)
+      setCarregando(false)
     }
-    carregarDados();
-  }, []);
+    carregarDados()
+  }, [])
 
   if (carregando) {
-    return <div className="min-h-screen flex items-center justify-center">Carregando diagnóstico...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">Carregando diagnóstico...</div>
+    )
   }
 
-  const corSemaforo = 
-    relatorio?.status === 'verde' ? 'bg-green-500' : 
-    relatorio?.status === 'amarelo' ? 'bg-yellow-500' : 'bg-red-500';
+  const corSemaforo =
+    relatorio?.status === 'verde'
+      ? 'bg-green-500'
+      : relatorio?.status === 'amarelo'
+        ? 'bg-yellow-500'
+        : 'bg-red-500'
 
   return (
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-4xl mx-auto space-y-6">
-        
         <header className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold">Painel de Controle</h1>
@@ -43,14 +47,17 @@ export function Dashboard() {
           <div className="bg-card border rounded-xl p-6 flex flex-col items-center justify-center shadow-sm">
             <h2 className="text-lg font-semibold mb-4">Score de Conformidade</h2>
             <div className="relative w-48 h-48">
-              <RadialBarChart 
-                width={200} 
-                height={200} 
-                cx="50%" cy="50%" 
-                innerRadius="70%" outerRadius="100%" 
-                barSize={10} 
+              <RadialBarChart
+                width={200}
+                height={200}
+                cx="50%"
+                cy="50%"
+                innerRadius="70%"
+                outerRadius="100%"
+                barSize={10}
                 data={[{ name: 'Score', value: relatorio?.score, fill: '#eab308' }]}
-                startAngle={90} endAngle={-270}
+                startAngle={90}
+                endAngle={-270}
               >
                 <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
                 <RadialBar background dataKey="value" cornerRadius={10} />
@@ -79,5 +86,5 @@ export function Dashboard() {
         </div>
       </div>
     </div>
-  );
+  )
 }

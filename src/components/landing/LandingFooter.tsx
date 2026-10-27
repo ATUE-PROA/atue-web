@@ -6,19 +6,12 @@ const linkClasses =
 
 export default function LandingFooter() {
   return (
-    <footer
-      id="contato"
-      className="scroll-mt-16 border-t border-white/10 bg-neutral-950"
-    >
+    <footer id="contato" className="scroll-mt-16 border-t border-white/10 bg-neutral-950">
       <div className="mx-auto w-full max-w-6xl px-6 py-12">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-lg font-semibold tracking-widest text-white uppercase">
-              ATUE
-            </p>
-            <p className="mt-3 max-w-sm text-sm text-neutral-400">
-              {LANDING_FOOTER.description}
-            </p>
+            <p className="text-lg font-semibold tracking-widest text-white uppercase">ATUE</p>
+            <p className="mt-3 max-w-sm text-sm text-neutral-400">{LANDING_FOOTER.description}</p>
           </div>
 
           <nav aria-label="Navegação do rodapé">
@@ -40,9 +33,7 @@ export default function LandingFooter() {
         </div>
 
         <div className="mt-10 border-t border-white/10 pt-6">
-          <p className="text-xs text-neutral-500">
-            {LANDING_FOOTER.copyright}
-          </p>
+          <p className="text-xs text-neutral-500">{LANDING_FOOTER.copyright}</p>
         </div>
       </div>
     </footer>
