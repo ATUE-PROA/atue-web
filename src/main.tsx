@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 import { router } from '@/routes'
-import { AuthProvider } from '@/contexts/AuthContext' 
+import { AuthProvider } from '@/contexts/AuthProvider'
 import './index.css'
 
 const rootElement = document.getElementById('root')
@@ -14,7 +14,7 @@ if (!rootElement) {
 createRoot(rootElement).render(
   <StrictMode>
     <AuthProvider>
-    <RouterProvider router={router} />
+      <RouterProvider router={router} />
     </AuthProvider>
   </StrictMode>,
 )

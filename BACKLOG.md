@@ -14,7 +14,7 @@ Cada épico corresponde a um agrupamento lógico das tarefas geridas no Jira. A 
 | **data-modeling-ts** | DEV-57    | Modelagem Inicial de Dados (Tipagem TS e Mocks)     | Larissa Coelho          | Em andamento | 30/out/2026 |
 | **landing-page**     | DEV-58    | Implementação e Responsividade da Landing Page      | Gilvam Júnior           | Em revisão   | 25/out/2026 |
 | **trust-center**     | DEV-59    | Pág. de Confiança e Testes de Usabilidade           | Liam Silva Pernambuco   | A fazer      | 28/out/2026 |
-| **auth-dashboard**   | DEV-56    | Construção da Tela de Cadastro e Painel de Controle | Larissa Coelho          | A fazer      | 25/out/2026 |
+| **auth-dashboard**   | DEV-56    | Construção da Tela de Cadastro e Painel de Controle | Larissa Coelho          | Em andamento | 25/out/2026 |
 
 _Progresso visível via `openspec list` e `openspec status --change "<nome>" --json`._
 
@@ -46,7 +46,9 @@ _Definição de pronto por task:_ Componente renderizando no DOM, responsividade
 
 - **Desenvolvimento Mock-First:** Para não acoplar o progresso do frontend ao tempo de deploy dos microsserviços, todo contrato de API (Épico 1) nasce com uma implementação baseada em _Promises_ resolvidas localmente (Mocks) que retornam objetos aderentes às tipagens definidas no `DEV-57`.
 
-- **Formulários e Validação:** Formulários de captura de domínio, login e cadastro utilizam `React Hook Form` orquestrado com validação de schemas em `Zod` (a instalar na change que criar o primeiro formulário). O frontend rejeita _payloads_ malformados antes de encostar na rede.
+- **Formulários e Validação:** Formulários de captura de domínio, login e cadastro utilizam `React Hook Form` orquestrado com validação de schemas em `Zod` e `@hookform/resolvers`. O frontend rejeita _payloads_ malformados antes de encostar na rede.
+
+- **Design System:** `DESIGN.md` é a fonte de verdade para superfícies, cores, tipografia, espaçamento, raios, estados, acessibilidade e receitas de componentes. Toda tela nova deve seguir o guia e seu checklist de PR.
 
 ## Definition of Done (todas as histórias)
 
@@ -58,7 +60,9 @@ _Definição de pronto por task:_ Componente renderizando no DOM, responsividade
 
 4. Renderização impecável desde telas _mobile_ (320px) até _ultrawide_, baseada nos breakpoints do Tailwind.
 
-5. Comandos `npm run lint` e `npm run build` retornam status verde.
+5. A tela segue o `DESIGN.md` e o checklist de design do guia foi aplicado.
+
+6. Comandos `npm run lint` e `npm run build` retornam status verde.
 
 ## Épico 1 — Fundação e Contratos (Changes: `project-setup`, `data-modeling-ts`)
 

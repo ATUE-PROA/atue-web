@@ -23,9 +23,11 @@ Instalado e verificado no repositório:
 - **HTTP:** Native Fetch API.
 - **Architecture:** Single-page application (SPA).
 - **Import alias:** `@/*` → `src/*`, configurado em `tsconfig.json`, `tsconfig.app.json` e `vite.config.ts`.
-- **CI:** `.github/workflows/ci.yml` roda `npm ci`, `npm run lint` e `npm run build` no Node 24 (`.nvmrc`).
+- **CI:** `.github/workflows/ci.yml` roda `npm ci`, `npm run lint`, `npm run format:check` e `npm run build` no Node 24 (`.nvmrc`).
 
-Ainda não instalados, entram na change que primeiro precisar deles: biblioteca de formulários e validação (`React Hook Form` + `Zod`) e test runner. `src/services`, `src/contexts` e `src/types` existem vazios, reservados para as changes seguintes.
+Instalados e usados no projeto: `React Hook Form`, `Zod`, `@hookform/resolvers` e `Prettier`. Ainda não instalado: test runner. As pastas `src/services`, `src/contexts` e `src/types` seguem a organização do projeto para as próximas changes.
+
+O guia de design do projeto está em `DESIGN.md` e deve ser consultado antes de criar ou alterar telas, componentes e estilos.
 
 Before introducing dependencies, inspect `package.json`, the lockfile, and existing implementations. Reuse installed libraries and established project conventions whenever possible.
 
@@ -56,6 +58,10 @@ Separate responsibilities into:
 
 Keep business logic out of presentation components when extracting it improves clarity or testability. Do not abstract simple code merely to increase the number of files.
 
+Prefer explicit composition over implicit element manipulation. For form controls, use the `FormField` render prop instead of `cloneElement` or similar magic. Keep page composition visible: the page should show which layout, aside, and form it renders.
+
+Do not create types that merely mirror a copy object. Define copy with `as const` and let TypeScript infer it.
+
 Follow the existing directory structure. If no clear structure exists, establish a minimal organization aligned with the features actually implemented.
 
 ### 3.3. Styling and Design
@@ -64,6 +70,8 @@ Follow the existing directory structure. If no clear structure exists, establish
 - Prefer existing shadcn/ui components over custom implementations when they satisfy the requirement.
 - Use Lucide React for interface icons.
 - Maintain consistent spacing, typography, colors, borders, and interaction states.
+- Follow `DESIGN.md` for surfaces, color roles, typography, spacing, radius, component recipes, states, and the design PR checklist.
+- Reuse the shared primitives documented in `DESIGN.md` (for example `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `BrandLink`) before creating local implementations.
 - Ensure responsive behavior across mobile and desktop viewports.
 - Avoid unnecessary inline styles, duplicated styling rules, and new CSS frameworks.
 - Do not modify global design tokens or shared components to solve a local problem unless the change is intentional and compatible with other screens.
@@ -84,11 +92,12 @@ The interface should be professional, restrained, and appropriate for a B2B comp
 
 Backend availability must not block frontend development.
 
-- Centralize API access in the existing service layer, preferably `src/services/api.ts` when compatible with the repository structure.
+- Centralize API access in the existing service layer, preferably `src/services/<feature>.ts` when compatible with the repository structure.
 - Keep HTTP requests out of presentational components.
 - Use typed parameters, payloads, and response contracts.
 - When an endpoint is unavailable, return structured, deterministic mock data through the same service boundary intended for the real implementation.
 - Keep mock data separate from production service logic where practical.
+- Import mocks only from services, not from components or pages. Migrate existing direct imports when the feature is touched.
 - Do not scatter hardcoded sample data throughout components.
 - Do not silently replace failed production requests with mock responses.
 - Handle loading, success, empty, and error states explicitly.
@@ -201,11 +210,12 @@ During implementation:
 After implementation:
 
 1. Run the relevant linting and TypeScript checks available in the project.
-2. Run the production build.
-3. Run relevant tests if configured.
-4. Fix regressions introduced by the change.
-5. Inspect the final diff for unintended modifications.
-6. Report what changed, what was verified, and any remaining limitations.
+2. Run `npm run format:check`.
+3. Run the production build.
+4. Run relevant tests if configured.
+5. Fix regressions introduced by the change.
+6. Inspect the final diff for unintended modifications.
+7. Report what changed, what was verified, and any remaining limitations.
 
 Use the actual scripts defined in `package.json`. Do not assume that a test runner, linter, or type-check script exists.
 
@@ -242,7 +252,7 @@ A change is complete when all applicable conditions are met:
 - [ ] The interface is responsive and accessible.
 - [ ] API integration or mocks follow the established service boundary.
 - [ ] No unrelated functionality has been modified.
-- [ ] Relevant lint, type, test, and build checks pass.
+- [ ] Relevant lint, format, type, test, and build checks pass.
 - [ ] OpenSpec tasks and specifications reflect the final implementation when applicable.
 - [ ] Remaining limitations are documented honestly.
 

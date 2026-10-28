@@ -2,11 +2,7 @@ import { BadgeCheck, FolderCheck, SearchCheck } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { LANDING_STEPS } from '@/content/landing'
 
-const STEP_ICONS: readonly LucideIcon[] = [
-  SearchCheck,
-  FolderCheck,
-  BadgeCheck,
-] as const
+const STEP_ICONS: readonly LucideIcon[] = [SearchCheck, FolderCheck, BadgeCheck] as const
 
 export default function HowItWorks() {
   return (
@@ -22,17 +18,10 @@ export default function HowItWorks() {
           const Icon = STEP_ICONS[index]
 
           return (
-            <article
-              key={step.title}
-              className="rounded-xl border border-white/10 bg-white/5 p-6"
-            >
+            <article key={step.title} className="rounded-xl border border-white/10 bg-white/5 p-6">
               <Icon aria-hidden="true" className="size-6 text-blue-400" />
-              <h3 className="mt-5 text-lg font-semibold text-white">
-                {step.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-400">
-                {step.description}
-              </p>
+              <h3 className="mt-5 text-lg font-semibold text-white">{step.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-neutral-400">{step.description}</p>
             </article>
           )
         })}

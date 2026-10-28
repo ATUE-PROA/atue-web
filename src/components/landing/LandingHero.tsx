@@ -37,10 +37,7 @@ export default function LandingHero() {
           <div className="relative z-10 -ml-12 h-64 w-44 rotate-[6deg] rounded-lg border border-white/15 bg-gradient-to-br from-neutral-800 via-neutral-900 to-neutral-950 shadow-2xl sm:h-72 sm:w-56">
             <div className="grid grid-cols-4 gap-1.5 p-3">
               {Array.from({ length: 24 }).map((_, index) => (
-                <span
-                  key={index}
-                  className="h-1.5 rounded-full bg-white/10"
-                />
+                <span key={index} className="h-1.5 rounded-full bg-white/10" />
               ))}
             </div>
             <div className="mx-3 mt-4 space-y-2">
