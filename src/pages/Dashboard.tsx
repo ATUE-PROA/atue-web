@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts'
+import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { mockGetDiagnostic } from '../mocks/api'
 import type { DiagnosticReport } from '../types/api'
 
@@ -40,6 +41,7 @@ export function Dashboard() {
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium">Status Geral:</span>
             <div className={`w-4 h-4 rounded-full ${corSemaforo}`} />
+            <ThemeToggle />
           </div>
         </header>
 

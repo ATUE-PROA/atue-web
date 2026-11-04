@@ -3,13 +3,13 @@ import { LANDING_VISION } from '@/content/landing'
 
 export default function BuildSection() {
   return (
-    <section id="sobre" className="scroll-mt-16 border-t border-white/10">
+    <section id="sobre" className="scroll-mt-16 border-t border-border">
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-6 py-16 sm:py-20 lg:grid-cols-2 lg:items-center lg:gap-16 lg:py-24">
         <div>
-          <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+          <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             {LANDING_VISION.title}
           </h2>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-neutral-400">
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
             {LANDING_VISION.description}
           </p>
         </div>
@@ -18,10 +18,13 @@ export default function BuildSection() {
           {LANDING_VISION.commitments.map((commitment) => (
             <li
               key={commitment}
-              className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
+              className="flex items-start gap-3 rounded-xl border border-border bg-card p-4"
             >
-              <CheckCircle2 aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-blue-400" />
-              <span className="text-sm text-neutral-200">{commitment}</span>
+              <CheckCircle2
+                aria-hidden="true"
+                className="mt-0.5 size-5 shrink-0 text-blue-600 dark:text-blue-400"
+              />
+              <span className="text-sm text-foreground">{commitment}</span>
             </li>
           ))}
         </ul>

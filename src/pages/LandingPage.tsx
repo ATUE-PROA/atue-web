@@ -8,7 +8,7 @@ import LandingFooter from '@/components/landing/LandingFooter'
 
 export default function LandingPage() {
   return (
-    <div data-page-surface="dark" className="min-h-screen bg-neutral-950 text-neutral-50">
+    <div className="min-h-screen bg-background text-foreground">
       <LandingHeader />
       <main>
         <LandingHero />

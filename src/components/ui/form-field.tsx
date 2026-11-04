@@ -44,10 +44,10 @@ export function FormField({
 
   return (
     <div className={cn('space-y-2', className)}>
-      <Label htmlFor={fieldId} className="text-sm font-medium text-neutral-200">
+      <Label htmlFor={fieldId} className="text-sm font-medium text-foreground">
         {label}
         {required ? (
-          <span aria-hidden="true" className="text-blue-400">
+          <span aria-hidden="true" className="text-blue-600 dark:text-blue-400">
             *
           </span>
         ) : null}
@@ -56,13 +56,13 @@ export function FormField({
       {children(control)}
 
       {description ? (
-        <p id={descriptionId} className="text-xs leading-relaxed text-neutral-500">
+        <p id={descriptionId} className="text-xs leading-relaxed text-muted-foreground">
           {description}
         </p>
       ) : null}
 
       {error ? (
-        <p id={errorId} role="alert" className="text-sm text-red-400">
+        <p id={errorId} role="alert" className="text-sm text-destructive">
           {error}
         </p>
       ) : null}

@@ -5,6 +5,23 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ATUE — Conformidade digital</title>
+    <script>
+      ;(function () {
+        var stored = null
+        try {
+          stored = localStorage.getItem('atue-theme')
+        } catch (error) {
+          stored = null
+        }
+        var dark =
+          stored === 'dark'
+            ? true
+            : stored === 'light'
+              ? false
+              : window.matchMedia('(prefers-color-scheme: dark)').matches
+        document.documentElement.classList.toggle('dark', dark)
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -10,7 +10,7 @@ export default function HowItWorks() {
       id="como-funciona"
       className="mx-auto w-full max-w-6xl scroll-mt-16 px-6 py-16 sm:py-20 lg:py-24"
     >
-      <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+      <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
         Como funciona?
       </h2>
       <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -18,10 +18,12 @@ export default function HowItWorks() {
           const Icon = STEP_ICONS[index]
 
           return (
-            <article key={step.title} className="rounded-xl border border-white/10 bg-white/5 p-6">
-              <Icon aria-hidden="true" className="size-6 text-blue-400" />
-              <h3 className="mt-5 text-lg font-semibold text-white">{step.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-400">{step.description}</p>
+            <article key={step.title} className="rounded-xl border border-border bg-card p-6">
+              <Icon aria-hidden="true" className="size-6 text-blue-600 dark:text-blue-400" />
+              <h3 className="mt-5 text-lg font-semibold text-foreground">{step.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {step.description}
+              </p>
             </article>
           )
         })}

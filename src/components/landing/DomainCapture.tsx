@@ -30,19 +30,19 @@ export default function DomainCapture() {
       id="avaliar"
       className="mx-auto w-full max-w-6xl scroll-mt-16 px-6 py-16 sm:py-20 lg:py-24"
     >
-      <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 via-neutral-900/60 to-neutral-950 p-8 sm:p-12">
+      <div className="rounded-2xl border border-border bg-gradient-to-br from-muted via-card to-background p-8 sm:p-12">
         <div className="max-w-2xl">
-          <p className="text-xs font-medium tracking-[0.2em] text-blue-400 uppercase">
+          <p className="text-xs font-medium tracking-[0.2em] text-blue-600 uppercase dark:text-blue-400">
             {LANDING_CAPTURE.eyebrow}
           </p>
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             {LANDING_CAPTURE.title}
           </h2>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="mt-8 max-w-2xl">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="domain" className="text-neutral-200">
+            <Label htmlFor="domain" className="text-foreground">
               {LANDING_CAPTURE.label}
             </Label>
             <div className="flex flex-col gap-3 sm:flex-row">
@@ -52,7 +52,7 @@ export default function DomainCapture() {
                 autoComplete="url"
                 inputMode="url"
                 spellCheck={false}
-                className="h-11 flex-1 rounded-lg border-white/15 bg-white/5 text-white placeholder:text-neutral-500 focus-visible:border-blue-400 focus-visible:ring-blue-400/40"
+                className="h-11 flex-1 rounded-lg text-foreground placeholder:text-muted-foreground focus-visible:border-blue-600 focus-visible:ring-blue-600/40 dark:focus-visible:border-blue-400 dark:focus-visible:ring-blue-400/40"
                 aria-invalid={Boolean(errors.domain)}
                 aria-describedby={errors.domain ? 'domain-error' : undefined}
                 {...register('domain')}
@@ -66,11 +66,11 @@ export default function DomainCapture() {
               </Button>
             </div>
             {errors.domain ? (
-              <p id="domain-error" role="alert" className="text-sm text-red-400">
+              <p id="domain-error" role="alert" className="text-sm text-destructive">
                 {errors.domain.message}
               </p>
             ) : null}
-            <p className="text-xs text-neutral-500">{LANDING_CAPTURE.helperText}</p>
+            <p className="text-xs text-muted-foreground">{LANDING_CAPTURE.helperText}</p>
           </div>
         </form>
       </div>

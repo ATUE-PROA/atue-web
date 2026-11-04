@@ -23,10 +23,13 @@ export function AuthBenefits() {
     <ul className="mt-8 space-y-4">
       {BENEFITS.map(({ icon: Icon, title, description }) => (
         <li key={title} className="flex items-start gap-3">
-          <Icon aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-blue-400" />
+          <Icon
+            aria-hidden="true"
+            className="mt-0.5 size-5 shrink-0 text-blue-600 dark:text-blue-400"
+          />
           <div>
-            <p className="text-sm font-medium text-white">{title}</p>
-            <p className="mt-0.5 text-sm leading-relaxed text-neutral-400">{description}</p>
+            <p className="text-sm font-medium text-foreground">{title}</p>
+            <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground">{description}</p>
           </div>
         </li>
       ))}
