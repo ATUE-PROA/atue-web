@@ -39,7 +39,7 @@ rota -> página -> componente de feature -> service -> mock ou API
 
 - **Páginas** (`src/pages`): leem a rota e compõem a tela.
 - **Componentes de feature** (`src/components/<feature>`): cuidam da interface e das interações daquela tela.
-- **Services** (`src/services`): fronteira de acesso a dados. Hoje, `services/auth.ts` delega para mocks.
+- **Services** (`src/services`): fronteira de acesso a dados. `services/auth.ts` e `services/form.ts` delegam para mocks; `services/cnpj.ts` consulta a API pública OpenCNPJ.
 - **Mocks** (`src/mocks`): dados simulados, importados apenas pela camada de services.
 - **Tipos** (`src/types`): contratos de domínio e de API.
 - **Conteúdo** (`src/content`): copy revisável, em `as const`, sem tipos espelhados.
@@ -76,6 +76,18 @@ A rota `/register` usa:
 A rota `/login` usa `AuthCenteredLayout` e `LoginForm` para um único card centralizado, também com React Hook Form + Zod e `services/auth.ts` como fronteira do login simulado.
 
 Os fluxos válidos criam uma sessão em memória e navegam para `/dashboard`. Os avisos informam explicitamente que a conta é de demonstração.
+
+## Envio de documentos
+
+A rota `/form` usa `AuthLayout`, `FormBrandPanel` e `DocumentForm` para coletar a URL do site, os dados da empresa e os documentos de conformidade.
+
+- O CNPJ é validado localmente e consultado em `https://api.opencnpj.org` por `services/cnpj.ts`.
+- Quando a consulta retorna dados, a razão social e o e-mail disponíveis preenchem os campos correspondentes; a pessoa pode revisar e editar.
+- O envio dos dados e arquivos é simulado por `services/form.ts`. Nenhum arquivo é armazenado.
+
+## Planos
+
+A rota `/plans` apresenta três planos ilustrativos em cards e está linkada no rodapé da landing. Os CTAs encaminham para o cadastro ou para o envio de dados e documentos; não há cobrança nesta demonstração.
 
 ## Design e convenções
 

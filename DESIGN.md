@@ -219,7 +219,9 @@ Regras:
 - Foco: `focus-visible:border-blue-600 focus-visible:ring-blue-600/40 dark:focus-visible:border-blue-400 dark:focus-visible:ring-blue-400/40`.
 - Erro: `aria-invalid` + borda/anel destrutivo.
 - Sempre use `Label` visível associado por `htmlFor`/`id`.
-- Use `autoComplete` adequado: `name`, `email`, `organization`, `new-password`.
+- Use `autoComplete` adequado: `name`, `email`, `organization`, `new-password`, `url`.
+- **Textos longos e arquivos:** use `Textarea` para mensagens e `Input type="file"` para anexos, com `multiple` quando aplicável e tipos/tamanho aceitos descritos no texto de ajuda.
+- **Busca assíncrona:** quando um campo dispara consulta externa, use um botão secundário ao lado, mantenha o campo editável e comunique carregamento, sucesso e falha com texto. Preencha campos derivados sem impedir a edição manual.
 
 ### 6.4 FormField
 

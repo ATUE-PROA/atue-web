@@ -26,6 +26,11 @@ export default function LandingFooter() {
                 </li>
               ))}
               <li>
+                <Link to="/plans" className={linkClasses}>
+                  Planos
+                </Link>
+              </li>
+              <li>
                 <Link to="/register" className={linkClasses}>
                   Cadastre-se
                 </Link>
