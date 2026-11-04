@@ -17,7 +17,7 @@ export const LANDING_NAV = [
 
 export const LANDING_HERO = {
   eyebrow: 'Conformidade digital',
-  title: 'É possível obter um contrato mesmo após conquistar o cliente.',
+  title: 'É possível perder um contrato mesmo após conquistar o cliente.',
   description: 'Veja os riscos e oportunidades e evite problemas de conformidade.',
   ctaLabel: 'Conheça o ATUE',
   ctaHref: '#avaliar',
