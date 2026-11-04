@@ -6,20 +6,20 @@ export default function LandingHero() {
     <section className="mx-auto w-full max-w-6xl px-6 py-16 sm:py-20 lg:py-28">
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
-          <p className="text-xs font-medium tracking-[0.2em] text-blue-400 uppercase">
+          <p className="text-xs font-medium tracking-[0.2em] text-blue-600 uppercase dark:text-blue-400">
             {LANDING_HERO.eyebrow}
           </p>
-          <h1 className="mt-5 text-4xl font-semibold tracking-tight text-balance text-white sm:text-5xl lg:text-6xl">
+          <h1 className="mt-5 text-4xl font-semibold tracking-tight text-balance text-foreground sm:text-5xl lg:text-6xl">
             {LANDING_HERO.title}
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-neutral-400">
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
             {LANDING_HERO.description}
           </p>
           <div className="mt-8">
             <Button
               asChild
               size="lg"
-              className="rounded-full bg-white px-6 font-medium text-neutral-950 hover:bg-neutral-200"
+              className="rounded-full bg-primary px-6 font-medium text-primary-foreground hover:bg-primary/90"
             >
               <a href={LANDING_HERO.ctaHref}>{LANDING_HERO.ctaLabel}</a>
             </Button>

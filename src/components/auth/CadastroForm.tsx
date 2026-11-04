@@ -18,7 +18,7 @@ import type { CadastroFormValues } from '@/types/cadastro.types'
 type SubmissionResult = 'idle' | 'success' | 'error'
 
 const inputClasses =
-  'h-11 rounded-lg border-white/15 bg-white/5 text-white placeholder:text-neutral-500 focus-visible:border-blue-400 focus-visible:ring-blue-400/40 aria-invalid:border-red-400 aria-invalid:ring-red-400/20'
+  'h-11 rounded-lg border-input text-foreground placeholder:text-muted-foreground focus-visible:border-blue-600 focus-visible:ring-blue-600/40 dark:focus-visible:border-blue-400 dark:focus-visible:ring-blue-400/40'
 
 const {
   formTitle,
@@ -79,12 +79,12 @@ export function CadastroForm() {
   }
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/30 sm:p-8">
+    <div className="rounded-2xl border border-border bg-card p-6 shadow-lg shadow-black/5 sm:p-8 dark:shadow-2xl dark:shadow-black/30">
       <div>
-        <h2 id="cadastro-form-title" className="text-xl font-semibold text-white">
+        <h2 id="cadastro-form-title" className="text-xl font-semibold text-foreground">
           {formTitle}
         </h2>
-        <p className="mt-1 text-sm leading-relaxed text-neutral-400">{formDescription}</p>
+        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{formDescription}</p>
       </div>
 
       {result === 'success' ? (
@@ -165,7 +165,7 @@ export function CadastroForm() {
         </Button>
       </form>
 
-      <p className="mt-5 text-xs leading-relaxed text-neutral-500">{demoNotice}</p>
+      <p className="mt-5 text-xs leading-relaxed text-muted-foreground">{demoNotice}</p>
     </div>
   )
 }

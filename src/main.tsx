@@ -3,7 +3,10 @@ import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 import { router } from '@/routes'
 import { AuthProvider } from '@/contexts/AuthProvider'
+import { watchSystemTheme } from '@/lib/theme'
 import './index.css'
+
+watchSystemTheme()
 
 const rootElement = document.getElementById('root')
 

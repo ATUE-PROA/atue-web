@@ -12,16 +12,16 @@ interface FormAlertProps {
 
 const toneStyles = {
   success: {
-    container: 'border-green-500/30 bg-green-500/10',
-    icon: 'text-green-300',
-    title: 'text-green-100',
-    description: 'text-green-200/90',
+    container: 'border-green-600/30 bg-green-600/10 dark:border-green-500/30 dark:bg-green-500/10',
+    icon: 'text-green-700 dark:text-green-300',
+    title: 'text-green-900 dark:text-green-100',
+    description: 'text-green-800/90 dark:text-green-200/90',
   },
   error: {
-    container: 'border-red-500/30 bg-red-500/10',
-    icon: 'text-red-300',
-    title: 'text-red-100',
-    description: 'text-red-200/90',
+    container: 'border-destructive/30 bg-destructive/10',
+    icon: 'text-destructive',
+    title: 'text-destructive',
+    description: 'text-destructive/90',
   },
 } as const
 

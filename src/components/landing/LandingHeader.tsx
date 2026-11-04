@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { BrandLink, SiteHeader } from '@/components/layout/site-header'
+import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { LANDING_NAV } from '@/content/landing'
 
 const linkClasses =
-  'rounded-md text-sm text-neutral-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950'
+  'rounded-md text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:focus-visible:ring-blue-400/60'
 
 export default function LandingHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -35,7 +36,7 @@ export default function LandingHeader() {
         isMenuOpen ? (
           <div
             id="mobile-menu"
-            className="border-t border-white/10 bg-neutral-950/95 backdrop-blur md:hidden"
+            className="border-t border-border bg-background/95 backdrop-blur md:hidden"
           >
             <nav
               aria-label="Navegação principal móvel"
@@ -47,7 +48,7 @@ export default function LandingHeader() {
                     <a
                       href={item.href}
                       onClick={() => setIsMenuOpen(false)}
-                      className="block rounded-md px-2 py-3 text-sm text-neutral-300 transition-colors hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60"
+                      className="block rounded-md px-2 py-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 dark:focus-visible:ring-blue-400/60"
                     >
                       {item.label}
                     </a>
@@ -55,9 +56,9 @@ export default function LandingHeader() {
                 ))}
                 <li>
                   <Link
-                    to="/cadastro"
+                    to="/login"
                     onClick={() => setIsMenuOpen(false)}
-                    className="block rounded-md px-2 py-3 text-sm text-neutral-300 transition-colors hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60"
+                    className="block rounded-md px-2 py-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 dark:focus-visible:ring-blue-400/60"
                   >
                     Login
                   </Link>
@@ -65,9 +66,9 @@ export default function LandingHeader() {
               </ul>
               <Button
                 asChild
-                className="mt-2 w-full rounded-full bg-white text-neutral-950 hover:bg-neutral-200"
+                className="mt-2 w-full rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                <Link to="/cadastro" onClick={() => setIsMenuOpen(false)}>
+                <Link to="/register" onClick={() => setIsMenuOpen(false)}>
                   Cadastre-se
                 </Link>
               </Button>
@@ -91,30 +92,34 @@ export default function LandingHeader() {
       </nav>
 
       <div className="hidden items-center gap-3 md:flex">
-        <Link to="/cadastro" className={linkClasses}>
+        <Link to="/login" className={linkClasses}>
           Login
         </Link>
         <Button
           asChild
-          className="rounded-full bg-white px-5 text-neutral-950 hover:bg-neutral-200"
+          className="rounded-full bg-primary px-5 text-primary-foreground hover:bg-primary/90"
         >
-          <Link to="/cadastro">Cadastre-se</Link>
+          <Link to="/register">Cadastre-se</Link>
         </Button>
+        <ThemeToggle />
       </div>
 
-      <Button
-        ref={menuButtonRef}
-        type="button"
-        variant="ghost"
-        size="icon"
-        className="text-white hover:bg-white/10 md:hidden"
-        aria-label={isMenuOpen ? 'Fechar menu' : 'Abrir menu'}
-        aria-expanded={isMenuOpen}
-        aria-controls="mobile-menu"
-        onClick={() => setIsMenuOpen((current) => !current)}
-      >
-        {isMenuOpen ? <X /> : <Menu />}
-      </Button>
+      <div className="flex items-center gap-2 md:hidden">
+        <Button
+          ref={menuButtonRef}
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="text-foreground hover:bg-muted"
+          aria-label={isMenuOpen ? 'Fechar menu' : 'Abrir menu'}
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
+          onClick={() => setIsMenuOpen((current) => !current)}
+        >
+          {isMenuOpen ? <X /> : <Menu />}
+        </Button>
+        <ThemeToggle />
+      </div>
     </SiteHeader>
   )
 }
