@@ -255,6 +255,7 @@ Use `src/components/ui/password-input.tsx` para senhas. O controle de mostrar/oc
 
 - Cards: `rounded-xl border border-border bg-card p-6`.
 - Card principal de autenticação: `rounded-2xl border border-border bg-card p-6 shadow-lg shadow-black/5 sm:p-8 dark:shadow-2xl dark:shadow-black/30`.
+- Card de plano: `rounded-xl border border-border bg-card p-6 shadow-sm`; o plano recomendado usa `border-blue-600/50 ring-1 ring-blue-600/20` e um badge textual “Recomendado”.
 - Título do card: `text-lg font-semibold`.
 - Não aninhe mais de dois níveis de card.
 
@@ -293,6 +294,19 @@ Use `src/components/layout/site-header.tsx` como cabeçalho das páginas públic
 - O botão de tema (`ThemeToggle`) fica no cabeçalho ao lado das ações, sempre visível em mobile e desktop.
 - Landing e autenticação devem compartilhar esses componentes; não replique a estrutura do cabeçalho.
 - O logo mantém a mesma posição horizontal entre páginas, inclusive quando apenas uma delas tem barra de rolagem.
+
+### 6.11 Tabelas comparativas
+
+- Contêiner: `rounded-xl border border-border bg-card`.
+- Cabeçalho: `bg-muted/40`, `text-xs tracking-wide text-muted-foreground uppercase`; destaque de coluna com texto e `text-blue-600 dark:text-blue-400`.
+- Linhas separadas por `border-b border-border`; a primeira célula usa `font-medium text-foreground`.
+- Em telas estreitas, substitua a tabela por cartões empilhados em vez de criar rolagem horizontal na página.
+
+### 6.12 FAQ
+
+- Use `<details>` e `<summary>` nativos para perguntas frequentes.
+- O `summary` deve ter foco visível e `list-none`; use `ChevronDown` com `group-open:rotate-180` como indicador.
+- Mantenha uma pergunta por item e a resposta em `text-sm leading-relaxed text-muted-foreground`.
 
 ---
 
