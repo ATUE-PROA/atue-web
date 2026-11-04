@@ -87,7 +87,7 @@ A rota `/form` usa `AuthLayout`, `FormBrandPanel` e `DocumentForm` para coletar 
 
 ## Planos
 
-A rota `/plans` apresenta três planos ilustrativos em cards e está linkada no rodapé da landing. Os CTAs encaminham para o cadastro ou para o envio de dados e documentos; não há cobrança nesta demonstração.
+As rotas `/plans` e `/plan` apresentam uma comparação entre os planos Início, Cresce e Escala, cards ilustrativos e uma seção de ajuda com perguntas frequentes. A página está linkada no rodapé da landing e não há cobrança nesta demonstração.
 
 ## Design e convenções
 
