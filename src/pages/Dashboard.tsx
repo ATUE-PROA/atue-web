@@ -4,6 +4,49 @@ import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { mockGetDiagnostic } from '../mocks/api'
 import type { DiagnosticReport } from '../types/api'
 
+interface ScoreLevel {
+  label: string
+  dotClassName: string
+  textClassName: string
+  chartColor: string
+}
+
+function getScoreLevel(score: number): ScoreLevel {
+  if (score < 25) {
+    return {
+      label: 'Crítico',
+      dotClassName: 'bg-red-500',
+      textClassName: 'text-red-600 dark:text-red-400',
+      chartColor: '#ef4444',
+    }
+  }
+
+  if (score < 50) {
+    return {
+      label: 'Atenção',
+      dotClassName: 'bg-orange-500',
+      textClassName: 'text-orange-700 dark:text-orange-400',
+      chartColor: '#f97316',
+    }
+  }
+
+  if (score < 75) {
+    return {
+      label: 'Atenção',
+      dotClassName: 'bg-yellow-500',
+      textClassName: 'text-yellow-700 dark:text-yellow-400',
+      chartColor: '#eab308',
+    }
+  }
+
+  return {
+    label: 'Conforme',
+    dotClassName: 'bg-green-500',
+    textClassName: 'text-green-700 dark:text-green-400',
+    chartColor: '#22c55e',
+  }
+}
+
 export function Dashboard() {
   const [relatorio, setRelatorio] = useState<DiagnosticReport | null>(null)
   const [carregando, setCarregando] = useState(true)
@@ -23,12 +66,8 @@ export function Dashboard() {
     )
   }
 
-  const corSemaforo =
-    relatorio?.status === 'verde'
-      ? 'bg-green-500'
-      : relatorio?.status === 'amarelo'
-        ? 'bg-yellow-500'
-        : 'bg-red-500'
+  const score = relatorio?.score ?? 0
+  const nivelScore = getScoreLevel(score)
 
   return (
     <div className="min-h-screen bg-background p-8">
@@ -40,7 +79,13 @@ export function Dashboard() {
           </div>
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium">Status Geral:</span>
-            <div className={`w-4 h-4 rounded-full ${corSemaforo}`} />
+            <span
+              aria-hidden="true"
+              className={`h-4 w-4 rounded-full ${nivelScore.dotClassName}`}
+            />
+            <span className={`text-sm font-medium ${nivelScore.textClassName}`}>
+              {nivelScore.label}
+            </span>
             <ThemeToggle />
           </div>
         </header>
@@ -57,7 +102,7 @@ export function Dashboard() {
                 innerRadius="70%"
                 outerRadius="100%"
                 barSize={10}
-                data={[{ name: 'Score', value: relatorio?.score, fill: '#eab308' }]}
+                data={[{ name: 'Score', value: relatorio?.score, fill: nivelScore.chartColor }]}
                 startAngle={90}
                 endAngle={-270}
               >
