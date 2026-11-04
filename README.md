@@ -51,7 +51,7 @@ O dashboard ainda importa `mockGetDiagnostic` diretamente; a migração para `se
 ```text
 src/
   components/
-    auth/       layout, painel institucional, formulário de cadastro
+    auth/       layouts, painel institucional, formulários de cadastro e login
     landing/    seções da landing
     layout/     cabeçalho público compartilhado
     ui/         primitives shadcn e componentes reutilizáveis
@@ -64,16 +64,18 @@ src/
   types/        contratos e tipos de domínio
 ```
 
-## Cadastro
+## Autenticação
 
-A rota `/cadastro` usa:
+A rota `/register` usa:
 
-- `AuthLayout` para o frame escuro, cabeçalho compartilhado e coluna do formulário;
+- `AuthLayout` para o frame, cabeçalho compartilhado e coluna do formulário;
 - `AuthBrandPanel` para a coluna institucional;
 - `CadastroForm` para React Hook Form + Zod, estados de envio e sessão em memória;
 - `services/auth.ts` como fronteira do cadastro simulado.
 
-O fluxo válido cria uma sessão em memória e navega para `/dashboard`. O sucesso informa explicitamente que a conta é de demonstração.
+A rota `/login` usa `AuthCenteredLayout` e `LoginForm` para um único card centralizado, também com React Hook Form + Zod e `services/auth.ts` como fronteira do login simulado.
+
+Os fluxos válidos criam uma sessão em memória e navegam para `/dashboard`. Os avisos informam explicitamente que a conta é de demonstração.
 
 ## Design e convenções
 

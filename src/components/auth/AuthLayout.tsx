@@ -43,3 +43,23 @@ export function AuthLayout({ aside, children, backLabel = 'Voltar ao site' }: Au
     </div>
   )
 }
+
+interface AuthCenteredLayoutProps {
+  children: ReactNode
+  backLabel?: string
+}
+
+export function AuthCenteredLayout({
+  children,
+  backLabel = 'Voltar ao site',
+}: AuthCenteredLayoutProps) {
+  return (
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <AuthHeader backLabel={backLabel} />
+
+      <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-6 py-10 sm:py-14">
+        {children}
+      </main>
+    </div>
+  )
+}

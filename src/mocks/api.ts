@@ -1,5 +1,6 @@
 import type { DiagnosticReport, UserToken } from '@/types/api'
 import type { CadastroFormValues } from '@/types/cadastro.types'
+import type { LoginFormValues } from '@/types/login.types'
 
 const MOCK_DELAY_MS = 2000
 
@@ -12,7 +13,7 @@ function resolveAfter<T>(value: T): Promise<T> {
 const mockDiagnosticReport: DiagnosticReport = {
   id: 'diag-789',
   organizationId: 'org-456',
-  score: 65,
+  score: 60,
   status: 'amarelo',
   createdAt: new Date().toISOString(),
   issues: [
@@ -35,6 +36,18 @@ export function mockSignUp(payload: CadastroFormValues): Promise<UserToken> {
     user: {
       id: 'user-123',
       name: payload.nome.trim(),
+      email: payload.email.trim(),
+      organizationId: 'org-456',
+    },
+  })
+}
+
+export function mockSignIn(payload: LoginFormValues): Promise<UserToken> {
+  return resolveAfter({
+    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mockSignInToken',
+    user: {
+      id: 'user-123',
+      name: 'Usuário de demonstração',
       email: payload.email.trim(),
       organizationId: 'org-456',
     },

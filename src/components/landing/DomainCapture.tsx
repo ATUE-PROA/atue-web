@@ -20,7 +20,7 @@ export default function DomainCapture() {
   })
 
   const onSubmit = (values: DomainFormValues) => {
-    navigate('/cadastro', {
+    navigate('/register', {
       state: { domain: normalizeDomain(values.domain) } satisfies DomainCaptureState,
     })
   }

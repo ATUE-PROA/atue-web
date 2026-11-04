@@ -56,7 +56,7 @@ export default function LandingHeader() {
                 ))}
                 <li>
                   <Link
-                    to="/cadastro"
+                    to="/login"
                     onClick={() => setIsMenuOpen(false)}
                     className="block rounded-md px-2 py-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 dark:focus-visible:ring-blue-400/60"
                   >
@@ -68,7 +68,7 @@ export default function LandingHeader() {
                 asChild
                 className="mt-2 w-full rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                <Link to="/cadastro" onClick={() => setIsMenuOpen(false)}>
+                <Link to="/register" onClick={() => setIsMenuOpen(false)}>
                   Cadastre-se
                 </Link>
               </Button>
@@ -92,14 +92,14 @@ export default function LandingHeader() {
       </nav>
 
       <div className="hidden items-center gap-3 md:flex">
-        <Link to="/cadastro" className={linkClasses}>
+        <Link to="/login" className={linkClasses}>
           Login
         </Link>
         <Button
           asChild
           className="rounded-full bg-primary px-5 text-primary-foreground hover:bg-primary/90"
         >
-          <Link to="/cadastro">Cadastre-se</Link>
+          <Link to="/register">Cadastre-se</Link>
         </Button>
         <ThemeToggle />
       </div>
