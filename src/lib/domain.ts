@@ -14,12 +14,16 @@ export function normalizeDomain(raw: string): string {
     .replace(/\.+$/, '')
 }
 
+export function isValidDomain(raw: string): boolean {
+  return DOMAIN_PATTERN.test(normalizeDomain(raw))
+}
+
 export const domainSchema: z.ZodType<DomainFormValues, DomainFormValues> = z.object({
   domain: z
     .string()
     .trim()
     .min(1, { message: 'Informe o domínio do seu site.' })
-    .refine((value) => DOMAIN_PATTERN.test(normalizeDomain(value)), {
+    .refine(isValidDomain, {
       message: 'Informe um domínio válido, como exemplo.com.br.',
     }),
 })
