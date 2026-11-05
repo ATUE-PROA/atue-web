@@ -1,8 +1,8 @@
-import { AlertCircle, CheckCircle2 } from 'lucide-react'
+import { AlertCircle, CheckCircle2, Info } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
-type FormAlertTone = 'success' | 'error'
+type FormAlertTone = 'success' | 'error' | 'info'
 
 interface FormAlertProps {
   tone: FormAlertTone
@@ -23,15 +23,27 @@ const toneStyles = {
     title: 'text-destructive',
     description: 'text-destructive/90',
   },
+  info: {
+    container: 'border-blue-600/30 bg-blue-600/10 dark:border-blue-500/30 dark:bg-blue-500/10',
+    icon: 'text-blue-700 dark:text-blue-300',
+    title: 'text-blue-800 dark:text-blue-200',
+    description: 'text-blue-800/90 dark:text-blue-200/90',
+  },
+} as const
+
+const toneIcons = {
+  success: CheckCircle2,
+  error: AlertCircle,
+  info: Info,
 } as const
 
 export function FormAlert({ tone, title, description }: FormAlertProps) {
   const styles = toneStyles[tone]
-  const Icon = tone === 'success' ? CheckCircle2 : AlertCircle
+  const Icon = toneIcons[tone]
 
   return (
     <div
-      role={tone === 'success' ? 'status' : 'alert'}
+      role={tone === 'error' ? 'alert' : 'status'}
       className={cn('mt-6 flex items-start gap-3 rounded-lg border p-4', styles.container)}
     >
       <Icon aria-hidden="true" className={cn('mt-0.5 size-4 shrink-0', styles.icon)} />
