@@ -71,7 +71,7 @@ Follow the existing directory structure. If no clear structure exists, establish
 - Use Lucide React for interface icons.
 - Maintain consistent spacing, typography, colors, borders, and interaction states.
 - Follow `DESIGN.md` for surfaces, color roles, typography, spacing, radius, component recipes, states, and the design PR checklist.
-- Reuse the shared primitives documented in `DESIGN.md` (for example `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `BrandLink`) before creating local implementations.
+- Reuse the shared primitives documented in `DESIGN.md` (for example `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `ProductHeader`, `BrandLink`, `Switch`, `NativeSelect`, `AlertDialog`, `SettingsSection`) before creating local implementations.
 - Ensure responsive behavior across mobile and desktop viewports.
 - Avoid unnecessary inline styles, duplicated styling rules, and new CSS frameworks.
 - Do not modify global design tokens or shared components to solve a local problem unless the change is intentional and compatible with other screens.
@@ -119,6 +119,7 @@ When the backend contract changes, update the corresponding types, services, and
 - Provide clear submission, success, and failure feedback.
 - Preserve user input when an operation fails, unless there is a specific reason not to.
 - Do not report a successful save when the operation has only been simulated.
+- Require an accessible `AlertDialog` confirmation before destructive or irreversible actions, and state explicitly when the action is simulated.
 
 Use an existing validation library if one is already established in the project. Do not add one for a trivial form without justification.
 
@@ -230,6 +231,7 @@ Use the actual scripts defined in `package.json`. Do not assume that a test runn
 - Handle network failures and unexpected response formats safely.
 - Avoid logging tokens, credentials, or sensitive user data.
 - Do not introduce authorization assumptions that the backend cannot enforce.
+- Destructive actions in demo flows must be confirmed and must clearly state that no real account or data was deleted.
 
 ## 8. Scope Control and Dependency Management
 

@@ -44,7 +44,7 @@ rota -> página -> componente de feature -> service -> mock ou API
 - **Tipos** (`src/types`): contratos de domínio e de API.
 - **Conteúdo** (`src/content`): copy revisável, em `as const`, sem tipos espelhados.
 
-O dashboard ainda importa `mockGetDiagnostic` diretamente; a migração para `services/diagnostic.ts` é uma dívida conhecida e não faz parte da refatoração de auth.
+O dashboard consome `services/diagnostic.ts`, que delega para o mock de diagnóstico. Nenhum componente importa mocks diretamente.
 
 ## Estrutura
 
@@ -53,7 +53,9 @@ src/
   components/
     auth/       layouts, painel institucional, formulários de cadastro e login
     landing/    seções da landing
-    layout/     cabeçalho público compartilhado
+    layout/     cabeçalho público e cabeçalho de produto compartilhados
+    plans/      cards, comparação e FAQ de planos
+    settings/   seções da área de configurações
     ui/         primitives shadcn e componentes reutilizáveis
   content/      copy revisável
   contexts/     sessão em memória (AuthProvider + useAuth)
@@ -89,6 +91,16 @@ A rota `/form` usa `AuthLayout`, `FormBrandPanel` e `DocumentForm` para coletar 
 
 As rotas `/plans` e `/plan` apresentam uma comparação entre os planos Início, Cresce e Escala, cards ilustrativos e uma seção de ajuda com perguntas frequentes. A página está linkada no rodapé da landing e não há cobrança nesta demonstração.
 
+## Configurações da conta
+
+A rota `/settings` concentra as configurações gerais da conta e é acessada pelo ícone de engrenagem do `ProductHeader`, compartilhado com o `/dashboard`.
+
+- `services/settings.ts` é a fronteira de dados; `mocks/settings.ts` mantém o estado apenas em memória.
+- A tela cobre notificações, segurança, zona de risco, domínio monitorado, preferências de relatório e integrações.
+- Salvar preferências, alterar senha, conectar integrações e solicitar exclusão são simulações explicitamente identificadas.
+- Autenticação em dois fatores e novas integrações aparecem como “Em breve”.
+- A exclusão exige confirmação em `AlertDialog` e nunca apaga dados reais.
+
 ## Design e convenções
 
 - `DESIGN.md`: fonte de verdade de superfícies, cores, tipografia, espaçamento, componentes, estados e acessibilidade.
@@ -97,6 +109,6 @@ As rotas `/plans` e `/plan` apresentam uma comparação entre os planos Início,
 
 ## Limitações atuais
 
-- Sem backend real, autenticação persistente ou recuperação de senha.
+- Sem backend real, autenticação persistente, recuperação de senha, 2FA ou integrações OAuth.
 - Sem test runner configurado; a validação é feita por lint, build e verificação manual.
-- O dashboard ainda não consome a camada de services.
+- As configurações da conta são simuladas e voltam ao estado inicial ao recarregar a página.

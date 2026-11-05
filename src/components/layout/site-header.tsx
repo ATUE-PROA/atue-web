@@ -5,13 +5,14 @@ const focusClasses =
   'rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:focus-visible:ring-blue-400/60'
 
 interface BrandLinkProps {
+  to?: string
   onClick?: () => void
 }
 
-export function BrandLink({ onClick }: BrandLinkProps) {
+export function BrandLink({ to = '/', onClick }: BrandLinkProps) {
   return (
     <Link
-      to="/"
+      to={to}
       onClick={onClick}
       className={`text-lg font-semibold tracking-widest text-foreground uppercase ${focusClasses}`}
     >

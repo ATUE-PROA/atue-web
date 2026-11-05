@@ -6,6 +6,7 @@ import { Dashboard } from '@/pages/Dashboard'
 import { FormPage } from '@/pages/FormPage'
 import { Login } from '@/pages/Login'
 import { Plans } from '@/pages/Plans'
+import { Settings } from '@/pages/Settings'
 
 export const router = createBrowserRouter([
   { path: '/', element: <LandingPage /> },
@@ -15,5 +16,6 @@ export const router = createBrowserRouter([
   { path: '/plans', element: <Plans /> },
   { path: '/plan', element: <Plans /> },
   { path: '/dashboard', element: <Dashboard /> },
+  { path: '/settings', element: <Settings /> },
   { path: '*', element: <NotFoundPage /> },
 ])

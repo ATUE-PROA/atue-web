@@ -46,6 +46,8 @@ Usada na área logada, como o dashboard. Deriva dos tokens shadcn definidos em `
 
 As duas superfícies compartilham os mesmos tokens. Use `dark:` apenas quando um valor precisar mudar entre temas (por exemplo, o azul de marca).
 
+A área logada usa `ProductHeader` (`src/components/layout/product-header.tsx`) como cabeçalho compartilhado entre painel e configurações. Ele combina `SiteHeader`, `BrandLink` com `to`, navegação por `NavLink`, ícone de configurações com nome acessível e `ThemeToggle`. Em mobile, os rótulos visuais dos links são ocultados, mas os nomes acessíveis permanecem.
+
 ### 1.3 Tema claro/escuro
 
 - O padrão segue `prefers-color-scheme` do navegador da pessoa.
@@ -267,8 +269,9 @@ Use `src/components/ui/password-input.tsx` para senhas. O controle de mostrar/oc
 
 ### 6.8 Alertas de estado
 
-- Estrutura: `div` com `role="alert"` (erro) ou `role="status"` (sucesso), ícone, título curto e descrição.
-- Use `FormAlert` (`src/components/ui/form-alert.tsx`) para os alertas de sucesso e erro de formulários.
+- Estrutura: `div` com `role="alert"` (erro) ou `role="status"` (sucesso ou informação), ícone, título curto e descrição.
+- Use `FormAlert` (`src/components/ui/form-alert.tsx`) para os alertas de sucesso, erro e informação de formulários e fluxos simulados.
+- Tons disponíveis: `success`, `error` e `info`. Use `info` para explicar que uma ação é apenas uma demonstração, sem sugerir falha ou sucesso real.
 - Não use apenas `bg-green-100`/`bg-red-100`; use as receitas da seção 2.3.
 - Em sucesso simulado, diga explicitamente que a conta é de demonstração.
 
@@ -290,23 +293,73 @@ Use `src/components/auth/AuthLayout.tsx` como layout base de telas de autentica�
 Use `src/components/layout/site-header.tsx` como cabeçalho das páginas públicas.
 
 - `SiteHeader` concentra `sticky top-0`, borda, fundo e o contêiner `max-w-6xl px-6`.
-- `BrandLink` concentra a marca ATUE e deve ser usado em todas as páginas públicas.
+- `BrandLink` concentra a marca ATUE e deve ser usado em todas as páginas públicas. Aceita `to` (padrão `/`) para que a marca leve ao painel na área logada.
 - O botão de tema (`ThemeToggle`) fica no cabeçalho ao lado das ações, sempre visível em mobile e desktop.
 - Landing e autenticação devem compartilhar esses componentes; não replique a estrutura do cabeçalho.
 - O logo mantém a mesma posição horizontal entre páginas, inclusive quando apenas uma delas tem barra de rolagem.
 
-### 6.11 Tabelas comparativas
+### 6.11 ProductHeader
+
+Use `src/components/layout/product-header.tsx` na área logada (painel e configurações).
+
+- Combina `SiteHeader`, `BrandLink to="/dashboard"`, `NavLink`, ícone de configurações e `ThemeToggle`.
+- `NavLink` fornece `aria-current`; o estado ativo usa `bg-muted text-foreground`.
+- Em mobile, os rótulos textuais ficam `hidden sm:inline`; os links mantêm `aria-label`.
+- O ícone de configurações é obrigatório na área logada e precisa de nome acessível claro, como “Configurações da conta”.
+- Não use `ProductHeader` em landing, autenticação, planos ou formulário público.
+
+### 6.12 Tabelas comparativas
 
 - Contêiner: `rounded-xl border border-border bg-card`.
 - Cabeçalho: `bg-muted/40`, `text-xs tracking-wide text-muted-foreground uppercase`; destaque de coluna com texto e `text-blue-600 dark:text-blue-400`.
 - Linhas separadas por `border-b border-border`; a primeira célula usa `font-medium text-foreground`.
 - Em telas estreitas, substitua a tabela por cartões empilhados em vez de criar rolagem horizontal na página.
 
-### 6.12 FAQ
+### 6.13 FAQ
 
 - Use `<details>` e `<summary>` nativos para perguntas frequentes.
 - O `summary` deve ter foco visível e `list-none`; use `ChevronDown` com `group-open:rotate-180` como indicador.
 - Mantenha uma pergunta por item e a resposta em `text-sm leading-relaxed text-muted-foreground`.
+
+### 6.14 Switch
+
+Use `src/components/ui/switch.tsx` para alternâncias binárias.
+
+- Base Radix (`radix-ui`) com `role="switch"` e estado acessível nativo.
+- Trilho `h-6 w-11 rounded-full bg-muted`; estado ligado `data-[state=checked]:bg-blue-600`.
+- Thumb branco `size-5`, com translação entre os estados.
+- Foco visível com anel azul e `ring-offset-background`; estado desabilitado com `opacity-50`.
+- Associe um `Label` visível por `htmlFor`/`id`. Não use apenas cor para comunicar o estado.
+
+### 6.15 NativeSelect
+
+Use `src/components/ui/native-select.tsx` para seleções simples que não precisam de busca ou agrupamento complexo.
+
+- Encapsula um `<select>` nativo com `h-11`, `rounded-lg`, `border-input` e `bg-background`.
+- O chevron é decorativo (`aria-hidden`) e não substitui o comportamento nativo.
+- Mantenha `focus-visible` azul e `aria-invalid` destrutivo.
+- Use `FormField` para rótulo, ajuda e erro. Prefira esse primitive ao Select Radix quando um select nativo resolver.
+
+### 6.16 AlertDialog
+
+Use `src/components/ui/alert-dialog.tsx` para confirmações destrutivas ou irreversíveis.
+
+- O diálogo usa overlay `bg-black/60`, superfície `bg-card`, borda e `rounded-xl`.
+- Título `text-lg font-semibold`, descrição `text-sm leading-relaxed text-muted-foreground`.
+- A ação destrutiva usa a variante `destructive`; o cancelamento usa `outline`.
+- O foco SHALL ir para o diálogo ao abrir e retornar ao gatilho ao fechar.
+- Sempre explique a consequência e, em demonstração, diga que nenhum dado real será apagado.
+
+### 6.17 Tela de configurações
+
+- Use `SettingsSection` (`src/components/settings/SettingsSection.tsx`) para cada card: `rounded-xl border border-border bg-card p-6 shadow-sm`, título `h2` e descrição.
+- A variação `danger` usa `border-destructive/30` e título `text-destructive`.
+- Layout: duas colunas a partir de `lg`, empilhamento abaixo disso; a coluna direita concentra domínio, relatórios, integrações e a ação de salvar.
+- O formulário principal salva notificações e preferências de relatório. Segurança e zona de risco usam ações próprias com `type="button"` para não criar formulários aninhados.
+- A ação de salvar é `variant="brand" size="xl"`, com loading, bloqueio de envio duplicado e mensagem explícita de demonstração.
+- Domínio é somente leitura, com rótulo visível, estado de verificação por texto + ícone e última verificação.
+- Integrações diferenciam “Conectado” e “Conectar” por texto e ícone; a conexão é simulada.
+- A zona de risco exige `AlertDialog` antes de qualquer solicitação e nunca afirma exclusão real.
 
 ---
 
@@ -321,6 +374,8 @@ Use `src/components/layout/site-header.tsx` como cabeçalho das páginas públic
 - Use `noValidate` no `<form>` para controlar a validação.
 - Não use validação de cliente como substituta da validação de backend.
 - Não registre dados de formulário, tokens ou credenciais no console.
+- Ações destrutivas ou irreversíveis exigem confirmação em `AlertDialog`, com cancelamento e explicação da consequência.
+- Em fluxos simulados, não mostre “salvo” ou “excluído” como se a operação tivesse ocorrido em produção.
 
 ### Mensagens
 
@@ -400,6 +455,7 @@ Obrigatório em toda tela:
 - Páginas: `src/pages/PascalCase.tsx`.
 - Layout compartilhado: `src/components/layout/kebab-case.tsx`.
 - Componentes de feature: `src/components/<feature>/PascalCase.tsx`.
+- Seções de configurações: `src/components/settings/SettingsSection.tsx` como base; cada seção em `PascalCase.tsx`.
 - Primitives shadcn: `src/components/ui/kebab-case.tsx`.
 - Conteúdo revisável: `src/content/<feature>.ts`.
 - Tipos: `src/types/<feature>.types.ts` ou `src/types/api.ts`.
@@ -415,7 +471,7 @@ Obrigatório em toda tela:
 
 ### Do
 
-- Reutilize `Button`, `Input`, `Label`, `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `BrandLink` e `ThemeToggle`.
+- Reutilize `Button`, `Input`, `Label`, `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `ProductHeader`, `BrandLink`, `Switch`, `NativeSelect`, `AlertDialog`, `SettingsSection` e `ThemeToggle`.
 - Use `max-w-6xl px-6` para páginas.
 - Use as receitas de superfície e estado deste guia.
 - Valide em mobile antes de desktop.
@@ -431,6 +487,8 @@ Obrigatório em toda tela:
 - Não esconda estados de erro.
 - Não registre dados sensíveis no console.
 - Não copie textos de concorrentes ou prometa conformidade automática.
+- Não execute ação destrutiva sem confirmação em diálogo acessível.
+- Não trate simulação como persistência real.
 
 ---
 
@@ -446,6 +504,7 @@ Obrigatório em toda tela:
 - [ ] Foco é visível e a ordem de tabulação é lógica.
 - [ ] Layout funciona em 320px sem rolagem horizontal.
 - [ ] Copy está em pt-BR, sem promessas indevidas.
+- [ ] Ações destrutivas exigem confirmação acessível e informam quando são simulações.
 - [ ] `npm run lint` e `npm run build` passam.
 - [ ] `DESIGN.md` foi atualizado se houve padrão novo.
 
@@ -465,4 +524,7 @@ Obrigatório em toda tela:
 - Os mockups decorativos da landing/auth ainda usam a paleta neutra escura fixa; tokenizá-los exigiria arte própria para o tema claro.
 - O botão de tema não oferece um terceiro estado explícito “seguir sistema”; depois de uma escolha manual, a preferência salva prevalece.
 - O mock de login/cadastro não falha naturalmente; o caminho de erro existe, mas não é exercitável sem gatilho de teste.
+- As configurações da conta operam apenas em memória: salvar, conectar integração, alterar senha e solicitar exclusão são simulações e voltam ao estado inicial ao recarregar.
+- Autenticação em dois fatores e novas integrações estão marcadas como “Em breve”; não há OAuth real.
+- A exclusão de conta é apenas uma solicitação simulada; nenhum dado é apagado.
 - Não há test runner configurado; a verificação é manual + lint + build.
