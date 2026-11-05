@@ -40,4 +40,4 @@
 - [x] 5.3 Atualizar `README.md` com a área de configurações e a migração do dashboard para services.
 - [x] 5.4 Rodar `npm run lint`, `npm run format:check` e `npm run build`; corrigir regressões. (Lint e build passam. O `format:check` do repositório ainda falha por arquivos CRLF pré-existentes; os arquivos alterados passam com `prettier --end-of-line auto --check`.)
 - [x] 5.5 Revisar o diff final e garantir que apenas arquivos relacionados foram alterados.
-- [ ] 5.6 Criar a branch `feat/account-settings`, publicar e abrir PR para revisão de Matheus Coletti.
+- [x] 5.6 Criar a branch `feat/account-settings`, publicar e abrir PR para revisão de Matheus Coletti. (PR #7: https://github.com/ATUE-PROA/atue-web/pull/7)
