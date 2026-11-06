@@ -15,6 +15,8 @@ import {
 import type { DiagnosticReport, IssueCategory } from '@/types/api'
 import type {
   AnalysisProgressListener,
+  AnalyzedDocument,
+  DocumentAnalysisTarget,
   DocumentAnalysisResult,
   DownloadContent,
   DownloadItem,
@@ -194,10 +196,25 @@ const ANALYSIS_PROFILES: Record<SampleDocumentId, AnalysisProfile> = {
   },
 }
 
+const LOCAL_PROFILE_KEYWORDS: Record<SampleDocumentId, readonly string[]> = {
+  'privacy-policy': ['politica', 'privacidade', 'privacy', 'lgpd'],
+  'consent-term': ['consentimento', 'consent', 'termo', 'marketing', 'newsletter'],
+  'incident-log': ['incidente', 'incident', 'resposta', 'seguranca'],
+  'vendor-contract': ['contrato', 'fornecedor', 'vendor', 'crm', 'operador'],
+}
+
+const PROFILE_IDS: readonly SampleDocumentId[] = [
+  'privacy-policy',
+  'consent-term',
+  'incident-log',
+  'vendor-contract',
+]
+
 interface GeneratedReportRecord {
   item: DownloadItem
   report: DiagnosticReport
   documentName: string
+  documentSource: AnalyzedDocument['source']
 }
 
 const TEMPLATE_ITEMS: DownloadItem[] = [
@@ -206,8 +223,8 @@ const TEMPLATE_ITEMS: DownloadItem[] = [
     category: 'template',
     title: 'Modelo de Política de Privacidade',
     description:
-      'Estrutura com finalidades, cookies, direitos do titular, retenção e contato do DPO.',
-    pages: 4,
+      'Estrutura completa com escopo, bases legais, cookies, retenção, direitos e resposta a incidentes.',
+    pages: 6,
     updatedAt: '2026-09-30T09:00:00.000Z',
     baseFilename: 'modelo-politica-de-privacidade',
     formats: DOWNLOAD_FORMATS,
@@ -216,10 +233,22 @@ const TEMPLATE_ITEMS: DownloadItem[] = [
     id: 'consent-term-template',
     category: 'template',
     title: 'Modelo de Termo de Consentimento',
-    description: 'Estrutura para registrar finalidade, evidência de consentimento e revogação.',
-    pages: 3,
+    description:
+      'Estrutura para registrar finalidade, evidência de consentimento, revogação e declaração do titular.',
+    pages: 4,
     updatedAt: '2026-09-30T09:00:00.000Z',
     baseFilename: 'modelo-termo-de-consentimento',
+    formats: DOWNLOAD_FORMATS,
+  },
+  {
+    id: 'incident-response-template',
+    category: 'template',
+    title: 'Modelo de Plano de Resposta a Incidentes',
+    description:
+      'Fluxo com papéis, triagem, contenção, comunicação à ANPD, evidências e lições aprendidas.',
+    pages: 5,
+    updatedAt: '2026-09-30T09:00:00.000Z',
+    baseFilename: 'modelo-plano-de-resposta-a-incidentes',
     formats: DOWNLOAD_FORMATS,
   },
 ]
@@ -240,6 +269,7 @@ const generatedReports: GeneratedReportRecord[] = [
     },
     report: initialDiagnostic,
     documentName: 'Site institucional',
+    documentSource: 'sample',
   },
 ]
 
@@ -247,6 +277,64 @@ let reportSequence = 1
 
 function findDocument(documentId: SampleDocumentId): SampleDocument | undefined {
   return SAMPLE_DOCUMENTS.find((document) => document.id === documentId)
+}
+
+function hashText(value: string): number {
+  let hash = 0
+
+  for (const character of value) {
+    const code = character.codePointAt(0) ?? 0
+    hash = (hash * 31 + code) >>> 0
+  }
+
+  return hash
+}
+
+function getLocalProfileId(name: string, sizeLabel: string): SampleDocumentId {
+  const normalizedName = name
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+
+  for (const profileId of PROFILE_IDS) {
+    if (LOCAL_PROFILE_KEYWORDS[profileId].some((keyword) => normalizedName.includes(keyword))) {
+      return profileId
+    }
+  }
+
+  return (
+    PROFILE_IDS[hashText(`${normalizedName}-${sizeLabel}`) % PROFILE_IDS.length] ?? 'privacy-policy'
+  )
+}
+
+function buildAnalyzedDocument(target: DocumentAnalysisTarget): AnalyzedDocument {
+  if (target.source === 'local') {
+    return {
+      id: `local-${slugifyFilename(target.document.name)}`,
+      name: target.document.name,
+      kind: target.document.kind,
+      sizeLabel: target.document.sizeLabel,
+      updatedAt: new Date().toISOString(),
+      description: `Arquivo ${target.document.kind} anexado nesta sessão de demonstração. Nenhum conteúdo foi lido ou enviado.`,
+      source: 'local',
+    }
+  }
+
+  const document = findDocument(target.documentId)
+
+  if (!document) {
+    throw new Error('Documento de exemplo não encontrado.')
+  }
+
+  return { ...document, source: 'sample' }
+}
+
+function findProfile(target: DocumentAnalysisTarget): AnalysisProfile {
+  if (target.source === 'sample') {
+    return ANALYSIS_PROFILES[target.documentId]
+  }
+
+  return ANALYSIS_PROFILES[getLocalProfileId(target.document.name, target.document.sizeLabel)]
 }
 
 function emitProgress(
@@ -261,50 +349,116 @@ function emitProgress(
 }
 
 function buildReportDownloadContent(record: GeneratedReportRecord): DownloadContent {
-  const { report, documentName, item } = record
+  const { report, documentName, documentSource, item } = record
   const level = getScoreLevel(report.score)
   const { bySeverity } = report.summary
+  const sourceLabel =
+    documentSource === 'local'
+      ? 'Arquivo anexado neste dispositivo'
+      : 'Documento de exemplo da demonstração'
 
   return {
-    title: 'Relatório de diagnóstico — Demonstração',
-    subtitle: `Documento analisado: ${documentName}`,
-    meta: [
-      `Score de conformidade: ${report.score} de 100 (${level.label})`,
-      `Achados: ${report.summary.total} · Alta ${bySeverity.alta} · Média ${bySeverity.media} · Baixa ${bySeverity.baixa}`,
-      `Gerado em ${formatDocumentDateTime(item.updatedAt)}`,
-      'Organização fictícia: Sua Empresa Ltda.',
+    title: 'Relatório de diagnóstico de conformidade',
+    subtitle: `Análise simulada de ${documentName}`,
+    documentType: 'Relatório de diagnóstico',
+    reference: `ATUE-DEMO-${item.id.replace(/\D/g, '').padStart(3, '0')}`,
+    organization: 'Sua Empresa Ltda. (organização fictícia)',
+    generatedAt: item.updatedAt,
+    metrics: [
+      {
+        label: 'Score de conformidade',
+        value: `${report.score}/100`,
+        hint: level.label,
+      },
+      {
+        label: 'Achados identificados',
+        value: String(report.summary.total),
+        hint: `Alta ${bySeverity.alta} · Média ${bySeverity.media} · Baixa ${bySeverity.baixa}`,
+      },
+      {
+        label: 'Documento analisado',
+        value: documentName,
+        hint: sourceLabel,
+      },
+      {
+        label: 'Natureza do resultado',
+        value: 'Simulação',
+        hint: 'Sem validade legal',
+      },
     ],
     sections: [
       {
-        heading: 'Aviso de demonstração',
+        heading: '1. Aviso de demonstração',
         paragraphs: [
-          'Este relatório foi gerado por uma simulação local do ATUE. Os achados não resultam da leitura de um arquivo real e não representam uma avaliação jurídica.',
+          'Este relatório foi produzido por uma simulação local do ATUE. O conteúdo do documento não foi enviado a um servidor, processado por um modelo de IA real ou submetido a revisão jurídica.',
+          'Os achados servem como roteiro de discussão e não representam uma avaliação oficial de conformidade com a LGPD. Uma decisão de negócio deve ser validada pela equipe responsável.',
         ],
       },
       {
-        heading: 'Resumo executivo',
+        heading: '2. Sumário executivo',
         paragraphs: [
-          `A análise simulada de "${documentName}" identificou ${report.summary.total} ${pluralize(
+          `A leitura simulada de "${documentName}" considerou ${report.summary.total} ${pluralize(
             report.summary.total,
             'achado',
             'achados',
-          )} e atribuiu score ${report.score} de 100 ao cenário de demonstração.`,
-          'As recomendações abaixo servem como roteiro de revisão e devem ser validadas pela equipe responsável antes de qualquer alteração.',
+          )}, com score de conformidade ${report.score} de 100 (${level.label}).`,
+          `A distribuição por severidade ficou em ${bySeverity.alta} de severidade alta, ${bySeverity.media} média e ${bySeverity.baixa} baixa. Achados de severidade alta devem ser tratados primeiro, porque podem comprometer obrigações centrais de privacidade e segurança.`,
+          'O resultado é indicativo: ele organiza a conversa, mas não substitui a revisão dos documentos originais, dos contratos vigentes e dos registros operacionais.',
         ],
       },
       {
-        heading: 'Achados identificados',
+        heading: '3. Escopo e método',
+        paragraphs: [
+          'A simulação seguiu uma sequência determinística de preparação do documento, mapeamento de seções, comparação com controles esperados e consolidação dos achados. Apenas metadados do arquivo anexado foram usados nesta demonstração.',
+        ],
+        bullets: [
+          'Documento avaliado: ' + documentName + '.',
+          'Origem considerada: ' + sourceLabel + '.',
+          'Referência do relatório: ' + `ATUE-DEMO-${item.id.replace(/\D/g, '').padStart(3, '0')}.`,
+          'Limitação: nenhum conteúdo de arquivo foi lido, armazenado ou transmitido.',
+        ],
+      },
+      {
+        heading: '4. Leitura por severidade',
+        bullets: [
+          `Alta (${bySeverity.alta}): ${SEVERITY_CONTENT.alta.description}`,
+          `Média (${bySeverity.media}): ${SEVERITY_CONTENT.media.description}`,
+          `Baixa (${bySeverity.baixa}): ${SEVERITY_CONTENT.baixa.description}`,
+        ],
+      },
+      {
+        heading: '5. Achados e recomendações priorizadas',
         bullets: report.issues.map(
           (issue) =>
-            `${SEVERITY_CONTENT[issue.severity].label}: ${issue.name} (${issue.category}) — ${issue.description} Recomendação: ${issue.recommendation}`,
+            `${SEVERITY_CONTENT[issue.severity].label} · ${issue.name} (${issue.category}) — ${issue.description} Recomendação: ${issue.recommendation}`,
         ),
       },
       {
-        heading: 'Próximos passos sugeridos',
+        heading: '6. Plano de ação sugerido',
         bullets: [
-          'Priorizar os achados de severidade alta e registrar responsáveis e prazos.',
-          'Revisar os documentos de origem com apoio da equipe jurídica ou de privacidade.',
-          'Repetir a análise simulada após as correções para acompanhar a evolução.',
+          'Primeiros 30 dias: tratar os achados de severidade alta, nomear responsáveis e registrar prazos de conclusão.',
+          'Próximos 60 dias: revisar os documentos de origem, anexar evidências e atualizar políticas e contratos afetados.',
+          'Próximos 90 dias: repetir a análise simulada, comparar a evolução do score e apresentar o resultado à liderança.',
+        ],
+      },
+      {
+        heading: '7. Evidências e acompanhamento',
+        paragraphs: [
+          'Mantenha uma pasta controlada com a versão revisada de cada documento, o registro de aprovação e as evidências das medidas adotadas. Evite armazenar dados pessoais desnecessários ou credenciais junto aos documentos.',
+        ],
+        bullets: [
+          'Versão do documento, data da revisão e responsável pela aprovação.',
+          'Achados encerrados e evidência objetiva de cada correção.',
+          'Data da próxima revisão e histórico de decisões.',
+        ],
+      },
+      {
+        heading: '8. Controle do documento',
+        bullets: [
+          `Organização: Sua Empresa Ltda. (fictícia).`,
+          `Gerado em: ${formatDocumentDateTime(item.updatedAt)}.`,
+          'Classificação: documento de demonstração, sem validade legal.',
+          'Distribuição: apenas para fins de apresentação do produto.',
         ],
       },
     ],
@@ -319,14 +473,14 @@ export async function mockGetDocuments(): Promise<SampleDocument[]> {
 }
 
 export async function mockAnalyzeDocument(
-  documentId: SampleDocumentId,
+  target: DocumentAnalysisTarget,
   onProgress?: AnalysisProgressListener,
 ): Promise<DocumentAnalysisResult> {
-  const document = findDocument(documentId)
-  const profile = ANALYSIS_PROFILES[documentId]
+  const document = buildAnalyzedDocument(target)
+  const profile = findProfile(target)
 
-  if (!document || !profile) {
-    throw new Error('Documento de exemplo não encontrado.')
+  if (!profile) {
+    throw new Error('Perfil de análise não encontrado.')
   }
 
   const totalSteps = ANALYSIS_STEPS.length
@@ -368,9 +522,9 @@ export async function mockAnalyzeDocument(
       'achado',
       'achados',
     )} após a análise de ${document.name}.`,
-    pages: 3 + Math.ceil(report.issues.length / 2),
+    pages: 6 + Math.ceil(report.issues.length / 2),
     updatedAt: completedAt,
-    baseFilename: `relatorio-${slugifyFilename(document.name)}`,
+    baseFilename: `relatorio-${slugifyFilename(document.name.replace(/\.[^.]+$/, ''))}`,
     formats: DOWNLOAD_FORMATS,
   }
 
@@ -378,10 +532,11 @@ export async function mockAnalyzeDocument(
     item,
     report: cloneDiagnosticReport(report),
     documentName: document.name,
+    documentSource: document.source,
   })
 
   return {
-    document: { ...document },
+    document,
     report: cloneDiagnosticReport(report),
     completedAt,
   }

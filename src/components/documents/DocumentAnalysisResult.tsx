@@ -1,4 +1,5 @@
-import { FileDown, FileText } from 'lucide-react'
+import { FileDown, FileText, LayoutDashboard } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 import { FindingsList } from '@/components/documents/FindingsList'
 import { SEVERITY_STYLES } from '@/components/documents/severity'
@@ -21,6 +22,10 @@ interface DocumentAnalysisResultProps {
 export function DocumentAnalysisResult({ result }: DocumentAnalysisResultProps) {
   const { report, document } = result
   const level = getScoreLevel(report.score)
+  const sourceLabel =
+    document.source === 'local'
+      ? DOCUMENTS_CONTENT.intake.sourceFileLabel
+      : DOCUMENTS_CONTENT.intake.sourceSampleLabel
 
   return (
     <SectionCard
@@ -63,6 +68,12 @@ export function DocumentAnalysisResult({ result }: DocumentAnalysisResultProps) 
               />
               {document.name}
             </dd>
+          </div>
+          <div>
+            <dt className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+              {DOCUMENTS_CONTENT.result.sourceLabel}
+            </dt>
+            <dd className="mt-0.5 text-foreground">{sourceLabel}</dd>
           </div>
           <div>
             <dt className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
@@ -121,12 +132,21 @@ export function DocumentAnalysisResult({ result }: DocumentAnalysisResultProps) 
         <FindingsList className="mt-3" issues={report.issues} />
       </div>
 
-      <Button asChild variant="outline" size="lg" className="mt-5 w-full sm:w-auto">
-        <a href="#central-de-downloads">
-          <FileDown aria-hidden="true" />
-          {DOCUMENTS_CONTENT.result.downloadLink}
-        </a>
-      </Button>
+      <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+        <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
+          <a href="#central-de-downloads">
+            <FileDown aria-hidden="true" />
+            {DOCUMENTS_CONTENT.result.downloadLink}
+          </a>
+        </Button>
+
+        <Button asChild variant="brand" size="lg" className="w-full sm:w-auto">
+          <Link to="/dashboard">
+            <LayoutDashboard aria-hidden="true" />
+            {DOCUMENTS_CONTENT.result.dashboardLink}
+          </Link>
+        </Button>
+      </div>
     </SectionCard>
   )
 }
