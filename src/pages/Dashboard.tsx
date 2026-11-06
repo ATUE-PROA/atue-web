@@ -1,17 +1,22 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts'
 import { ArrowUpRight, CreditCard, Files, Loader2, Upload } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+import {
+  DiagnosticRequestForm,
+  type DiagnosticRequestStatus,
+} from '@/components/diagnostics/DiagnosticRequestForm'
+import { ScoreGauge } from '@/components/diagnostics/ScoreGauge'
 import { FindingsList } from '@/components/documents/FindingsList'
 import { ProductFooter } from '@/components/layout/product-footer'
 import { ProductHeader } from '@/components/layout/product-header'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
+import { DIAGNOSTICS_CONTENT } from '@/content/diagnostics'
 import { DASHBOARD_SHORTCUTS } from '@/content/navigation'
 import { formatDocumentDateTime } from '@/lib/documents'
 import { getScoreLevel } from '@/lib/diagnostics'
-import { getDiagnostic } from '@/services/diagnostic'
+import { getDiagnostic, requestDiagnostic } from '@/services/diagnostic'
 import type { DiagnosticReport } from '@/types/api'
 
 type LoadState = 'loading' | 'ready' | 'error'
@@ -36,6 +41,7 @@ export function Dashboard() {
   const [relatorio, setRelatorio] = useState<DiagnosticReport | null>(null)
   const [loadState, setLoadState] = useState<LoadState>('loading')
   const [reloadKey, setReloadKey] = useState(0)
+  const [requestState, setRequestState] = useState<DiagnosticRequestStatus>('idle')
 
   useEffect(() => {
     let isActive = true
@@ -59,6 +65,22 @@ export function Dashboard() {
       isActive = false
     }
   }, [reloadKey])
+
+  const handleRequestDiagnostic = async (url: string) => {
+    if (requestState === 'running') {
+      return
+    }
+
+    setRequestState('running')
+
+    try {
+      const nextReport = await requestDiagnostic(url)
+      setRelatorio(nextReport)
+      setRequestState('success')
+    } catch {
+      setRequestState('error')
+    }
+  }
 
   if (loadState === 'loading') {
     return (
@@ -97,8 +119,7 @@ export function Dashboard() {
     )
   }
 
-  const score = relatorio?.score ?? 0
-  const nivelScore = getScoreLevel(score)
+  const nivelScore = relatorio ? getScoreLevel(relatorio.score) : null
 
   return (
     <DashboardShell>
@@ -111,20 +132,22 @@ export function Dashboard() {
         </div>
 
         <div className="flex flex-col gap-3 sm:items-end">
-          <div
-            className="flex items-center gap-2"
-            role="group"
-            aria-label={`Status geral: ${nivelScore.label}`}
-          >
-            <span className="text-sm font-medium text-foreground">Status geral:</span>
-            <span
-              aria-hidden="true"
-              className={`h-4 w-4 rounded-full ${nivelScore.dotClassName}`}
-            />
-            <span className={`text-sm font-medium ${nivelScore.textClassName}`}>
-              {nivelScore.label}
-            </span>
-          </div>
+          {nivelScore ? (
+            <div
+              className="flex items-center gap-2"
+              role="group"
+              aria-label={`Status geral: ${nivelScore.label}`}
+            >
+              <span className="text-sm font-medium text-foreground">Status geral:</span>
+              <span
+                aria-hidden="true"
+                className={`h-4 w-4 rounded-full ${nivelScore.dotClassName}`}
+              />
+              <span className={`text-sm font-medium ${nivelScore.textClassName}`}>
+                {nivelScore.label}
+              </span>
+            </div>
+          ) : null}
 
           <div className="flex flex-wrap gap-2">
             <Button asChild variant="outline" size="lg" className="w-fit">
@@ -143,6 +166,15 @@ export function Dashboard() {
           </div>
         </div>
       </header>
+
+      <div className="mt-8">
+        <DiagnosticRequestForm
+          status={requestState}
+          onSubmit={(url) => {
+            void handleRequestDiagnostic(url)
+          }}
+        />
+      </div>
 
       <section aria-labelledby="shortcuts-heading" className="mt-8">
         <h2
@@ -182,67 +214,71 @@ export function Dashboard() {
         </ul>
       </section>
 
-      <div className="mt-8 grid gap-6 md:grid-cols-2 md:items-start">
-        <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-card p-6 shadow-sm">
-          <h2 className="mb-4 text-lg font-semibold text-foreground">Score de Conformidade</h2>
-          <div className="relative h-48 w-48">
-            <RadialBarChart
-              width={200}
-              height={200}
-              cx="50%"
-              cy="50%"
-              innerRadius="70%"
-              outerRadius="100%"
-              barSize={10}
-              data={[{ name: 'Score', value: score, fill: nivelScore.chartColor }]}
-              startAngle={90}
-              endAngle={-270}
-            >
-              <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-              <RadialBar background dataKey="value" cornerRadius={10} />
-            </RadialBarChart>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-4xl font-semibold text-foreground">{score}</span>
-              <span className="text-sm text-muted-foreground">de 100</span>
-            </div>
-          </div>
-        </div>
-
-        <section
-          aria-labelledby="findings-heading"
-          className="rounded-xl border border-border bg-card p-6 shadow-sm"
-        >
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <h2 id="findings-heading" className="text-lg font-semibold text-foreground">
-                Achados e pendências
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Explicações e recomendações da análise simulada.
-              </p>
-            </div>
-            <Link
-              to="/documents"
-              className="text-sm font-medium text-blue-700 transition-colors hover:text-blue-600 focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none dark:text-blue-300 dark:hover:text-blue-200"
-            >
-              Ver central
-            </Link>
-          </div>
-
-          <FindingsList
-            className="mt-4"
-            issues={relatorio?.issues ?? []}
-            emptyMessage="Nenhuma pendência encontrada no diagnóstico atual."
+      {relatorio?.degraded ? (
+        <div className="mt-8">
+          <FormAlert
+            tone="info"
+            title={DIAGNOSTICS_CONTENT.degraded.title}
+            description={DIAGNOSTICS_CONTENT.degraded.description}
           />
+        </div>
+      ) : null}
 
-          {relatorio ? (
+      {relatorio ? (
+        <div className="mt-8 grid gap-6 md:grid-cols-2 md:items-start">
+          <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-card p-6 shadow-sm">
+            <h2 className="mb-4 text-lg font-semibold text-foreground">
+              {DIAGNOSTICS_CONTENT.score.title}
+            </h2>
+            <ScoreGauge score={relatorio.score} />
+          </div>
+
+          <section
+            aria-labelledby="findings-heading"
+            className="rounded-xl border border-border bg-card p-6 shadow-sm"
+          >
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 id="findings-heading" className="text-lg font-semibold text-foreground">
+                  {DIAGNOSTICS_CONTENT.findings.title}
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {DIAGNOSTICS_CONTENT.findings.description}
+                </p>
+              </div>
+              <Link
+                to="/documents"
+                className="text-sm font-medium text-blue-700 transition-colors hover:text-blue-600 focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none dark:text-blue-300 dark:hover:text-blue-200"
+              >
+                Ver central
+              </Link>
+            </div>
+
+            <FindingsList
+              className="mt-4"
+              issues={relatorio.issues}
+              emptyMessage={DIAGNOSTICS_CONTENT.findings.empty}
+            />
+
             <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-              Última atualização em {formatDocumentDateTime(relatorio.createdAt)}. Dados de
-              demonstração.
+              Última atualização em {formatDocumentDateTime(relatorio.createdAt)}.{' '}
+              {DIAGNOSTICS_CONTENT.footerNote}
             </p>
-          ) : null}
+          </section>
+        </div>
+      ) : (
+        <section
+          aria-labelledby="empty-diagnostic-heading"
+          className="mt-8 rounded-xl border border-border bg-card p-6 shadow-sm"
+        >
+          <h2 id="empty-diagnostic-heading" className="text-lg font-semibold text-foreground">
+            {DIAGNOSTICS_CONTENT.empty.title}
+          </h2>
+          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+            {DIAGNOSTICS_CONTENT.empty.description}
+          </p>
         </section>
-      </div>
+      )}
     </DashboardShell>
   )
 }

@@ -393,7 +393,7 @@ Use `src/pages/Documents.tsx` como referência para a rota `/documents`.
 - Ação principal: `Button variant="brand" size="xl"` com rótulo “Analisar com IA”, `aria-busy`, `Loader2` e bloqueio de envio duplicado. O botão permanece desabilitado até existir arquivo anexado ou documento de exemplo selecionado.
 - Ao iniciar a análise, role até o cartão de processamento com `scrollIntoView` e `scroll-mt-20` para compensar o cabeçalho fixo. Use `behavior: 'smooth'` por padrão e `'auto'` quando `prefers-reduced-motion: reduce`.
 - `FormAlert tone="info"` é obrigatório logo abaixo da ação, explicando que nenhum conteúdo é enviado ou processado por IA real e que a análise é determinística.
-- Achados: use `FindingsList`, que ordena por severidade (`alta`, `media`, `baixa`), renderiza badge com cor + rótulo textual e abre explicação e recomendação em `<details>`/`<summary>` nativos com `ChevronDown` e `group-open:rotate-180`.
+- Achados: use `FindingsList`, que agrupa por severidade (`alta`, `media`, `baixa`) com título e contagem por grupo, renderiza badge com cor + rótulo textual e abre explicação e recomendação em `<details>`/`<summary>` nativos com `ChevronDown` e `group-open:rotate-180`.
 - Resultado: `SectionCard` com grade de score (`text-5xl`), nível do score, barra proporcional, documento, origem (arquivo anexado ou exemplo), data, contagem de achados e resumo por severidade. Sempre inclua `FormAlert tone="info"` com o aviso de demonstração.
 - Análise simulada: `AnalysisProgress` mostra barra `role="progressbar"` com `aria-valuenow` e uma região `role="status"` com a etapa atual. Cada etapa tem estado pendente, ativo, concluído ou erro, com ícone + texto. Transições usam `motion-reduce:animate-none` e `motion-reduce:transition-none`.
 - Central de Downloads: `#central-de-downloads` com dois grupos (relatórios gerados e modelos). Cada item tem título, descrição, data, contagem de páginas e os formatos disponíveis.
@@ -436,6 +436,17 @@ Os geradores locais (`src/lib/pdf.ts`, `src/lib/docx.ts`, `src/lib/text.ts`) com
 - **TXT:** UTF-8, largura de 78 colunas, cabeçalho, métricas com pontilhado, seções sublinhadas, marcadores com recuo e aviso final.
 - Os três formatos devem incluir aviso de demonstração e não podem sugerir validade legal. Nenhum arquivo é enviado ou armazenado.
 - O conteúdo de relatórios e modelos deve ser revisável em `src/content/documents.ts` e `src/mocks/documents.ts`, com seções completas, referência, versão e linguagem de recomendação.
+
+### 6.23 Dashboard e diagnóstico
+
+Use `src/pages/Dashboard.tsx` como referência para a tela `/dashboard`.
+
+- O `h1` “Painel de Controle” é único. O status geral é opcional: só aparece quando existe um diagnóstico carregado e combina ponto colorido, rótulo textual e `aria-label`.
+- O formulário `DiagnosticRequestForm` (`src/components/diagnostics/DiagnosticRequestForm.tsx`) pede a URL do site com `FormField`, valida com Zod e desabilita o envio durante a requisição. Sucesso e erro usam `FormAlert`; o resultado anterior é preservado quando a requisição falha.
+- O `ScoreGauge` (`src/components/diagnostics/ScoreGauge.tsx`) é o único lugar que desenha o arco do score. Ele usa `ResponsiveContainer`, limita o valor entre 0 e 100, usa a faixa de cor da seção 2.3 e expõe o resultado também como texto para leitores de tela.
+- Quando o relatório retorna `degraded: true`, exiba `FormAlert tone="info"` explicando que o resumo veio do catálogo de referência e pode estar incompleto. O mesmo aviso aparece no resultado da análise de documentos.
+- Sem diagnóstico carregado, mostre um estado vazio com instrução para gerar o primeiro diagnóstico; não exiba score `0` como se fosse um resultado real.
+- Enquanto a Core API não expõe a leitura do histórico, `getDiagnostic` retorna `null` com `VITE_API_URL` preenchida. A tela então apresenta o estado vazio e mantém o formulário como caminho para um novo diagnóstico.
 
 ---
 
@@ -613,3 +624,5 @@ Obrigatório em toda tela:
 - O anexo é um `input type="file"` real usado apenas como controle de entrada. Não há upload, persistência ou leitura de conteúdo.
 - O estado da aplicação (diagnóstico, documentos, perfil e configurações) vive apenas em memória e volta ao inicial ao recarregar.
 - Não há test runner configurado; a verificação é manual + lint + build.
+- Com `VITE_API_URL` preenchida, a leitura do histórico de diagnóstico ainda não está disponível na Core API; a tela apresenta estado vazio e oferece um novo diagnóstico.
+- O token JWT da Core API fica apenas em memória por decisão de segurança; recarregar a página encerra a sessão até existir um desenho de persistência revisado.
