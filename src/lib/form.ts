@@ -22,6 +22,16 @@ export const formSchema: z.ZodType<FormValues, FormValues> = z.object({
   }),
   empresa: z.string().trim().min(2, { message: 'Informe o nome da empresa.' }),
   email: z.string().trim().email({ message: 'Informe um e-mail válido.' }),
+  dpoNome: z
+    .string()
+    .trim()
+    .min(3, { message: 'Informe o nome do encarregado pelo tratamento de dados (DPO).' }),
+  dpoEmail: z.string().trim().email({ message: 'Informe um e-mail válido para o DPO.' }),
+  finalidades: z
+    .string()
+    .trim()
+    .min(10, { message: 'Descreva as finalidades do tratamento de dados.' })
+    .max(500, { message: 'As finalidades podem ter no máximo 500 caracteres.' }),
   documentos: z
     .custom<FileList | undefined>((value) => value === undefined || value instanceof FileList)
     .superRefine((value, ctx) => {

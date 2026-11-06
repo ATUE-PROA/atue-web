@@ -389,6 +389,7 @@ Use `src/pages/Documents.tsx` como referência para a rota `/documents`.
 - Layout principal: grid `lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]` com a entrada/análise à esquerda e a lista de documentos fictícios à direita; empilhe em telas menores.
 - Entrada de documento: a ação primária é o botão “Anexar documento” (`Paperclip`), que aciona um `input type="file"` visualmente oculto. Aceite PDF, DOC, DOCX e TXT de até 10 MB, valide extensão e tamanho, mostre o arquivo anexado com nome, tipo, tamanho e uma ação “Remover arquivo” com nome acessível. Nenhum conteúdo do arquivo pode ser lido, enviado ou armazenado; use apenas metadados (`File.name`, `File.size`, extensão).
 - A cópia deve deixar explícito que o arquivo permanece no dispositivo e que a IA é uma simulação local. Não afirme que houve leitura de conteúdo, upload ou processamento por modelo real.
+- O envio agrega os dados institucionais necessários ao relatório: CNPJ (com consulta OpenCNPJ), nome da empresa, e-mail de contato, encarregado (DPO) e finalidades do tratamento. Esses dados ficam em memória e alimentam o relatório gerado localmente.
 - Alternativa de demonstração: abaixo do anexo, `NativeSelect` dentro de `FormField` permite escolher um documento fictício. O campo fica desabilitado enquanto houver arquivo anexado; a lista lateral também permite selecionar um exemplo.
 - Ação principal: `Button variant="brand" size="xl"` com rótulo “Analisar com IA”, `aria-busy`, `Loader2` e bloqueio de envio duplicado. O botão permanece desabilitado até existir arquivo anexado ou documento de exemplo selecionado.
 - Ao iniciar a análise, role até o cartão de processamento com `scrollIntoView` e `scroll-mt-20` para compensar o cabeçalho fixo. Use `behavior: 'smooth'` por padrão e `'auto'` quando `prefers-reduced-motion: reduce`.
@@ -447,6 +448,8 @@ Use `src/pages/Dashboard.tsx` como referência para a tela `/dashboard`.
 - Quando o relatório retorna `degraded: true`, exiba `FormAlert tone="info"` explicando que o resumo veio do catálogo de referência e pode estar incompleto. O mesmo aviso aparece no resultado da análise de documentos.
 - Sem diagnóstico carregado, mostre um estado vazio com instrução para gerar o primeiro diagnóstico; não exiba score `0` como se fosse um resultado real.
 - Enquanto a Core API não expõe a leitura do histórico, `getDiagnostic` retorna `null` com `VITE_API_URL` preenchida. A tela então apresenta o estado vazio e mantém o formulário como caminho para um novo diagnóstico.
+- `DemoScenarioCards` (`src/components/diagnostics/DemoScenarioCards.tsx`) apresenta três cenários fictícios como cartões acionáveis. Cada cartão mostra empresa, setor, descrição e score, usa `aria-pressed` para o cenário ativo e nunca afirma que um site real foi acessado.
+- `ScanTerminal` (`src/components/diagnostics/ScanTerminal.tsx`) exibe um registro simulado com `role="log"` e `aria-live="polite"`, revelando linhas entre 3 e 7 segundos. Com `prefers-reduced-motion`, todas as linhas aparecem de imediato. A copy deixa explícito que nenhum site é acessado e nenhuma IA real é executada.
 
 ---
 
