@@ -3,13 +3,16 @@ import { Loader2 } from 'lucide-react'
 
 import { AnalysisProgress } from '@/components/documents/AnalysisProgress'
 import { DocumentAnalysisResult } from '@/components/documents/DocumentAnalysisResult'
+import { DocumentIntakeCard } from '@/components/documents/DocumentIntakeCard'
 import { DocumentsList } from '@/components/documents/DocumentsList'
-import { DocumentUploadCard } from '@/components/documents/DocumentUploadCard'
 import { DownloadCenter } from '@/components/documents/DownloadCenter'
+import { CrossLinks } from '@/components/layout/cross-links'
+import { ProductFooter } from '@/components/layout/product-footer'
 import { ProductHeader } from '@/components/layout/product-header'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { ANALYSIS_STEPS, DOCUMENTS_CONTENT } from '@/content/documents'
+import { DOCUMENT_SHORTCUTS } from '@/content/navigation'
 import { saveDocument } from '@/lib/download'
 import {
   analyzeDocument,
@@ -20,9 +23,11 @@ import {
 import type {
   AnalysisProgress as AnalysisProgressState,
   DocumentAnalysisResult as DocumentAnalysisResultData,
+  DocumentAnalysisTarget,
   DownloadFeedback,
   DownloadFormat,
   DownloadItem,
+  LocalDocument,
   PendingDownload,
   SampleDocument,
   SampleDocumentId,
@@ -45,6 +50,7 @@ export function Documents() {
   const [documents, setDocuments] = useState<SampleDocument[]>([])
   const [downloads, setDownloads] = useState<DownloadItem[]>([])
   const [selectedId, setSelectedId] = useState<SampleDocumentId | null>(null)
+  const [attachedDocument, setAttachedDocument] = useState<LocalDocument | null>(null)
   const [analysisState, setAnalysisState] = useState<AnalysisState>('idle')
   const [progress, setProgress] = useState<AnalysisProgressState>(IDLE_PROGRESS)
   const [result, setResult] = useState<DocumentAnalysisResultData | null>(null)
@@ -104,8 +110,30 @@ export function Documents() {
     }
   }, [reloadKey])
 
+  const handleSelectSample = (documentId: SampleDocumentId) => {
+    if (analysisState === 'running') {
+      return
+    }
+
+    setAttachedDocument(null)
+    setSelectedId(documentId)
+    setResult(null)
+    setAnalysisState('idle')
+    setDownloadFeedback(null)
+  }
+
   const handleAnalyze = async () => {
-    if (!selectedId || analysisState === 'running') {
+    if (analysisState === 'running') {
+      return
+    }
+
+    const target: DocumentAnalysisTarget | null = attachedDocument
+      ? { source: 'local', document: attachedDocument }
+      : selectedId
+        ? { source: 'sample', documentId: selectedId }
+        : null
+
+    if (!target) {
       return
     }
 
@@ -115,7 +143,7 @@ export function Documents() {
     setDownloadFeedback(null)
 
     try {
-      const analysis = await analyzeDocument(selectedId, (nextProgress) => {
+      const analysis = await analyzeDocument(target, (nextProgress) => {
         if (isMountedRef.current) {
           setProgress(nextProgress)
         }
@@ -126,10 +154,13 @@ export function Documents() {
       }
 
       setResult(analysis)
-      setAnalyzedIds((current) =>
-        current.includes(selectedId) ? current : [...current, selectedId],
-      )
       setAnalysisState('success')
+
+      if (target.source === 'sample') {
+        setAnalyzedIds((current) =>
+          current.includes(target.documentId) ? current : [...current, target.documentId],
+        )
+      }
 
       const updatedDownloads = await getDownloads()
 
@@ -195,6 +226,12 @@ export function Documents() {
           </p>
         </header>
 
+        <CrossLinks
+          className="mt-6"
+          ariaLabel={DOCUMENTS_CONTENT.shortcutsLabel}
+          links={DOCUMENT_SHORTCUTS}
+        />
+
         {loadState === 'loading' ? (
           <div
             role="status"
@@ -232,10 +269,23 @@ export function Documents() {
         {loadState === 'ready' ? (
           <>
             <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-start">
-              <DocumentUploadCard
+              <DocumentIntakeCard
                 documents={documents}
                 selectedId={selectedId}
-                onSelect={setSelectedId}
+                attachedDocument={attachedDocument}
+                onSelectSample={handleSelectSample}
+                onAttach={(document) => {
+                  setAttachedDocument(document)
+                  setResult(null)
+                  setAnalysisState('idle')
+                  setDownloadFeedback(null)
+                }}
+                onRemoveAttached={() => {
+                  setAttachedDocument(null)
+                  setResult(null)
+                  setAnalysisState('idle')
+                  setDownloadFeedback(null)
+                }}
                 onAnalyze={() => {
                   void handleAnalyze()
                 }}
@@ -244,8 +294,10 @@ export function Documents() {
 
               <DocumentsList
                 documents={documents}
-                selectedId={selectedId}
+                selectedId={attachedDocument ? null : selectedId}
                 analyzedIds={analyzedIds}
+                onSelect={handleSelectSample}
+                disabled={analysisState === 'running'}
               />
             </div>
 
@@ -274,6 +326,8 @@ export function Documents() {
           </>
         ) : null}
       </main>
+
+      <ProductFooter />
     </div>
   )
 }

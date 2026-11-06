@@ -36,8 +36,8 @@ export function AnalysisProgress({ steps, progress }: AnalysisProgressProps) {
   const currentStep = steps[progress.stepIndex] ?? steps[steps.length - 1]
   const statusText =
     progress.status === 'done'
-      ? DOCUMENTS_CONTENT.analysis.progressDone
-      : DOCUMENTS_CONTENT.analysis.progressStatus
+      ? DOCUMENTS_CONTENT.intake.progressDone
+      : DOCUMENTS_CONTENT.intake.progressStatus
           .replace('{current}', String(progress.stepIndex + 1))
           .replace('{total}', String(steps.length))
           .replace('{label}', currentStep?.label ?? '')
@@ -45,18 +45,18 @@ export function AnalysisProgress({ steps, progress }: AnalysisProgressProps) {
   return (
     <SectionCard
       title={
-        hasError ? DOCUMENTS_CONTENT.analysis.errorTitle : DOCUMENTS_CONTENT.analysis.progressTitle
+        hasError ? DOCUMENTS_CONTENT.intake.errorTitle : DOCUMENTS_CONTENT.intake.progressTitle
       }
       description={
         hasError
-          ? DOCUMENTS_CONTENT.analysis.errorDescription
-          : DOCUMENTS_CONTENT.analysis.progressDescription
+          ? DOCUMENTS_CONTENT.intake.errorDescription
+          : DOCUMENTS_CONTENT.intake.progressDescription
       }
       className="animate-in fade-in slide-in-from-bottom-2 duration-300 motion-reduce:animate-none"
     >
       <div
         role="progressbar"
-        aria-label={DOCUMENTS_CONTENT.analysis.progressAriaLabel}
+        aria-label={DOCUMENTS_CONTENT.intake.progressAriaLabel}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(progress.progress)}

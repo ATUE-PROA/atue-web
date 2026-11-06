@@ -1,4 +1,5 @@
-import { ChevronDown, Download, FileText, Loader2 } from 'lucide-react'
+import { ChevronDown, Download, FileText, Loader2, Settings2 } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -208,6 +209,14 @@ export function DownloadCenter({ items, pending, feedback, onDownload }: Downloa
       <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
         {DOCUMENTS_CONTENT.downloads.demoNotice}
       </p>
+
+      <Link
+        to="/settings"
+        className="mt-3 inline-flex items-center gap-1.5 rounded-md text-sm font-medium text-blue-700 transition-colors hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:text-blue-300 dark:hover:text-blue-200 dark:focus-visible:ring-blue-400/60"
+      >
+        <Settings2 aria-hidden="true" className="size-4" />
+        {DOCUMENTS_CONTENT.downloads.preferencesLink}
+      </Link>
     </SectionCard>
   )
 }
