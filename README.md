@@ -50,6 +50,8 @@ O dashboard consome `services/diagnostic.ts`, que delega para `mocks/diagnostics
 
 Todas as telas estão conectadas por links visíveis. Os destinos compartilhados ficam em `src/content/navigation.ts`; a área logada usa `ProductHeader` + `ProductFooter`, e as páginas internas usam `CrossLinks` para atalhos contextuais.
 
+A navegação entre rotas começa no topo da tela. A landing page é a exceção: seus links de âncora rolam até as seções internas. O comportamento é centralizado em `ScrollToTop` e montado pelo `AppRoot` do React Router.
+
 | Rota         | Superfície | Principais conexões                                                        |
 | ------------ | ---------- | -------------------------------------------------------------------------- |
 | `/`          | pública    | Planos, cadastro, login, envio de documentos e contato                     |
