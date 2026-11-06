@@ -46,7 +46,7 @@ Usada na área logada, como o dashboard. Deriva dos tokens shadcn definidos em `
 
 As duas superfícies compartilham os mesmos tokens. Use `dark:` apenas quando um valor precisar mudar entre temas (por exemplo, o azul de marca).
 
-A área logada usa `ProductHeader` (`src/components/layout/product-header.tsx`) como cabeçalho compartilhado entre painel, perfil e configurações. Ele combina `SiteHeader`, `BrandLink` com `to`, navegação por `NavLink` (painel, perfil e configurações), ícones com nomes acessíveis e `ThemeToggle`. Em mobile, os rótulos visuais dos links são ocultados, mas os nomes acessíveis permanecem.
+A área logada usa `ProductHeader` (`src/components/layout/product-header.tsx`) como cabeçalho compartilhado entre painel, documentos, perfil e configurações. Ele combina `SiteHeader`, `BrandLink` com `to`, navegação por `NavLink` (painel, documentos, perfil e configurações), ícones com nomes acessíveis e `ThemeToggle`. Em mobile, os rótulos visuais dos links são ocultados, mas os nomes acessíveis permanecem.
 
 ### 1.3 Tema claro/escuro
 
@@ -300,9 +300,10 @@ Use `src/components/layout/site-header.tsx` como cabeçalho das páginas públic
 
 ### 6.11 ProductHeader
 
-Use `src/components/layout/product-header.tsx` na área logada (painel, perfil e configurações).
+Use `src/components/layout/product-header.tsx` na área logada (painel, documentos, perfil e configurações).
 
 - Combina `SiteHeader`, `BrandLink to="/dashboard"`, `NavLink` para painel, documentos, perfil e configurações, ícones Lucide e `ThemeToggle`.
+- Nas páginas internas, use `ProductFooter` ao final do `main` ou como último filho do shell flexível. O rodapé garante caminhos para painel, documentos, envio, perfil, configurações, planos e site.
 - `NavLink` fornece `aria-current`; o estado ativo usa `bg-muted text-foreground`.
 - Em mobile, os rótulos textuais ficam `hidden sm:inline`; os links mantêm `aria-label` claro, como “Central de Documentos”, “Perfil da conta” e “Configurações da conta”.
 - Use `LayoutDashboard` para painel, `Files` para documentos e `UserRound` para perfil; o ícone de configurações é obrigatório na área logada.
@@ -381,14 +382,16 @@ Use `src/pages/Profile.tsx` como referência para telas de perfil editáveis.
 Use `src/pages/Documents.tsx` como referência para a rota `/documents`.
 
 - Cabeçalho: mesmo padrão do perfil — eyebrow azul em `tracking-[0.2em]`, `h1` “Central de Documentos” e descrição em `max-w-2xl`.
-- Layout principal: grid `lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]` com a análise à esquerda e a lista de documentos fictícios à direita; empilhe em telas menores.
-- Entrada de documento: `NativeSelect` dentro de `FormField`, alimentado por documentos fictícios. Nunca use `input type="file"`. O texto de ajuda deve dizer que o seletor do sistema não é aberto.
-- Documento selecionado: bloco `rounded-lg border border-border bg-muted/40 p-4` com `FileText`, badge “Fictício”, metadados (tipo, tamanho, data) e descrição.
-- Ação principal: `Button variant="brand" size="xl"` de largura total, com `aria-busy`, `Loader2` e bloqueio de envio duplicado.
+- Conexões: `CrossLinks` no topo leva ao painel, ao envio completo, às preferências de relatório e aos planos. O resultado inclui link para o painel e para a Central de Downloads; a Central de Downloads inclui link para as preferências de relatório. `ProductHeader` e `ProductFooter` completam a navegação.
+- Layout principal: grid `lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]` com a entrada/análise à esquerda e a lista de documentos fictícios à direita; empilhe em telas menores.
+- Entrada de documento: a ação primária é o botão “Anexar documento” (`Paperclip`), que aciona um `input type="file"` visualmente oculto. Aceite PDF, DOC, DOCX e TXT de até 10 MB, valide extensão e tamanho, mostre o arquivo anexado com nome, tipo, tamanho e uma ação “Remover arquivo” com nome acessível. Nenhum conteúdo do arquivo pode ser lido, enviado ou armazenado; use apenas metadados (`File.name`, `File.size`, extensão).
+- A cópia deve deixar explícito que o arquivo permanece no dispositivo e que a IA é uma simulação local. Não afirme que houve leitura de conteúdo, upload ou processamento por modelo real.
+- Alternativa de demonstração: abaixo do anexo, `NativeSelect` dentro de `FormField` permite escolher um documento fictício. O campo fica desabilitado enquanto houver arquivo anexado; a lista lateral também permite selecionar um exemplo.
+- Ação principal: `Button variant="brand" size="xl"` com rótulo “Analisar com IA”, `aria-busy`, `Loader2` e bloqueio de envio duplicado. O botão permanece desabilitado até existir arquivo anexado ou documento de exemplo selecionado.
 - Ao iniciar a análise, role até o cartão de processamento com `scrollIntoView` e `scroll-mt-20` para compensar o cabeçalho fixo. Use `behavior: 'smooth'` por padrão e `'auto'` quando `prefers-reduced-motion: reduce`.
-- `FormAlert tone="info"` é obrigatório logo abaixo da ação, explicando que nenhum arquivo é lido, enviado ou armazenado e que a IA é uma simulação local.
+- `FormAlert tone="info"` é obrigatório logo abaixo da ação, explicando que nenhum conteúdo é enviado ou processado por IA real e que a análise é determinística.
 - Achados: use `FindingsList`, que ordena por severidade (`alta`, `media`, `baixa`), renderiza badge com cor + rótulo textual e abre explicação e recomendação em `<details>`/`<summary>` nativos com `ChevronDown` e `group-open:rotate-180`.
-- Resultado: `SectionCard` com grade de score (`text-5xl`), nível do score, barra proporcional, documento, data, contagem de achados e resumo por severidade. Sempre inclua `FormAlert tone="info"` com o aviso de demonstração.
+- Resultado: `SectionCard` com grade de score (`text-5xl`), nível do score, barra proporcional, documento, origem (arquivo anexado ou exemplo), data, contagem de achados e resumo por severidade. Sempre inclua `FormAlert tone="info"` com o aviso de demonstração.
 - Análise simulada: `AnalysisProgress` mostra barra `role="progressbar"` com `aria-valuenow` e uma região `role="status"` com a etapa atual. Cada etapa tem estado pendente, ativo, concluído ou erro, com ícone + texto. Transições usam `motion-reduce:animate-none` e `motion-reduce:transition-none`.
 - Central de Downloads: `#central-de-downloads` com dois grupos (relatórios gerados e modelos). Cada item tem título, descrição, data, contagem de páginas e os formatos disponíveis.
 - O download usa `DropdownMenu` (`src/components/ui/dropdown-menu.tsx`) com os formatos PDF, DOCX e TXT. O gatilho é um `Button variant="outline"` com `Download`, `ChevronDown` e `aria-label` “Escolher formato para baixar {título}”.
@@ -408,6 +411,25 @@ Use `src/components/ui/dropdown-menu.tsx` para menus de ações contextuais, com
 - Use `DropdownMenuTrigger asChild` com um `Button` e preserve um `aria-label` específico no gatilho.
 - Para ícones decorativos ou chips de formato, use `aria-hidden="true"` e garanta que o texto do item continue descrevendo a ação.
 - Prefira esse primitive a um select nativo quando a ação tiver descrições e ícones; para seleção simples de valor, use `NativeSelect`.
+
+### 6.21 ProductFooter e CrossLinks
+
+Use `src/components/layout/product-footer.tsx` e `src/components/layout/cross-links.tsx` para conectar as telas da área logada.
+
+- `ProductFooter` é o rodapé compartilhado de painel, documentos, perfil e configurações. Ele usa `mt-auto`, borda superior, contêiner `max-w-6xl px-6`, aviso de demonstração e links para painel, documentos, envio, perfil, configurações, planos e site.
+- `CrossLinks` renderiza uma `nav` com `aria-label` e links em formato de chip (`border-border bg-card`, foco azul). Use para atalhos contextuais no topo de páginas internas.
+- Não duplique a lista de destinos em cada página: mantenha os links revisáveis em `src/content/navigation.ts`.
+- Toda rota criada deve ser alcançável por pelo menos um controle visível em outra tela e deve oferecer um caminho de volta. Páginas sem conexão são consideradas incompletas.
+
+### 6.22 Arquivos gerados
+
+Os geradores locais (`src/lib/pdf.ts`, `src/lib/docx.ts`, `src/lib/text.ts`) compartilham o contrato `DownloadContent` e devem produzir documentos com aparência profissional.
+
+- **PDF:** A4, margens de 52pt, cabeçalho de demonstração nas páginas seguintes, rodapé com paginação, capa com tipo, título, subtítulo, referência, organização e data, e blocos de métricas em grade. Use Helvetica/WinAnsi, quebra de linha própria e `keepWithNext` para não deixar títulos órfãos no fim da página.
+- **DOCX:** pacote OOXML válido com `styles.xml`, `numbering.xml`, `header1.xml`, `footer1.xml`, `docProps/core.xml` e `docProps/app.xml`. Use estilos nomeados (`Title`, `Subtitle`, `Heading1`, `BodyText`, `BulletText`, `MetricValue`, `Notice`), tabela de métricas e campos `PAGE`/`NUMPAGES` no rodapé. O arquivo deve abrir no Word e no Google Docs sem reparo.
+- **TXT:** UTF-8, largura de 78 colunas, cabeçalho, métricas com pontilhado, seções sublinhadas, marcadores com recuo e aviso final.
+- Os três formatos devem incluir aviso de demonstração e não podem sugerir validade legal. Nenhum arquivo é enviado ou armazenado.
+- O conteúdo de relatórios e modelos deve ser revisável em `src/content/documents.ts` e `src/mocks/documents.ts`, com seções completas, referência, versão e linguagem de recomendação.
 
 ---
 
@@ -519,9 +541,10 @@ Obrigatório em toda tela:
 
 ### Do
 
-- Reutilize `Button`, `Input`, `Label`, `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `ProductHeader`, `BrandLink`, `Switch`, `NativeSelect`, `AlertDialog`, `SectionCard` e `ThemeToggle`.
+- Reutilize `Button`, `Input`, `Label`, `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `ProductHeader`, `ProductFooter`, `CrossLinks`, `BrandLink`, `Switch`, `NativeSelect`, `AlertDialog`, `SectionCard` e `ThemeToggle`.
 - Use `max-w-6xl px-6` para páginas.
 - Use as receitas de superfície e estado deste guia.
+- Conecte cada rota a pelo menos uma outra tela e ofereça caminho de volta.
 - Valide em mobile antes de desktop.
 - Teste teclado, foco e leitor de tela básico.
 - Atualize este guia ao criar padrão novo.
@@ -551,6 +574,7 @@ Obrigatório em toda tela:
 - [ ] Loading, sucesso, erro e vazio estão tratados.
 - [ ] Foco é visível e a ordem de tabulação é lógica.
 - [ ] Layout funciona em 320px sem rolagem horizontal.
+- [ ] A rota está conectada a outras telas por links visíveis e oferece caminho de volta.
 - [ ] Copy está em pt-BR, sem promessas indevidas.
 - [ ] Ações destrutivas exigem confirmação acessível e informam quando são simulações.
 - [ ] `npm run lint` e `npm run build` passam.
@@ -578,4 +602,8 @@ Obrigatório em toda tela:
 - O perfil da conta também opera apenas em memória: salvar restaura os dados de demonstração ao recarregar, e a foto escolhida é apenas uma prévia local.
 - O CNPJ de demonstração foi ajustado para um valor com dígitos verificadores válidos; não há consulta a bases externas.
 - O mock do perfil não falha naturalmente; o caminho de erro de carregamento e retry existe, mas não é exercitável sem gatilho de teste.
+- A análise de documentos é uma simulação determinística. O arquivo anexado permanece no dispositivo e apenas nome, tipo e tamanho são usados; nenhum conteúdo é lido, enviado ou processado por IA real.
+- Os PDFs, DOCX e TXT são gerados localmente com marca de demonstração e não representam relatórios oficiais nem garantia de conformidade.
+- O anexo é um `input type="file"` real usado apenas como controle de entrada. Não há upload, persistência ou leitura de conteúdo.
+- O estado da aplicação (diagnóstico, documentos, perfil e configurações) vive apenas em memória e volta ao inicial ao recarregar.
 - Não há test runner configurado; a verificação é manual + lint + build.
