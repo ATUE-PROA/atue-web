@@ -59,6 +59,8 @@ A análise SHALL exibir etapas nomeadas, uma barra de progresso e a etapa atual 
 
 - **WHEN** o usuário inicia uma análise
 - **THEN** as etapas são exibidas em sequência
+- **AND** a tela rola até o cartão de processamento
+- **AND** a rolagem é imediata quando o sistema solicita movimento reduzido
 - **AND** a etapa atual é anunciada
 - **AND** o botão permanece desabilitado até a conclusão
 
@@ -77,15 +79,22 @@ A análise SHALL exibir etapas nomeadas, uma barra de progresso e a etapa atual 
 - **AND** o usuário pode tentar novamente
 - **AND** nenhum arquivo real é alterado
 
-### Requirement: Central de Downloads gera PDFs locais
+### Requirement: Central de Downloads gera arquivos locais em múltiplos formatos
 
-A Central SHALL listar relatórios gerados e modelos de documentos. Cada item SHALL oferecer uma ação de download com estado de carregamento. O PDF SHALL ser gerado localmente no navegador, SHALL conter aviso de demonstração e SHALL NOT ser armazenado em servidor. Erros SHALL ser comunicados de forma acessível.
+A Central SHALL listar relatórios gerados e modelos de documentos. Cada item SHALL oferecer um menu acessível com os formatos PDF, DOCX e TXT, com uma descrição curta do uso de cada formato e uma ação com estado de carregamento. Os arquivos SHALL ser gerados localmente no navegador, SHALL conter aviso de demonstração e SHALL NOT ser armazenados em servidor. O DOCX SHALL ser um pacote OOXML válido e o TXT SHALL usar texto simples em UTF-8. Erros SHALL ser comunicados de forma acessível.
+
+#### Scenario: Escolha do formato
+
+- **WHEN** o usuário aciona a ação de download de um item
+- **THEN** um menu exibe PDF, DOCX e TXT com uma descrição de uso para cada formato
+- **AND** o menu pode ser operado por teclado
+- **AND** o gatilho informa qual item será baixado
 
 #### Scenario: Download de relatório
 
-- **WHEN** o usuário aciona o download de um relatório
-- **THEN** a ação indica que o PDF está sendo gerado
-- **AND** um arquivo PDF fictício é baixado
+- **WHEN** o usuário escolhe um formato no menu
+- **THEN** a ação indica o formato que está sendo gerado
+- **AND** um arquivo fictício no formato escolhido é baixado
 - **AND** a confirmação informa que o arquivo foi gerado localmente
 
 #### Scenario: Central vazia
@@ -96,7 +105,7 @@ A Central SHALL listar relatórios gerados e modelos de documentos. Cada item SH
 
 #### Scenario: Falha no download
 
-- **WHEN** a geração do PDF falha
+- **WHEN** a geração do arquivo falha
 - **THEN** uma mensagem com `role="alert"` é exibida
 - **AND** o usuário pode tentar novamente
 

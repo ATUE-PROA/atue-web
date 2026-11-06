@@ -110,15 +110,17 @@ Simulated document analysis:
 - Do not use a real file input, file picker, `File`/`FileReader`, or upload endpoint for the document center unless a real backend contract exists and the requirement explicitly asks for it.
 - Use fictitious sample documents and a `NativeSelect`; state in the interface that no device file is read, sent, or stored.
 - Model the analysis as deterministic steps in the service layer with typed progress callbacks. Do not present it as real AI or as a verified legal assessment.
-- Block duplicate submissions, expose the current step through an accessible status region, and support `prefers-reduced-motion`.
+- Block duplicate submissions, expose the current step through an accessible status region, and support `prefers-reduced-motion`. When starting the analysis, scroll to the progress card with smooth behavior and fall back to instant scrolling under reduced motion.
 - Keep the analysis result in the shared mock state only when the workflow requires other screens to reflect it; label everything as demonstration data.
 
-Local PDF generation:
+Local document generation:
 
-- Generate PDFs in the browser only when a real document service is unavailable. Prefer a small typed generator in `src/lib` over adding a dependency for simple reports.
-- Include an explicit demonstration notice and never imply legal validity or official certification.
+- Generate files in the browser only when a real document service is unavailable. Prefer small typed generators in `src/lib` over adding a dependency for simple reports.
+- Support only formats the project can generate reliably and explain when each one is useful. Current formats: PDF (sharing), DOCX (editing in Word/Google Docs) and TXT (plain text).
+- Generate DOCX as a valid OOXML/ZIP package with the standard parts and UTF-8 encoding; do not emit HTML renamed to `.docx`.
+- Include an explicit demonstration notice in every format and never imply legal validity or official certification.
 - Create and revoke object URLs, avoid storing documents, and surface preparing, success, and error states.
-- Keep PDF content aligned with the same typed contracts and copy used by the interface.
+- Keep generated content aligned with the same typed contracts and copy used by the interface.
 
 Mocks must reflect plausible domain entities and consistent relationships. Do not present simulated data as verified production data.
 

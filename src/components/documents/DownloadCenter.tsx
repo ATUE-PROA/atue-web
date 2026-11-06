@@ -1,27 +1,45 @@
-import { Download, FileText, Loader2 } from 'lucide-react'
+import { ChevronDown, Download, FileText, Loader2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { FormAlert } from '@/components/ui/form-alert'
 import { SectionCard } from '@/components/ui/section-card'
-import { DOCUMENTS_CONTENT, DOWNLOAD_CATEGORY_CONTENT } from '@/content/documents'
+import {
+  DOCUMENTS_CONTENT,
+  DOWNLOAD_CATEGORY_CONTENT,
+  DOWNLOAD_FORMAT_CONTENT,
+} from '@/content/documents'
 import { formatDocumentDate, formatPageCount } from '@/lib/documents'
-import type { DownloadCategory, DownloadFeedback, DownloadItem } from '@/types/documents.types'
+import type {
+  DownloadCategory,
+  DownloadFeedback,
+  DownloadFormat,
+  DownloadItem,
+  PendingDownload,
+} from '@/types/documents.types'
 
 interface DownloadCenterProps {
   items: readonly DownloadItem[]
-  pendingId: string | null
+  pending: PendingDownload | null
   feedback: DownloadFeedback | null
-  onDownload: (item: DownloadItem) => void
+  onDownload: (item: DownloadItem, format: DownloadFormat) => void
 }
 
 interface DownloadGroupProps {
   category: DownloadCategory
   items: readonly DownloadItem[]
-  pendingId: string | null
-  onDownload: (item: DownloadItem) => void
+  pending: PendingDownload | null
+  onDownload: (item: DownloadItem, format: DownloadFormat) => void
 }
 
-function DownloadGroup({ category, items, pendingId, onDownload }: DownloadGroupProps) {
+function DownloadGroup({ category, items, pending, onDownload }: DownloadGroupProps) {
   const content = DOWNLOAD_CATEGORY_CONTENT[category]
   const emptyMessage =
     category === 'report'
@@ -40,11 +58,20 @@ function DownloadGroup({ category, items, pendingId, onDownload }: DownloadGroup
       ) : (
         <ul className="mt-3 space-y-3">
           {items.map((item) => {
-            const isPending = pendingId === item.id
+            const isPending = pending?.itemId === item.id
             const dateLabel =
               item.category === 'report'
                 ? DOCUMENTS_CONTENT.downloads.generatedAtLabel
                 : DOCUMENTS_CONTENT.downloads.updatedAtLabel
+            const formatLabels = item.formats
+              .map((format) => DOWNLOAD_FORMAT_CONTENT[format].label)
+              .join(' · ')
+            const pendingLabel = isPending
+              ? DOCUMENTS_CONTENT.downloads.downloadingLabel.replace(
+                  '{format}',
+                  DOWNLOAD_FORMAT_CONTENT[pending.format].label,
+                )
+              : DOCUMENTS_CONTENT.downloads.downloadLabel
 
             return (
               <li
@@ -61,36 +88,77 @@ function DownloadGroup({ category, items, pendingId, onDownload }: DownloadGroup
                     <p className="mt-0.5 text-sm text-muted-foreground">{item.description}</p>
                     <p className="mt-1 text-xs text-muted-foreground">
                       {dateLabel} {formatDocumentDate(item.updatedAt)} ·{' '}
-                      {formatPageCount(item.pages)} · PDF
+                      {formatPageCount(item.pages)} · {formatLabels}
                     </p>
                   </div>
                 </div>
 
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="lg"
-                  className="w-full shrink-0 sm:w-auto"
-                  aria-label={DOCUMENTS_CONTENT.downloads.downloadAriaLabel.replace(
-                    '{title}',
-                    item.title,
-                  )}
-                  aria-busy={isPending}
-                  disabled={pendingId !== null}
-                  onClick={() => onDownload(item)}
-                >
-                  {isPending ? (
-                    <Loader2
-                      aria-hidden="true"
-                      className="animate-spin motion-reduce:animate-none"
-                    />
-                  ) : (
-                    <Download aria-hidden="true" />
-                  )}
-                  {isPending
-                    ? DOCUMENTS_CONTENT.downloads.downloadingLabel
-                    : DOCUMENTS_CONTENT.downloads.downloadLabel}
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="lg"
+                      className="w-full shrink-0 sm:w-auto"
+                      aria-label={DOCUMENTS_CONTENT.downloads.downloadAriaLabel.replace(
+                        '{title}',
+                        item.title,
+                      )}
+                      aria-busy={isPending}
+                      disabled={pending !== null}
+                    >
+                      {isPending ? (
+                        <Loader2
+                          aria-hidden="true"
+                          className="animate-spin motion-reduce:animate-none"
+                        />
+                      ) : (
+                        <Download aria-hidden="true" />
+                      )}
+                      {pendingLabel}
+                      <ChevronDown aria-hidden="true" className="size-3.5 text-muted-foreground" />
+                    </Button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent align="end" className="w-72">
+                    <DropdownMenuLabel>
+                      <span className="block text-foreground">
+                        {DOCUMENTS_CONTENT.downloads.formatMenuLabel}
+                      </span>
+                      <span className="mt-0.5 block font-normal">
+                        {DOCUMENTS_CONTENT.downloads.formatMenuDescription}
+                      </span>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+
+                    {item.formats.map((format) => {
+                      const formatContent = DOWNLOAD_FORMAT_CONTENT[format]
+
+                      return (
+                        <DropdownMenuItem
+                          key={format}
+                          className="items-start"
+                          onSelect={() => onDownload(item, format)}
+                        >
+                          <span
+                            aria-hidden="true"
+                            className="mt-0.5 inline-flex h-6 min-w-11 items-center justify-center rounded border border-border bg-muted px-1.5 text-[0.65rem] font-semibold tracking-wide text-muted-foreground uppercase"
+                          >
+                            {formatContent.label}
+                          </span>
+                          <span className="min-w-0">
+                            <span className="block font-medium text-foreground">
+                              {formatContent.title}
+                            </span>
+                            <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
+                              {formatContent.description}
+                            </span>
+                          </span>
+                        </DropdownMenuItem>
+                      )
+                    })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </li>
             )
           })}
@@ -100,7 +168,7 @@ function DownloadGroup({ category, items, pendingId, onDownload }: DownloadGroup
   )
 }
 
-export function DownloadCenter({ items, pendingId, feedback, onDownload }: DownloadCenterProps) {
+export function DownloadCenter({ items, pending, feedback, onDownload }: DownloadCenterProps) {
   const reports = items.filter((item) => item.category === 'report')
   const templates = items.filter((item) => item.category === 'template')
 
@@ -114,7 +182,7 @@ export function DownloadCenter({ items, pendingId, feedback, onDownload }: Downl
         <FormAlert tone={feedback.tone} title={feedback.title} description={feedback.description} />
       ) : null}
 
-      {pendingId ? (
+      {pending ? (
         <FormAlert
           tone="info"
           title={DOCUMENTS_CONTENT.downloads.preparingTitle}
@@ -126,13 +194,13 @@ export function DownloadCenter({ items, pendingId, feedback, onDownload }: Downl
         <DownloadGroup
           category="report"
           items={reports}
-          pendingId={pendingId}
+          pending={pending}
           onDownload={onDownload}
         />
         <DownloadGroup
           category="template"
           items={templates}
-          pendingId={pendingId}
+          pending={pending}
           onDownload={onDownload}
         />
       </div>

@@ -10,7 +10,8 @@ A referência de produto pede uma SPA unificada com diagnóstico, achados explic
 
 - Enriquecer os achados com severidade, categoria, explicação e recomendação.
 - Criar uma Central de Documentos com documentos fictícios e análise animada.
-- Exibir os achados e permitir baixar relatórios/modelos em PDF localmente.
+- Rolar até o processamento ao iniciar a análise e exibir os achados.
+- Permitir baixar relatórios/modelos em PDF, DOCX e TXT localmente.
 - Reutilizar o painel de achados no dashboard.
 - Manter a simulação honesta, acessível e responsiva.
 
@@ -37,11 +38,19 @@ O usuário escolhe um documento de exemplo em um `NativeSelect`. Nenhum `input t
 
 ### Análise simulada com etapas
 
-O service `analyzeDocument` recebe um callback de progresso e executa etapas determinísticas com atraso: ler, extrair, comparar e gerar. A UI mostra uma barra de progresso, a etapa atual e o histórico, com `aria-live`. O botão fica desabilitado e o envio duplicado é bloqueado. Alternativa descartada: apenas um spinner genérico, que não comunica o que a “IA” estaria fazendo.
+O service `analyzeDocument` recebe um callback de progresso e executa etapas determinísticas com atraso: ler, extrair, comparar e gerar. A UI mostra uma barra de progresso, a etapa atual e o histórico, com `aria-live`. O botão fica desabilitado e o envio duplicado é bloqueado. Ao iniciar, a página rola até o cartão de processamento com `smooth` e usa `auto` quando `prefers-reduced-motion` está ativo. Alternativa descartada: apenas um spinner genérico, que não comunica o que a “IA” estaria fazendo.
+
+### Menu de formatos e geração local
+
+Cada item da Central de Downloads abre um `DropdownMenu` com PDF, DOCX e TXT, cada um com uma descrição curta de uso. O conteúdo é o mesmo contrato `DownloadContent`; `src/lib/download.ts` escolhe o gerador e troca a extensão. O PDF usa `src/lib/pdf.ts`; o DOCX é um pacote OOXML/ZIP mínimo (`[Content_Types].xml`, `_rels/.rels`, `word/document.xml`) escrito sem biblioteca; o TXT é texto UTF-8 simples. Alternativas descartadas: adicionar uma biblioteca só para DOCX e exportar HTML renomeado para `.docx`, que não é um formato editável confiável.
+
+### Scroll até o processamento
+
+O container do `AnalysisProgress` recebe uma ref e `scroll-mt-20`. Um efeito disparado quando o estado vira `running` chama `scrollIntoView`. O comportamento é `smooth` por padrão e `auto` com movimento reduzido. Alternativa descartada: rolar para o resultado final, que esconderia o processo e tiraria o feedback de progresso.
 
 ### PDF local sem nova dependência
 
-`src/lib/pdf.ts` gera um PDF válido de uma página, com fontes Helvetica e codificação WinAnsi, a partir de linhas de texto. O download usa `Blob` e um link temporário. O documento inclui “Documento de demonstração” e não é armazenado. Alternativa descartada: adicionar uma biblioteca de PDF para um relatório fictício simples, aumentando o bundle sem necessidade.
+`src/lib/pdf.ts` gera um PDF válido de uma ou mais páginas, com fontes Helvetica e codificação WinAnsi, a partir de linhas de texto. O download usa `Blob` e um link temporário. O documento inclui “Documento de demonstração” e não é armazenado. Alternativa descartada: adicionar uma biblioteca de PDF para um relatório fictício simples, aumentando o bundle sem necessidade.
 
 ### Achados compartilhados
 
@@ -53,7 +62,9 @@ As entradas usam `animate-in fade-in` e a barra usa transição de largura; spin
 
 ## Risks / Trade-offs
 
-- [A análise parece real] → copy fixa de demonstração, etapas chamadas de “IA simulada” e aviso no resultado e nos PDFs.
+- [A análise parece real] → copy fixa de demonstração, etapas chamadas de “IA simulada” e aviso no resultado e nos arquivos.
+- [O usuário não percebe que a análise começou] → rolagem automática até o cartão de processamento, com anúncio da etapa.
+- [O DOCX pode ser inválido ou abrir como HTML] → pacote OOXML/ZIP real com XML bem formado e verificação estrutural no navegador.
 - [O PDF pode parecer oficial] → marca d'água textual e rodapé explícito em todos os arquivos.
 - [Documentos de exemplo podem ser confundidos com arquivos reais] → nomes, metadados e aviso de que nada é lido ou enviado.
 - [Muitos passos podem tornar a demo lenta] → atrasos curtos e determinísticos, com possibilidade de reduzir motion.

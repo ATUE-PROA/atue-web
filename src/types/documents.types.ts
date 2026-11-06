@@ -36,6 +36,8 @@ export interface DocumentAnalysisResult {
 
 export type DownloadCategory = 'report' | 'template'
 
+export type DownloadFormat = 'pdf' | 'docx' | 'txt'
+
 export type TemplateId = 'privacy-policy-template' | 'consent-term-template'
 
 export interface DownloadItem {
@@ -45,7 +47,13 @@ export interface DownloadItem {
   description: string
   pages: number
   updatedAt: string
-  filename: string
+  baseFilename: string
+  formats: readonly DownloadFormat[]
+}
+
+export interface PendingDownload {
+  itemId: string
+  format: DownloadFormat
 }
 
 export interface DownloadSection {

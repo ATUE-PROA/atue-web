@@ -385,15 +385,29 @@ Use `src/pages/Documents.tsx` como referência para a rota `/documents`.
 - Entrada de documento: `NativeSelect` dentro de `FormField`, alimentado por documentos fictícios. Nunca use `input type="file"`. O texto de ajuda deve dizer que o seletor do sistema não é aberto.
 - Documento selecionado: bloco `rounded-lg border border-border bg-muted/40 p-4` com `FileText`, badge “Fictício”, metadados (tipo, tamanho, data) e descrição.
 - Ação principal: `Button variant="brand" size="xl"` de largura total, com `aria-busy`, `Loader2` e bloqueio de envio duplicado.
+- Ao iniciar a análise, role até o cartão de processamento com `scrollIntoView` e `scroll-mt-20` para compensar o cabeçalho fixo. Use `behavior: 'smooth'` por padrão e `'auto'` quando `prefers-reduced-motion: reduce`.
 - `FormAlert tone="info"` é obrigatório logo abaixo da ação, explicando que nenhum arquivo é lido, enviado ou armazenado e que a IA é uma simulação local.
 - Achados: use `FindingsList`, que ordena por severidade (`alta`, `media`, `baixa`), renderiza badge com cor + rótulo textual e abre explicação e recomendação em `<details>`/`<summary>` nativos com `ChevronDown` e `group-open:rotate-180`.
 - Resultado: `SectionCard` com grade de score (`text-5xl`), nível do score, barra proporcional, documento, data, contagem de achados e resumo por severidade. Sempre inclua `FormAlert tone="info"` com o aviso de demonstração.
 - Análise simulada: `AnalysisProgress` mostra barra `role="progressbar"` com `aria-valuenow` e uma região `role="status"` com a etapa atual. Cada etapa tem estado pendente, ativo, concluído ou erro, com ícone + texto. Transições usam `motion-reduce:animate-none` e `motion-reduce:transition-none`.
-- Central de Downloads: `#central-de-downloads` com dois grupos (relatórios gerados e modelos). Cada item tem título, descrição, data, contagem de páginas e botão “Baixar PDF” com `aria-label` específico.
-- O botão de download desabilita todos os downloads enquanto um PDF é gerado, mostra `Loader2` e usa `FormAlert` de preparação/sucesso/erro. O texto deve deixar claro que o PDF é criado localmente e não é armazenado.
+- Central de Downloads: `#central-de-downloads` com dois grupos (relatórios gerados e modelos). Cada item tem título, descrição, data, contagem de páginas e os formatos disponíveis.
+- O download usa `DropdownMenu` (`src/components/ui/dropdown-menu.tsx`) com os formatos PDF, DOCX e TXT. O gatilho é um `Button variant="outline"` com `Download`, `ChevronDown` e `aria-label` “Escolher formato para baixar {título}”.
+- Cada item do menu combina um chip textual do formato (PDF/DOCX/TXT) com título e descrição curta. PDF é “pronto para compartilhar”, DOCX é “editável” e TXT é “texto simples”.
+- Durante a geração, o gatilho mostra `Loader2` e “Gerando {formato}...”, desabilita todos os downloads e usa `FormAlert` de preparação/sucesso/erro. O texto deve deixar claro que o arquivo é criado localmente e não é armazenado.
 - Animações de entrada (`animate-in fade-in slide-in-from-bottom-2`) são discretas e sempre respeitam `motion-reduce`.
-- Não afirme que a análise leu um arquivo real, que houve IA real ou que o resultado garante conformidade. Os PDFs e achados são fictícios e não têm validade legal.
+- Não afirme que a análise leu um arquivo real, que houve IA real ou que o resultado garante conformidade. Os arquivos e achados são fictícios e não têm validade legal.
 - O dashboard reutiliza `FindingsList` e deve refletir o último diagnóstico simulado salvo em `mocks/diagnostics.ts`.
+
+### 6.20 DropdownMenu
+
+Use `src/components/ui/dropdown-menu.tsx` para menus de ações contextuais, como a escolha do formato de download.
+
+- Base Radix (`radix-ui`), com `DropdownMenu`, `DropdownMenuTrigger`, `DropdownMenuContent`, `DropdownMenuLabel`, `DropdownMenuSeparator` e `DropdownMenuItem`.
+- O conteúdo usa `bg-popover`, `border-border`, `rounded-lg`, `shadow-lg` e animações curtas com `motion-reduce:animate-none`.
+- Itens usam `focus:bg-muted` e `data-[disabled]:opacity-50`; mantenha o item inteiro acionável por teclado.
+- Use `DropdownMenuTrigger asChild` com um `Button` e preserve um `aria-label` específico no gatilho.
+- Para ícones decorativos ou chips de formato, use `aria-hidden="true"` e garanta que o texto do item continue descrevendo a ação.
+- Prefira esse primitive a um select nativo quando a ação tiver descrições e ícones; para seleção simples de valor, use `NativeSelect`.
 
 ---
 

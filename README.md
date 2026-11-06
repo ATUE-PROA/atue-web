@@ -119,11 +119,12 @@ A rota `/documents` concentra o painel de achados, a análise simulada de docume
 
 - `services/documents.ts` é a fronteira de dados; `mocks/documents.ts` mantém documentos, relatórios e modelos em memória.
 - A pessoa escolhe um documento de exemplo em um `NativeSelect`; nenhum `input type="file"` é usado e nenhum arquivo do dispositivo é lido, enviado ou armazenado.
-- `analyzeDocument` executa etapas determinísticas com atraso e devolve o progresso por callback. A interface anuncia a etapa atual em uma região `aria-live` e bloqueia envios duplicados.
+- `analyzeDocument` executa etapas determinísticas com atraso e devolve o progresso por callback. Ao iniciar, a página rola suavemente até o cartão de processamento (ou de forma imediata com `prefers-reduced-motion`), anuncia a etapa atual em uma região `aria-live` e bloqueia envios duplicados.
 - Ao concluir, o resultado atualiza o diagnóstico compartilhado em `mocks/diagnostics.ts`; o `/dashboard` passa a exibir o mesmo score e os mesmos achados.
 - Cada achado tem severidade, categoria, explicação simulada e recomendação, exibidas em um `<details>` acessível.
-- `src/lib/pdf.ts` gera PDFs válidos de uma ou mais páginas no navegador, com fontes Helvetica/WinAnsi, `Blob` e link temporário. Nenhuma biblioteca de PDF foi adicionada e nenhum arquivo é armazenado.
-- A Central de Downloads lista relatórios gerados e modelos fictícios. Os PDFs contêm aviso de demonstração e não têm validade legal.
+- `src/lib/pdf.ts`, `src/lib/docx.ts` e `src/lib/text.ts` geram PDF, DOCX e TXT válidos no navegador a partir do mesmo contrato `DownloadContent`. O DOCX é um pacote OOXML/ZIP criado sem biblioteca externa; o PDF usa Helvetica/WinAnsi e paginação própria.
+- `src/lib/download.ts` centraliza a criação do `Blob`, a troca de extensão e o link temporário com revogação do object URL. Nenhum arquivo é armazenado.
+- A Central de Downloads lista relatórios gerados e modelos fictícios. Cada item abre um menu acessível com PDF, DOCX e TXT. Todos os arquivos contêm aviso de demonstração e não têm validade legal.
 
 ## Design e convenções
 
@@ -138,4 +139,4 @@ A rota `/documents` concentra o painel de achados, a análise simulada de docume
 - As configurações da conta são simuladas e voltam ao estado inicial ao recarregar a página.
 - O perfil da conta também é simulado: salvar altera apenas o estado em memória e a foto não é enviada nem persistida.
 - A análise de documentos, os achados e a IA são simulações locais. Nenhum arquivo real é lido, enviado ou armazenado.
-- Os PDFs são gerados no navegador com marca de demonstração e não representam relatórios oficiais nem garantia de conformidade.
+- Os PDFs, DOCX e TXT são gerados no navegador com marca de demonstração e não representam relatórios oficiais nem garantia de conformidade.
