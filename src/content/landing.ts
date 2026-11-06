@@ -3,17 +3,9 @@ import type {
   LandingFeature,
   LandingFooterContent,
   LandingHeroContent,
-  LandingNavItem,
   LandingStep,
   LandingVisionContent,
 } from '@/types/landing.types'
-
-export const LANDING_NAV = [
-  { label: 'Como funciona', href: '#como-funciona' },
-  { label: 'Benefícios', href: '#beneficios' },
-  { label: 'Sobre', href: '#sobre' },
-  { label: 'Contato', href: '#contato' },
-] as const satisfies readonly LandingNavItem[]
 
 export const LANDING_HERO = {
   eyebrow: 'Conformidade digital',
@@ -81,5 +73,4 @@ export const LANDING_CAPTURE = {
 export const LANDING_FOOTER = {
   description: 'Ajudamos a manter a conformidade da sua empresa.',
   copyright: '© 2026 ATUE. Todos os direitos reservados.',
-  links: LANDING_NAV,
 } as const satisfies LandingFooterContent

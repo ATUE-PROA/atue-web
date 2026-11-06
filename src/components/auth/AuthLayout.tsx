@@ -1,22 +1,34 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, LayoutDashboard } from 'lucide-react'
 
 import { BrandLink, SiteHeader } from '@/components/layout/site-header'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
+import { Button } from '@/components/ui/button'
+import { useAuth } from '@/contexts/auth-context'
 
 const backLinkClasses =
   'inline-flex items-center gap-1.5 rounded-md text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:focus-visible:ring-blue-400/60'
 
 function AuthHeader({ backLabel }: { backLabel: string }) {
+  const { user } = useAuth()
+
   return (
     <SiteHeader>
       <BrandLink />
       <div className="flex items-center gap-2">
-        <Link to="/" className={backLinkClasses}>
+        <Link to="/" className={backLinkClasses} aria-label={backLabel}>
           <ArrowLeft aria-hidden="true" className="size-4" />
-          {backLabel}
+          <span className="hidden sm:inline">{backLabel}</span>
         </Link>
+        {user ? (
+          <Button asChild variant="brand" size="lg">
+            <Link to="/dashboard">
+              <LayoutDashboard aria-hidden="true" />
+              Dashboard
+            </Link>
+          </Button>
+        ) : null}
         <ThemeToggle />
       </div>
     </SiteHeader>
