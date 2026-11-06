@@ -8,6 +8,7 @@
 - [x] 1.4 Conectar landing, planos, login, cadastro e envio de documentos.
 - [x] 1.5 Transformar a página 404 em ponto de continuidade com links úteis.
 - [x] 1.6 Exibir ações no resultado da análise e nas preferências de relatório.
+- [x] 1.7 Extrair o `PublicFooter` compartilhado e centralizar `PUBLIC_FOOTER_LINKS` para landing e planos.
 
 ## 2. Anexo e análise simulada
 

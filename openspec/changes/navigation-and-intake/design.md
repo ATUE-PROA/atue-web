@@ -26,7 +26,7 @@ O pedido atual altera a experiência de entrada de arquivos e o nível dos downl
 
 ### Mapa de navegação explícito
 
-Cada rota recebe pelo menos uma entrada visível em outra tela. A área logada usa `ProductHeader` + `ProductFooter`; páginas internas usam `CrossLinks` no topo. Páginas públicas usam o cabeçalho e o rodapé da landing. A 404 lista início, painel, documentos, planos e login.
+Cada rota recebe pelo menos uma entrada visível em outra tela. A área logada usa `ProductHeader` + `ProductFooter`; páginas internas usam `CrossLinks` no topo. Páginas públicas usam `PublicHeader` + `PublicFooter` compartilhados, e o rodapé lê os destinos de `PUBLIC_FOOTER_LINKS`. A 404 lista início, painel, documentos, planos e login.
 
 Os destinos ficam em `src/content/navigation.ts` para evitar listas divergentes. Alternativa descartada: repetir links em cada página, que já produziu rotas órfãs.
 
