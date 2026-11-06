@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Loader2, Trash2 } from 'lucide-react'
 
-import { SettingsSection } from '@/components/settings/SettingsSection'
+import { SectionCard } from '@/components/ui/section-card'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -43,7 +43,7 @@ export function DangerSection() {
   }
 
   return (
-    <SettingsSection title={danger.title} description={danger.description} tone="danger">
+    <SectionCard title={danger.title} description={danger.description} tone="danger">
       <div className="space-y-4">
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
           <AlertDialogTrigger asChild>
@@ -87,6 +87,6 @@ export function DangerSection() {
           <FormAlert tone="error" title={danger.errorTitle} description={danger.errorDescription} />
         ) : null}
       </div>
-    </SettingsSection>
+    </SectionCard>
   )
 }

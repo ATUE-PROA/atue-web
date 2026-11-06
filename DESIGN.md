@@ -46,7 +46,7 @@ Usada na área logada, como o dashboard. Deriva dos tokens shadcn definidos em `
 
 As duas superfícies compartilham os mesmos tokens. Use `dark:` apenas quando um valor precisar mudar entre temas (por exemplo, o azul de marca).
 
-A área logada usa `ProductHeader` (`src/components/layout/product-header.tsx`) como cabeçalho compartilhado entre painel e configurações. Ele combina `SiteHeader`, `BrandLink` com `to`, navegação por `NavLink`, ícone de configurações com nome acessível e `ThemeToggle`. Em mobile, os rótulos visuais dos links são ocultados, mas os nomes acessíveis permanecem.
+A área logada usa `ProductHeader` (`src/components/layout/product-header.tsx`) como cabeçalho compartilhado entre painel, perfil e configurações. Ele combina `SiteHeader`, `BrandLink` com `to`, navegação por `NavLink` (painel, perfil e configurações), ícones com nomes acessíveis e `ThemeToggle`. Em mobile, os rótulos visuais dos links são ocultados, mas os nomes acessíveis permanecem.
 
 ### 1.3 Tema claro/escuro
 
@@ -300,12 +300,13 @@ Use `src/components/layout/site-header.tsx` como cabeçalho das páginas públic
 
 ### 6.11 ProductHeader
 
-Use `src/components/layout/product-header.tsx` na área logada (painel e configurações).
+Use `src/components/layout/product-header.tsx` na área logada (painel, perfil e configurações).
 
-- Combina `SiteHeader`, `BrandLink to="/dashboard"`, `NavLink`, ícone de configurações e `ThemeToggle`.
+- Combina `SiteHeader`, `BrandLink to="/dashboard"`, `NavLink` para painel, perfil e configurações, ícones Lucide e `ThemeToggle`.
 - `NavLink` fornece `aria-current`; o estado ativo usa `bg-muted text-foreground`.
-- Em mobile, os rótulos textuais ficam `hidden sm:inline`; os links mantêm `aria-label`.
-- O ícone de configurações é obrigatório na área logada e precisa de nome acessível claro, como “Configurações da conta”.
+- Em mobile, os rótulos textuais ficam `hidden sm:inline`; os links mantêm `aria-label` claro, como “Perfil da conta” e “Configurações da conta”.
+- Use `LayoutDashboard` para painel e `UserRound` para perfil; o ícone de configurações é obrigatório na área logada.
+- Os ícones são decorativos (`aria-hidden`) porque o link já tem nome acessível.
 - Não use `ProductHeader` em landing, autenticação, planos ou formulário público.
 
 ### 6.12 Tabelas comparativas
@@ -352,7 +353,7 @@ Use `src/components/ui/alert-dialog.tsx` para confirmações destrutivas ou irre
 
 ### 6.17 Tela de configurações
 
-- Use `SettingsSection` (`src/components/settings/SettingsSection.tsx`) para cada card: `rounded-xl border border-border bg-card p-6 shadow-sm`, título `h2` e descrição.
+- Use `SectionCard` (`src/components/ui/section-card.tsx`) para cada card: `rounded-xl border border-border bg-card p-6 shadow-sm`, título `h2` e descrição opcional.
 - A variação `danger` usa `border-destructive/30` e título `text-destructive`.
 - Layout: duas colunas a partir de `lg`, empilhamento abaixo disso; a coluna direita concentra domínio, relatórios, integrações e a ação de salvar.
 - O formulário principal salva notificações e preferências de relatório. Segurança e zona de risco usam ações próprias com `type="button"` para não criar formulários aninhados.
@@ -360,6 +361,20 @@ Use `src/components/ui/alert-dialog.tsx` para confirmações destrutivas ou irre
 - Domínio é somente leitura, com rótulo visível, estado de verificação por texto + ícone e última verificação.
 - Integrações diferenciam “Conectado” e “Conectar” por texto e ícone; a conexão é simulada.
 - A zona de risco exige `AlertDialog` antes de qualquer solicitação e nunca afirma exclusão real.
+
+### 6.18 Tela de perfil
+
+Use `src/pages/Profile.tsx` como referência para telas de perfil editáveis.
+
+- Cabeçalho do conteúdo: `h1` “Perfil”, eyebrow `text-xs font-medium tracking-[0.2em] text-blue-600 uppercase dark:text-blue-400` e link “Voltar ao site” com `ArrowLeft`.
+- Cards em `SectionCard`: dados pessoais, contato, dados da empresa e responsável legal / DPO. Duas colunas a partir de `lg`; empilhamento abaixo disso.
+- Avatar: círculo `size-16 rounded-full bg-blue-600 text-white`, iniciais derivadas do nome e imagem de prévia local com `object-cover`.
+- “Alterar foto” abre um seletor escondido. Aceite PNG, JPG e WebP de até 2 MB, valide tipo e tamanho, revogue o object URL e informe com `FormAlert` que a imagem não é enviada nem salva.
+- O formulário é único (React Hook Form + Zod). “Salvar dados” no card pessoal e “Salvar perfil” ao final da coluna direita enviam o mesmo payload, desabilitam juntos e compartilham o feedback no topo.
+- O aviso fixo “Ambiente de demonstração: as alterações não serão salvas.” fica sob a ação principal.
+- Reutilize `PROFILE_INPUT_CLASSES` (`src/components/profile/profile-styles.ts`) para manter altura e foco dos inputs iguais entre os cards.
+- A nota do DPO usa `text-xs leading-relaxed text-muted-foreground` com ícone `Info` decorativo.
+- O salvamento é simulado em memória: sucesso, erro e retry são explícitos e nunca prometem persistência real.
 
 ---
 
@@ -455,7 +470,7 @@ Obrigatório em toda tela:
 - Páginas: `src/pages/PascalCase.tsx`.
 - Layout compartilhado: `src/components/layout/kebab-case.tsx`.
 - Componentes de feature: `src/components/<feature>/PascalCase.tsx`.
-- Seções de configurações: `src/components/settings/SettingsSection.tsx` como base; cada seção em `PascalCase.tsx`.
+- Cards de seção de configurações e perfil: `SectionCard` (`src/components/ui/section-card.tsx`); cada seção em `PascalCase.tsx` dentro de `src/components/<feature>/`.
 - Primitives shadcn: `src/components/ui/kebab-case.tsx`.
 - Conteúdo revisável: `src/content/<feature>.ts`.
 - Tipos: `src/types/<feature>.types.ts` ou `src/types/api.ts`.
@@ -471,7 +486,7 @@ Obrigatório em toda tela:
 
 ### Do
 
-- Reutilize `Button`, `Input`, `Label`, `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `ProductHeader`, `BrandLink`, `Switch`, `NativeSelect`, `AlertDialog`, `SettingsSection` e `ThemeToggle`.
+- Reutilize `Button`, `Input`, `Label`, `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `ProductHeader`, `BrandLink`, `Switch`, `NativeSelect`, `AlertDialog`, `SectionCard` e `ThemeToggle`.
 - Use `max-w-6xl px-6` para páginas.
 - Use as receitas de superfície e estado deste guia.
 - Valide em mobile antes de desktop.
@@ -527,4 +542,7 @@ Obrigatório em toda tela:
 - As configurações da conta operam apenas em memória: salvar, conectar integração, alterar senha e solicitar exclusão são simulações e voltam ao estado inicial ao recarregar.
 - Autenticação em dois fatores e novas integrações estão marcadas como “Em breve”; não há OAuth real.
 - A exclusão de conta é apenas uma solicitação simulada; nenhum dado é apagado.
+- O perfil da conta também opera apenas em memória: salvar restaura os dados de demonstração ao recarregar, e a foto escolhida é apenas uma prévia local.
+- O CNPJ de demonstração foi ajustado para um valor com dígitos verificadores válidos; não há consulta a bases externas.
+- O mock do perfil não falha naturalmente; o caminho de erro de carregamento e retry existe, mas não é exercitável sem gatilho de teste.
 - Não há test runner configurado; a verificação é manual + lint + build.

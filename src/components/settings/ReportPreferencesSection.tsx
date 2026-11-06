@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form'
 
-import { SettingsSection } from '@/components/settings/SettingsSection'
+import { SectionCard } from '@/components/ui/section-card'
 import { FormField } from '@/components/ui/form-field'
 import { NativeSelect } from '@/components/ui/native-select'
 import {
@@ -19,7 +19,7 @@ export function ReportPreferencesSection() {
   } = useFormContext<AccountSettingsValues>()
 
   return (
-    <SettingsSection title={reports.title} description={reports.description}>
+    <SectionCard title={reports.title} description={reports.description}>
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField label={reports.languageLabel} error={errors.reports?.language?.message} required>
           {(field) => (
@@ -49,6 +49,6 @@ export function ReportPreferencesSection() {
           )}
         </FormField>
       </div>
-    </SettingsSection>
+    </SectionCard>
   )
 }

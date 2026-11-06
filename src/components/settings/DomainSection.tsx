@@ -1,6 +1,6 @@
 import { ShieldAlert, ShieldCheck } from 'lucide-react'
 
-import { SettingsSection } from '@/components/settings/SettingsSection'
+import { SectionCard } from '@/components/ui/section-card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { SETTINGS_CONTENT } from '@/content/settings'
@@ -26,7 +26,7 @@ export function DomainSection({ domain }: DomainSectionProps) {
   const lastCheckedId = 'monitored-domain-last-checked'
 
   return (
-    <SettingsSection title={domainContent.title} description={domainContent.description}>
+    <SectionCard title={domainContent.title} description={domainContent.description}>
       <div className="space-y-2">
         <Label htmlFor="monitored-domain" className="text-sm font-medium text-foreground">
           {domainContent.fieldLabel}
@@ -63,6 +63,6 @@ export function DomainSection({ domain }: DomainSectionProps) {
           {domainContent.lastCheckedPrefix} {lastChecked ?? domainContent.lastCheckedUnavailable}
         </p>
       </div>
-    </SettingsSection>
+    </SectionCard>
   )
 }
