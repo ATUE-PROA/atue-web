@@ -56,6 +56,24 @@ export default function LandingHeader() {
                 ))}
                 <li>
                   <Link
+                    to="/plans"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block rounded-md px-2 py-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 dark:focus-visible:ring-blue-400/60"
+                  >
+                    Planos
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/form"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block rounded-md px-2 py-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 dark:focus-visible:ring-blue-400/60"
+                  >
+                    Enviar documentos
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     to="/login"
                     onClick={() => setIsMenuOpen(false)}
                     className="block rounded-md px-2 py-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 dark:focus-visible:ring-blue-400/60"
@@ -88,6 +106,16 @@ export default function LandingHeader() {
               </a>
             </li>
           ))}
+          <li className="hidden lg:block">
+            <Link to="/plans" className={linkClasses}>
+              Planos
+            </Link>
+          </li>
+          <li className="hidden lg:block">
+            <Link to="/form" className={linkClasses}>
+              Enviar documentos
+            </Link>
+          </li>
         </ul>
       </nav>
 

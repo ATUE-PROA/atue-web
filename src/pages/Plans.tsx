@@ -8,6 +8,7 @@ import { PlanCard } from '@/components/plans/PlanCard'
 import { PlanComparison } from '@/components/plans/PlanComparison'
 import { PlanFaq } from '@/components/plans/PlanFaq'
 import { SupportCard } from '@/components/plans/SupportCard'
+import { Button } from '@/components/ui/button'
 import { PLANS, PLANS_CONTENT } from '@/content/plans'
 
 const linkClasses =
@@ -22,6 +23,9 @@ export function Plans() {
           <Link to="/login" className={linkClasses}>
             Entrar
           </Link>
+          <Button asChild variant="inverse" size="sm" className="hidden sm:inline-flex">
+            <Link to="/register">Cadastre-se</Link>
+          </Button>
           <ThemeToggle />
         </div>
       </SiteHeader>
@@ -112,11 +116,32 @@ export function Plans() {
       </main>
 
       <footer className="border-t border-border">
-        <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-3 px-6 py-8 sm:flex-row">
+        <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 sm:flex-row">
           <p className="text-xs text-muted-foreground">{PLANS_CONTENT.footer}</p>
-          <Link to="/" className={linkClasses}>
-            Voltar ao site
-          </Link>
+          <nav aria-label="Navegação do rodapé de planos">
+            <ul className="flex flex-wrap justify-center gap-x-5 gap-y-2">
+              <li>
+                <Link to="/" className={linkClasses}>
+                  Início
+                </Link>
+              </li>
+              <li>
+                <Link to="/form" className={linkClasses}>
+                  Enviar documentos
+                </Link>
+              </li>
+              <li>
+                <Link to="/login" className={linkClasses}>
+                  Entrar
+                </Link>
+              </li>
+              <li>
+                <Link to="/register" className={linkClasses}>
+                  Cadastre-se
+                </Link>
+              </li>
+            </ul>
+          </nav>
         </div>
       </footer>
     </div>

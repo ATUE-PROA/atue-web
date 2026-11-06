@@ -4,7 +4,9 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { ArrowLeft, Loader2, Save } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+import { ProductFooter } from '@/components/layout/product-footer'
 import { ProductHeader } from '@/components/layout/product-header'
+import { CrossLinks } from '@/components/layout/cross-links'
 import { CompanySection } from '@/components/profile/CompanySection'
 import { ContactSection } from '@/components/profile/ContactSection'
 import { DpoSection } from '@/components/profile/DpoSection'
@@ -12,6 +14,7 @@ import { PersonalDataSection } from '@/components/profile/PersonalDataSection'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { PROFILE_CONTENT } from '@/content/profile'
+import { PROFILE_SHORTCUTS } from '@/content/navigation'
 import { profileSchema } from '@/lib/profile'
 import { getProfile, updateProfile } from '@/services/profile'
 import type { AccountProfile } from '@/types/profile.types'
@@ -129,13 +132,15 @@ export function Profile() {
           </div>
 
           <Link
-            to="/"
+            to="/dashboard"
             className="inline-flex w-fit items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:focus-visible:ring-blue-400/60"
           >
             <ArrowLeft aria-hidden="true" className="size-4" />
             {PROFILE_CONTENT.backToSite}
           </Link>
         </header>
+
+        <CrossLinks className="mt-6" ariaLabel="Atalhos do perfil" links={PROFILE_SHORTCUTS} />
 
         {loadState === 'loading' ? (
           <div
@@ -240,6 +245,8 @@ export function Profile() {
           </>
         ) : null}
       </main>
+
+      <ProductFooter />
     </div>
   )
 }

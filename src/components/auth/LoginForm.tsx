@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -114,6 +114,23 @@ export function LoginForm() {
       </form>
 
       <p className="mt-5 text-xs leading-relaxed text-muted-foreground">{demoNotice}</p>
+
+      <p className="mt-4 text-sm text-muted-foreground">
+        Ainda não tem conta?{' '}
+        <Link
+          to="/register"
+          className="rounded-md font-medium text-blue-700 transition-colors hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:text-blue-300 dark:hover:text-blue-200 dark:focus-visible:ring-blue-400/60"
+        >
+          Criar conta
+        </Link>
+        {' · '}
+        <Link
+          to="/plans"
+          className="rounded-md font-medium text-blue-700 transition-colors hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:text-blue-300 dark:hover:text-blue-200 dark:focus-visible:ring-blue-400/60"
+        >
+          Ver planos
+        </Link>
+      </p>
     </div>
   )
 }

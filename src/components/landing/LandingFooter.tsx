@@ -31,6 +31,16 @@ export default function LandingFooter() {
                 </Link>
               </li>
               <li>
+                <Link to="/form" className={linkClasses}>
+                  Enviar documentos
+                </Link>
+              </li>
+              <li>
+                <Link to="/login" className={linkClasses}>
+                  Entrar
+                </Link>
+              </li>
+              <li>
                 <Link to="/register" className={linkClasses}>
                   Cadastre-se
                 </Link>
