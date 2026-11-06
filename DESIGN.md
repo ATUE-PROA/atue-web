@@ -420,6 +420,8 @@ Use `src/components/layout/product-footer.tsx` e `src/components/layout/cross-li
 - `CrossLinks` renderiza uma `nav` com `aria-label` e links em formato de chip (`border-border bg-card`, foco azul). Use para atalhos contextuais no topo de páginas internas.
 - Não duplique a lista de destinos em cada página: mantenha os links revisáveis em `src/content/navigation.ts`.
 - Toda rota criada deve ser alcançável por pelo menos um controle visível em outra tela e deve oferecer um caminho de volta. Páginas sem conexão são consideradas incompletas.
+- Toda navegação entre rotas deve começar no topo da página. A landing é a exceção: as âncoras internas (`#como-funciona`, `#beneficios`, `#sobre`, `#contato`) mantêm a rolagem para a seção clicada. O retorno à landing a partir de outra tela volta ao topo.
+- O comportamento fica em `ScrollToTop` (`src/components/layout/scroll-to-top.tsx`), montado no `AppRoot` (`src/components/layout/app-root.tsx`). Não replique `window.scrollTo` em páginas ou componentes.
 
 ### 6.22 Arquivos gerados
 
