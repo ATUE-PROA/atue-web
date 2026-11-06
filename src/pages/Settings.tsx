@@ -3,6 +3,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Loader2, Save } from 'lucide-react'
 
+import { CrossLinks } from '@/components/layout/cross-links'
+import { ProductFooter } from '@/components/layout/product-footer'
 import { ProductHeader } from '@/components/layout/product-header'
 import { DangerSection } from '@/components/settings/DangerSection'
 import { DomainSection } from '@/components/settings/DomainSection'
@@ -13,6 +15,7 @@ import { SecuritySection } from '@/components/settings/SecuritySection'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { SETTINGS_CONTENT } from '@/content/settings'
+import { SETTINGS_SHORTCUTS } from '@/content/navigation'
 import { accountSettingsSchema } from '@/lib/settings'
 import { getAccountSettings, updateAccountSettings } from '@/services/settings'
 import type { AccountSettings, AccountSettingsValues } from '@/types/settings.types'
@@ -109,6 +112,12 @@ export function Settings() {
           </p>
         </header>
 
+        <CrossLinks
+          className="mt-6"
+          ariaLabel="Atalhos das configurações"
+          links={SETTINGS_SHORTCUTS}
+        />
+
         {loadState === 'loading' ? (
           <div
             role="status"
@@ -201,6 +210,8 @@ export function Settings() {
           </FormProvider>
         ) : null}
       </main>
+
+      <ProductFooter />
     </div>
   )
 }

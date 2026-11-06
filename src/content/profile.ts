@@ -3,7 +3,7 @@ import type { CompanySector } from '@/types/profile.types'
 export const PROFILE_CONTENT = {
   eyebrow: 'Dados pessoais e da empresa',
   title: 'Perfil',
-  backToSite: 'Voltar ao site',
+  backToSite: 'Voltar ao painel',
   loading: 'Carregando perfil...',
   loadErrorTitle: 'Não foi possível carregar o perfil',
   loadErrorDescription: 'Tente novamente. Nenhuma alteração foi feita nesta tela.',
