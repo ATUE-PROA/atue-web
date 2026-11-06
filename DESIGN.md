@@ -283,19 +283,22 @@ Use `src/components/auth/AuthLayout.tsx` como layout base de telas de autentica�
 - Recebe o painel institucional como `aside` (no cadastro, `AuthBrandPanel`).
 - Recebe o formulário como `children`.
 - Card de formulário à direita.
-- Cabeçalho via `SiteHeader` e `BrandLink`, com caminho de volta.
+- Cabeçalho via `SiteHeader` e `BrandLink`, com caminho de volta. Quando já existe sessão ativa, o cabeçalho troca o caminho de volta por um botão “Dashboard” (`variant="brand"`, ícone `LayoutDashboard`).
 - Para telas com um único card centralizado (login), use `AuthCenteredLayout` do mesmo arquivo; ele compartilha o cabeçalho e centraliza o conteúdo em `max-w-md`.
 - O painel institucional pode incluir elementos decorativos com gradientes e `aria-hidden`.
 - Não replique esse layout em páginas de produto.
 
-### 6.10 SiteHeader
+### 6.10 SiteHeader e PublicHeader
 
 Use `src/components/layout/site-header.tsx` como cabeçalho das páginas públicas.
 
 - `SiteHeader` concentra `sticky top-0`, borda, fundo e o contêiner `max-w-6xl px-6`.
 - `BrandLink` concentra a marca ATUE e deve ser usado em todas as páginas públicas. Aceita `to` (padrão `/`) para que a marca leve ao painel na área logada.
 - O botão de tema (`ThemeToggle`) fica no cabeçalho ao lado das ações, sempre visível em mobile e desktop.
-- Landing e autenticação devem compartilhar esses componentes; não replique a estrutura do cabeçalho.
+- Landing e planos usam `PublicHeader` (`src/components/layout/public-header.tsx`), que reúne a navegação pública, o `ThemeToggle` e as ações de autenticação. Landing e autenticação devem compartilhar esses componentes; não replique a estrutura do cabeçalho.
+- A navegação pública aparece somente no topo da página: “Como funciona”, “Sobre” e “Planos”. Não repita esses destinos no rodapé público.
+- As ações de autenticação são idênticas entre landing e planos: “Entrar” como link e “Cadastre-se” como `Button variant="inverse" size="lg"`. Quando há sessão ativa, ambas são substituídas por um `Button variant="brand" size="lg"` com ícone `LayoutDashboard` e rótulo “Dashboard”.
+- O menu móvel reutiliza os mesmos destinos e ações, com botões de largura total e alvos de toque de pelo menos 44px.
 - O logo mantém a mesma posição horizontal entre páginas, inclusive quando apenas uma delas tem barra de rolagem.
 
 ### 6.11 ProductHeader
@@ -420,7 +423,8 @@ Use `src/components/layout/product-footer.tsx` e `src/components/layout/cross-li
 - `CrossLinks` renderiza uma `nav` com `aria-label` e links em formato de chip (`border-border bg-card`, foco azul). Use para atalhos contextuais no topo de páginas internas.
 - Não duplique a lista de destinos em cada página: mantenha os links revisáveis em `src/content/navigation.ts`.
 - Toda rota criada deve ser alcançável por pelo menos um controle visível em outra tela e deve oferecer um caminho de volta. Páginas sem conexão são consideradas incompletas.
-- Toda navegação entre rotas deve começar no topo da página. A landing é a exceção: as âncoras internas (`#como-funciona`, `#beneficios`, `#sobre`, `#contato`) mantêm a rolagem para a seção clicada. O retorno à landing a partir de outra tela volta ao topo.
+- Toda navegação entre rotas deve começar no topo da página. A landing é a exceção: as âncoras internas (`#como-funciona` e `#sobre`) mantêm a rolagem para a seção clicada. O retorno à landing a partir de outra tela volta ao topo.
+- A navegação pública fica apenas no `PublicHeader`. O rodapé público mostra marca, descrição e copyright, sem repetir links de navegação.
 - O comportamento fica em `ScrollToTop` (`src/components/layout/scroll-to-top.tsx`), montado no `AppRoot` (`src/components/layout/app-root.tsx`). Não replique `window.scrollTo` em páginas ou componentes.
 
 ### 6.22 Arquivos gerados

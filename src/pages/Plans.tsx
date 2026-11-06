@@ -1,8 +1,7 @@
-import { Info } from 'lucide-react'
+import { ArrowLeft, Info } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-import { BrandLink, SiteHeader } from '@/components/layout/site-header'
-import { ThemeToggle } from '@/components/layout/theme-toggle'
+import { PublicHeader } from '@/components/layout/public-header'
 import { PlanBenefits } from '@/components/plans/PlanBenefits'
 import { PlanCard } from '@/components/plans/PlanCard'
 import { PlanComparison } from '@/components/plans/PlanComparison'
@@ -11,28 +10,21 @@ import { SupportCard } from '@/components/plans/SupportCard'
 import { Button } from '@/components/ui/button'
 import { PLANS, PLANS_CONTENT } from '@/content/plans'
 
-const linkClasses =
-  'rounded-md text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:focus-visible:ring-blue-400/60'
-
 export function Plans() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <SiteHeader>
-        <BrandLink />
-        <div className="flex items-center gap-3">
-          <Link to="/login" className={linkClasses}>
-            Entrar
-          </Link>
-          <Button asChild variant="inverse" size="sm" className="hidden sm:inline-flex">
-            <Link to="/register">Cadastre-se</Link>
-          </Button>
-          <ThemeToggle />
-        </div>
-      </SiteHeader>
+      <PublicHeader />
 
       <main className="flex-1">
-        <section className="mx-auto w-full max-w-6xl px-6 pt-12 pb-14 sm:pt-16">
-          <div className="max-w-3xl">
+        <section className="mx-auto w-full max-w-6xl px-6 pt-8 pb-14 sm:pt-12">
+          <Button asChild variant="outline" size="lg" className="w-fit">
+            <Link to="/">
+              <ArrowLeft aria-hidden="true" />
+              Voltar para o início
+            </Link>
+          </Button>
+
+          <div className="mt-6 max-w-3xl">
             <p className="text-xs font-medium tracking-[0.2em] text-blue-600 uppercase dark:text-blue-400">
               {PLANS_CONTENT.hero.eyebrow}
             </p>
@@ -116,32 +108,8 @@ export function Plans() {
       </main>
 
       <footer className="border-t border-border">
-        <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 sm:flex-row">
+        <div className="mx-auto w-full max-w-6xl px-6 py-8">
           <p className="text-xs text-muted-foreground">{PLANS_CONTENT.footer}</p>
-          <nav aria-label="Navegação do rodapé de planos">
-            <ul className="flex flex-wrap justify-center gap-x-5 gap-y-2">
-              <li>
-                <Link to="/" className={linkClasses}>
-                  Início
-                </Link>
-              </li>
-              <li>
-                <Link to="/form" className={linkClasses}>
-                  Enviar documentos
-                </Link>
-              </li>
-              <li>
-                <Link to="/login" className={linkClasses}>
-                  Entrar
-                </Link>
-              </li>
-              <li>
-                <Link to="/register" className={linkClasses}>
-                  Cadastre-se
-                </Link>
-              </li>
-            </ul>
-          </nav>
         </div>
       </footer>
     </div>

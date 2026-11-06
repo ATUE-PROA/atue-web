@@ -10,6 +10,8 @@ export function ScrollToTop() {
     previousPathname.current = pathname
 
     if (hash) {
+      const target = document.getElementById(hash.slice(1))
+      target?.scrollIntoView({ behavior: 'auto', block: 'start' })
       return
     }
 

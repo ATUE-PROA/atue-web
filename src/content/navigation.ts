@@ -4,6 +4,12 @@ export interface AppNavLink {
   description?: string
 }
 
+export const PUBLIC_NAV = [
+  { to: '/#como-funciona', label: 'Como funciona' },
+  { to: '/#sobre', label: 'Sobre' },
+  { to: '/plans', label: 'Planos' },
+] as const satisfies readonly AppNavLink[]
+
 export const PRODUCT_FOOTER_LINKS = [
   { to: '/dashboard', label: 'Painel' },
   { to: '/documents', label: 'Documentos' },

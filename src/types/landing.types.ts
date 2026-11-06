@@ -6,11 +6,6 @@ export interface DomainCaptureState {
   domain: string
 }
 
-export interface LandingNavItem {
-  readonly label: string
-  readonly href: string
-}
-
 export interface LandingFeature {
   readonly title: string
   readonly description: string
@@ -47,5 +42,4 @@ export interface LandingDomainCaptureContent {
 export interface LandingFooterContent {
   readonly description: string
   readonly copyright: string
-  readonly links: readonly LandingNavItem[]
 }

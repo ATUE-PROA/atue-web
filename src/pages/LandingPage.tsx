@@ -1,4 +1,4 @@
-import LandingHeader from '@/components/landing/LandingHeader'
+import { PublicHeader } from '@/components/layout/public-header'
 import LandingHero from '@/components/landing/LandingHero'
 import FeatureStrip from '@/components/landing/FeatureStrip'
 import HowItWorks from '@/components/landing/HowItWorks'
@@ -9,7 +9,7 @@ import LandingFooter from '@/components/landing/LandingFooter'
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <LandingHeader />
+      <PublicHeader />
       <main>
         <LandingHero />
         <FeatureStrip />

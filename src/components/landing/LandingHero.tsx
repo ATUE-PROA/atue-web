@@ -16,11 +16,7 @@ export default function LandingHero() {
             {LANDING_HERO.description}
           </p>
           <div className="mt-8">
-            <Button
-              asChild
-              size="lg"
-              className="rounded-full bg-primary px-6 font-medium text-primary-foreground hover:bg-primary/90"
-            >
+            <Button asChild variant="inverse" size="lg">
               <a href={LANDING_HERO.ctaHref}>{LANDING_HERO.ctaLabel}</a>
             </Button>
           </div>

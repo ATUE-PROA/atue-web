@@ -57,11 +57,7 @@ export default function DomainCapture() {
                 aria-describedby={errors.domain ? 'domain-error' : undefined}
                 {...register('domain')}
               />
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="h-11 rounded-lg bg-blue-600 px-6 font-medium text-white hover:bg-blue-500 focus-visible:ring-blue-400/60"
-              >
+              <Button type="submit" variant="brand" size="xl" disabled={isSubmitting}>
                 {LANDING_CAPTURE.submitLabel}
               </Button>
             </div>
