@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { CADASTRO_CONTENT } from '@/content/cadastro'
 import { useAuth } from '@/contexts/auth-context'
+import { usePlan } from '@/contexts/plan-context'
 import { cadastroSchema } from '@/lib/cadastro'
 import { signUp } from '@/services/auth'
 import type { CadastroFormValues } from '@/types/cadastro.types'
@@ -36,6 +37,7 @@ const {
 export function CadastroForm() {
   const navigate = useNavigate()
   const { signIn } = useAuth()
+  const { resetPlan } = usePlan()
   const [result, setResult] = useState<SubmissionResult>('idle')
 
   const {
@@ -60,7 +62,7 @@ export function CadastroForm() {
     }
 
     const timer = window.setTimeout(() => {
-      navigate('/dashboard', { replace: true })
+      navigate('/plans', { replace: true })
     }, 900)
 
     return () => window.clearTimeout(timer)
@@ -72,6 +74,7 @@ export function CadastroForm() {
     try {
       const session = await signUp(values)
       signIn(session)
+      resetPlan()
       setResult('success')
     } catch {
       setResult('error')

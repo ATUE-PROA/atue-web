@@ -1,3 +1,5 @@
+import type { PlanDefinition, PlanFeatureDefinition, PlanFeatureId } from '@/types/plans.types'
+
 export const PLANS_CONTENT = {
   hero: {
     eyebrow: 'Escolha o plano certo',
@@ -144,7 +146,7 @@ export const PLANS = [
     href: '/form',
     note: 'Para operações que exigem governança e auditoria.',
   },
-] as const
+] as const satisfies readonly PlanDefinition[]
 
 export const PLAN_FAQ = [
   {
@@ -180,6 +182,55 @@ export const PLAN_SUPPORT = {
   href: '/form',
 } as const
 
+export const PLAN_FEATURES = {
+  'product-access': {
+    label: 'Área logada',
+    description: 'Painel, documentos, perfil e configurações.',
+    requiredPlan: 'start',
+  },
+  'detailed-reports': {
+    label: 'Downloads de relatórios',
+    description: 'Relatórios gerados na Central de Documentos.',
+    requiredPlan: 'growth',
+  },
+  integrations: {
+    label: 'Integrações',
+    description: 'Conexão com Google Search Console e Slack.',
+    requiredPlan: 'growth',
+  },
+} as const satisfies Record<PlanFeatureId, PlanFeatureDefinition>
+
+export const PLAN_GATE_CONTENT = {
+  eyebrow: 'Recurso de outro plano',
+  title: 'Assine um plano para continuar',
+  description:
+    'O recurso “{feature}” faz parte do plano {plan}. Escolha um plano para liberar esta interação.',
+  demoDescription:
+    'O recurso “{feature}” faz parte do plano {plan}. Você está no ambiente de teste do plano Início; assine para liberar a versão completa.',
+  primaryLabel: 'Ver planos',
+  secondaryLabel: 'Agora não',
+  closeLabel: 'Fechar aviso de assinatura',
+  currentPlanLabel: 'Plano atual',
+  currentPlanCta: 'Continuar no painel',
+  demoBadge: 'Ambiente de teste',
+  noPlanLabel: 'Sem plano ativo',
+  subscription: {
+    eyebrow: 'Confirmação de assinatura',
+    title: 'Assinar o plano {plan}?',
+    description:
+      'A assinatura é simulada e não gera cobrança. O plano {plan} libera os recursos descritos na página de planos.',
+    primaryLabel: 'Assinar {plan}',
+  },
+  testEnvironment: {
+    title: 'Prefere conhecer antes de assinar?',
+    description: 'Teste a área logada com dados fictícios e sem cobrança.',
+    note: 'Ambiente de teste do plano Início. Nenhuma cobrança é realizada.',
+    label: 'Testar ambiente',
+    loginLabel: 'Entrar para testar',
+  },
+} as const
+
 export type Plan = (typeof PLANS)[number]
 export type PlanBenefit = (typeof PLAN_BENEFITS)[number]
 export type PlanComparisonRow = (typeof PLAN_COMPARISON)[number]
+export type PlanFeature = (typeof PLAN_FEATURES)[PlanFeatureId]

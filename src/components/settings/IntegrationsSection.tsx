@@ -5,6 +5,7 @@ import { SectionCard } from '@/components/ui/section-card'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { SETTINGS_CONTENT } from '@/content/settings'
+import { usePlan } from '@/contexts/plan-context'
 import { connectIntegration } from '@/services/settings'
 import type { AccountIntegration, IntegrationId, IntegrationStatus } from '@/types/settings.types'
 
@@ -31,11 +32,16 @@ function getStatusLabel(status: IntegrationStatus): string {
 }
 
 export function IntegrationsSection({ initialIntegrations }: IntegrationsSectionProps) {
+  const { requestFeature } = usePlan()
   const [integrations, setIntegrations] = useState(initialIntegrations)
   const [connectingId, setConnectingId] = useState<IntegrationId | null>(null)
   const [result, setResult] = useState<ConnectionResult>('idle')
 
   const handleConnect = async (id: IntegrationId) => {
+    if (!requestFeature('integrations')) {
+      return
+    }
+
     setConnectingId(id)
     setResult('idle')
 

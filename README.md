@@ -68,8 +68,8 @@ A navegação entre rotas começa no topo da tela. A landing page é a exceção
 | Rota         | Superfície | Principais conexões                                                        |
 | ------------ | ---------- | -------------------------------------------------------------------------- |
 | `/`          | pública    | Planos, cadastro, login, envio de documentos e contato                     |
-| `/register`  | pública    | Login, planos e site; sucesso leva ao painel                               |
-| `/login`     | pública    | Cadastro, planos e site; sucesso leva ao painel                            |
+| `/register`  | pública    | Login, planos e site; sucesso leva à escolha do plano                      |
+| `/login`     | pública    | Cadastro, planos e site; sucesso leva à escolha do plano                   |
 | `/form`      | pública    | Site, login, cadastro, planos, painel e Central de Documentos após o envio |
 | `/plans`     | pública    | Site, login, cadastro e envio de documentos                                |
 | `/dashboard` | produto    | Documentos, envio, planos, perfil, configurações e site                    |
@@ -98,7 +98,7 @@ src/
     settings/   seções da área de configurações
     ui/         primitives shadcn e componentes reutilizáveis
   content/      copy revisável
-  contexts/     sessão em memória (AuthProvider + useAuth)
+  contexts/     sessão e acesso por plano em memória (AuthProvider + PlanProvider)
   lib/          schemas, validações e utilitários puros
   mocks/        dados simulados
   pages/        composição das rotas
@@ -117,7 +117,7 @@ A rota `/register` usa:
 
 A rota `/login` usa `AuthCenteredLayout` e `LoginForm` para um único card centralizado, também com React Hook Form + Zod e `services/auth.ts` como fronteira do login simulado.
 
-Os fluxos válidos criam uma sessão em memória e navegam para `/dashboard`. Os avisos informam explicitamente que a conta é de demonstração.
+Os fluxos válidos criam uma sessão em memória e navegam para `/plans`, onde a pessoa escolhe um plano ou testa o ambiente. Os avisos informam explicitamente que a conta é de demonstração.
 
 ## Envio de documentos
 
@@ -131,6 +131,12 @@ A rota `/form` usa `AuthLayout`, `FormBrandPanel` e `DocumentForm` para coletar 
 ## Planos
 
 As rotas `/plans` e `/plan` apresentam uma comparação entre os planos Início, Cresce e Escala, cards ilustrativos e uma seção de ajuda com perguntas frequentes. A página está linkada no rodapé da landing e não há cobrança nesta demonstração.
+
+- Depois do login ou cadastro, a pessoa é encaminhada para `/plans`.
+- Ao escolher um plano autenticada, um card de confirmação desce do topo da tela. A assinatura é simulada e não gera cobrança.
+- Abaixo dos cards, a opção discreta “Testar ambiente” libera a área logada com o plano Início e dados fictícios, sem exigir assinatura.
+- Recursos de outros planos, como integrações e download de relatórios detalhados, exibem o mesmo card de assinatura ao serem acionados.
+- O acesso por plano fica em `PlanProvider` (`src/contexts/PlanProvider.tsx`) e vive apenas em memória; recarregar a página volta ao estado sem plano.
 
 ## Configurações da conta
 

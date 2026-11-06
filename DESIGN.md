@@ -283,7 +283,7 @@ Use `src/components/auth/AuthLayout.tsx` como layout base de telas de autentica�
 - Recebe o painel institucional como `aside` (no cadastro, `AuthBrandPanel`).
 - Recebe o formulário como `children`.
 - Card de formulário à direita.
-- Cabeçalho via `SiteHeader` e `BrandLink`, com caminho de volta. Quando já existe sessão ativa, o cabeçalho troca o caminho de volta por um botão “Dashboard” (`variant="brand"`, ícone `LayoutDashboard`).
+- Cabeçalho via `SiteHeader` e `BrandLink`, com caminho de volta. Quando já existe sessão ativa, o cabeçalho troca o caminho de volta por um botão `variant="brand"`: “Planos” (ícone `CreditCard`) enquanto não houver plano ativo e “Dashboard” (ícone `LayoutDashboard`) depois da assinatura simulada ou do ambiente de teste.
 - Para telas com um único card centralizado (login), use `AuthCenteredLayout` do mesmo arquivo; ele compartilha o cabeçalho e centraliza o conteúdo em `max-w-md`.
 - O painel institucional pode incluir elementos decorativos com gradientes e `aria-hidden`.
 - Não replique esse layout em páginas de produto.
@@ -297,7 +297,7 @@ Use `src/components/layout/site-header.tsx` como cabeçalho das páginas públic
 - O botão de tema (`ThemeToggle`) fica no cabeçalho ao lado das ações, sempre visível em mobile e desktop.
 - Landing e planos usam `PublicHeader` (`src/components/layout/public-header.tsx`), que reúne a navegação pública, o `ThemeToggle` e as ações de autenticação. Landing e autenticação devem compartilhar esses componentes; não replique a estrutura do cabeçalho.
 - A navegação pública aparece somente no topo da página: “Como funciona”, “Sobre” e “Planos”. Não repita esses destinos no rodapé público.
-- As ações de autenticação são idênticas entre landing e planos: “Entrar” como link e “Cadastre-se” como `Button variant="inverse" size="lg"`. Quando há sessão ativa, ambas são substituídas por um `Button variant="brand" size="lg"` com ícone `LayoutDashboard` e rótulo “Dashboard”.
+- As ações de autenticação são idênticas entre landing e planos: “Entrar” como link e “Cadastre-se” como `Button variant="inverse" size="lg"`. Quando há sessão ativa, ambas são substituídas por um `Button variant="brand" size="lg"`: “Planos” com `CreditCard` enquanto não houver plano ativo e “Dashboard” com `LayoutDashboard` depois da assinatura simulada ou do ambiente de teste.
 - O menu móvel reutiliza os mesmos destinos e ações, com botões de largura total e alvos de toque de pelo menos 44px.
 - O logo mantém a mesma posição horizontal entre páginas, inclusive quando apenas uma delas tem barra de rolagem.
 
@@ -306,6 +306,7 @@ Use `src/components/layout/site-header.tsx` como cabeçalho das páginas públic
 Use `src/components/layout/product-header.tsx` na área logada (painel, documentos, perfil e configurações).
 
 - Combina `SiteHeader`, `BrandLink to="/dashboard"`, `NavLink` para painel, documentos, perfil e configurações, ícones Lucide e `ThemeToggle`.
+- Exibe um chip discreto à esquerda dos links com o plano atual, “Ambiente de teste” ou “Sem plano ativo”. O chip é um link para `/plans` e usa `CreditCard`.
 - Nas páginas internas, use `ProductFooter` ao final do `main` ou como último filho do shell flexível. O rodapé garante caminhos para painel, documentos, envio, perfil, configurações, planos e site.
 - `NavLink` fornece `aria-current`; o estado ativo usa `bg-muted text-foreground`.
 - Em mobile, os rótulos textuais ficam `hidden sm:inline`; os links mantêm `aria-label` claro, como “Central de Documentos”, “Perfil da conta” e “Configurações da conta”.
@@ -450,6 +451,20 @@ Use `src/pages/Dashboard.tsx` como referência para a tela `/dashboard`.
 - Enquanto a Core API não expõe a leitura do histórico, `getDiagnostic` retorna `null` com `VITE_API_URL` preenchida. A tela então apresenta o estado vazio e mantém o formulário como caminho para um novo diagnóstico.
 - `DemoScenarioCards` (`src/components/diagnostics/DemoScenarioCards.tsx`) apresenta três cenários fictícios como cartões acionáveis. Cada cartão mostra empresa, setor, descrição e score, usa `aria-pressed` para o cenário ativo e nunca afirma que um site real foi acessado.
 - `ScanTerminal` (`src/components/diagnostics/ScanTerminal.tsx`) exibe um registro simulado com `role="log"` e `aria-live="polite"`, revelando linhas entre 3 e 7 segundos. Com `prefers-reduced-motion`, todas as linhas aparecem de imediato. A copy deixa explícito que nenhum site é acessado e nenhuma IA real é executada.
+
+### 6.24 Planos, assinatura simulada e ambiente de teste
+
+Use `src/pages/Plans.tsx`, `PlanProvider` (`src/contexts/PlanProvider.tsx`) e `SubscriptionPrompt` (`src/components/plans/SubscriptionPrompt.tsx`) como referência para o fluxo de acesso por plano.
+
+- Login e cadastro encaminham para `/plans`. A escolha do plano é o próximo passo, não o painel.
+- Ao escolher um plano autenticado, `SubscriptionPrompt` desce do topo com um card de confirmação. O CTA “Assinar {plano}” ativa o plano em memória e leva ao painel; “Agora não” fecha sem alterar o estado.
+- Abaixo dos cards de plano, a opção “Testar ambiente” é discreta (`Button variant="ghost" size="lg"` com `FlaskConical`) e libera o plano Início com dados fictícios, sem cobrança.
+- O card de assinatura usa `fixed inset-x-0 top-16 z-40`, `max-w-3xl`, `rounded-xl border border-blue-600/30 bg-card p-4 shadow-lg`, `role="status"` e `animate-in fade-in slide-in-from-top-4 duration-300 motion-reduce:animate-none`. Não cubra o cabeçalho sticky (`h-16`).
+- O fechamento aceita o botão “Agora não”, o ícone `X` com nome acessível e a tecla Escape. A troca de rota também fecha o card; rotas de produto sem plano reabrem o pedido.
+- Use o mesmo card para bloquear recursos de planos superiores, como integrações e download de relatórios detalhados. Nunca esconda o recurso nem simule sucesso sem acesso.
+- Acesso sem plano a `/dashboard`, `/documents`, `/profile` ou `/settings` também abre o card pedindo assinatura; a tela permanece visível para contextualizar o recurso.
+- O chip do `ProductHeader` e o botão do `PublicHeader` refletem o estado: “Sem plano ativo”, “Ambiente de teste” ou o nome do plano. O destino é `/plans` enquanto não houver acesso e `/dashboard` depois dele. Em telas estreitas, o chip mantém o ícone e oculta o rótulo, preservando o `aria-label`.
+- Toda a assinatura é simulada e vive apenas em memória. A copy deve dizer que nenhuma cobrança é realizada e que recarregar a página volta ao estado sem plano.
 
 ---
 
@@ -597,6 +612,7 @@ Obrigatório em toda tela:
 - [ ] A rota está conectada a outras telas por links visíveis e oferece caminho de volta.
 - [ ] Copy está em pt-BR, sem promessas indevidas.
 - [ ] Ações destrutivas exigem confirmação acessível e informam quando são simulações.
+- [ ] Assinatura, teste de ambiente e bloqueio por plano informam que a operação é simulada e sem cobrança.
 - [ ] `npm run lint` e `npm run build` passam.
 - [ ] `DESIGN.md` foi atualizado se houve padrão novo.
 
@@ -625,7 +641,9 @@ Obrigatório em toda tela:
 - A análise de documentos é uma simulação determinística. O arquivo anexado permanece no dispositivo e apenas nome, tipo e tamanho são usados; nenhum conteúdo é lido, enviado ou processado por IA real.
 - Os PDFs, DOCX e TXT são gerados localmente com marca de demonstração e não representam relatórios oficiais nem garantia de conformidade.
 - O anexo é um `input type="file"` real usado apenas como controle de entrada. Não há upload, persistência ou leitura de conteúdo.
-- O estado da aplicação (diagnóstico, documentos, perfil e configurações) vive apenas em memória e volta ao inicial ao recarregar.
+- O estado da aplicação (diagnóstico, documentos, perfil, configurações e plano ativo) vive apenas em memória e volta ao inicial ao recarregar.
+- A assinatura é simulada: não há pagamento, cobrança, contrato ou autorização real. Os planos Cresce e Escala liberam recursos apenas no estado local da demonstração.
+- O bloqueio por plano é visual e de experiência; não substitui autorização de backend quando a Core API passar a validar o plano contratado.
 - Não há test runner configurado; a verificação é manual + lint + build.
 - Com `VITE_API_URL` preenchida, a leitura do histórico de diagnóstico ainda não está disponível na Core API; a tela apresenta estado vazio e oferece um novo diagnóstico.
 - O token JWT da Core API fica apenas em memória por decisão de segurança; recarregar a página encerra a sessão até existir um desenho de persistência revisado.

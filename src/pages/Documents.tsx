@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { ANALYSIS_STEPS, DOCUMENTS_CONTENT } from '@/content/documents'
 import { DOCUMENT_SHORTCUTS } from '@/content/navigation'
+import { usePlan } from '@/contexts/plan-context'
 import { saveDocument } from '@/lib/download'
 import {
   analyzeDocument,
@@ -43,6 +44,7 @@ const IDLE_PROGRESS: AnalysisProgressState = {
 }
 
 export function Documents() {
+  const { requestFeature } = usePlan()
   const isMountedRef = useRef(true)
   const progressSectionRef = useRef<HTMLDivElement | null>(null)
   const [loadState, setLoadState] = useState<LoadState>('loading')
@@ -176,6 +178,10 @@ export function Documents() {
   }
 
   const handleDownload = async (item: DownloadItem, format: DownloadFormat) => {
+    if (item.category === 'report' && !requestFeature('detailed-reports')) {
+      return
+    }
+
     if (pendingDownload !== null) {
       return
     }

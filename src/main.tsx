@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 import { router } from '@/routes'
 import { AuthProvider } from '@/contexts/AuthProvider'
+import { PlanProvider } from '@/contexts/PlanProvider'
 import { watchSystemTheme } from '@/lib/theme'
 import './index.css'
 
@@ -17,7 +18,9 @@ if (!rootElement) {
 createRoot(rootElement).render(
   <StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+      <PlanProvider>
+        <RouterProvider router={router} />
+      </PlanProvider>
     </AuthProvider>
   </StrictMode>,
 )

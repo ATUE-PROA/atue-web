@@ -1,5 +1,5 @@
-import { ArrowLeft, Info } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { ArrowLeft, FlaskConical, Info } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { PublicHeader } from '@/components/layout/public-header'
 import { PlanBenefits } from '@/components/plans/PlanBenefits'
@@ -8,9 +8,35 @@ import { PlanComparison } from '@/components/plans/PlanComparison'
 import { PlanFaq } from '@/components/plans/PlanFaq'
 import { SupportCard } from '@/components/plans/SupportCard'
 import { Button } from '@/components/ui/button'
-import { PLANS, PLANS_CONTENT } from '@/content/plans'
+import { PLANS, PLANS_CONTENT, PLAN_GATE_CONTENT } from '@/content/plans'
+import { useAuth } from '@/contexts/auth-context'
+import { usePlan } from '@/contexts/plan-context'
+import type { PlanId } from '@/types/plans.types'
 
 export function Plans() {
+  const navigate = useNavigate()
+  const { user } = useAuth()
+  const { activePlan, requestSubscription, startDemo } = usePlan()
+
+  const handleSelectPlan = (planId: PlanId) => {
+    if (planId === activePlan) {
+      navigate('/dashboard')
+      return
+    }
+
+    requestSubscription(planId)
+  }
+
+  const handleTestEnvironment = () => {
+    if (!user) {
+      navigate('/login')
+      return
+    }
+
+    startDemo()
+    navigate('/dashboard')
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <PublicHeader />
@@ -81,8 +107,40 @@ export function Plans() {
 
           <div className="mt-8 grid gap-6 lg:grid-cols-3">
             {PLANS.map((plan) => (
-              <PlanCard key={plan.id} plan={plan} />
+              <PlanCard
+                key={plan.id}
+                plan={plan}
+                isCurrent={activePlan === plan.id}
+                onSelect={user ? handleSelectPlan : undefined}
+              />
             ))}
+          </div>
+
+          <div className="mt-8 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-medium text-foreground">
+                {PLAN_GATE_CONTENT.testEnvironment.title}
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                {PLAN_GATE_CONTENT.testEnvironment.description}
+              </p>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                {PLAN_GATE_CONTENT.testEnvironment.note}
+              </p>
+            </div>
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="lg"
+              className="w-fit shrink-0"
+              onClick={handleTestEnvironment}
+            >
+              <FlaskConical aria-hidden="true" />
+              {user
+                ? PLAN_GATE_CONTENT.testEnvironment.label
+                : PLAN_GATE_CONTENT.testEnvironment.loginLabel}
+            </Button>
           </div>
         </section>
 
