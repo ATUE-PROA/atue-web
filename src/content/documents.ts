@@ -55,7 +55,7 @@ export const DOCUMENTS_CONTENT = {
   downloads: {
     title: 'Central de Downloads',
     description:
-      'Relatórios e modelos em PDF gerados no navegador, sempre com aviso de demonstração.',
+      'Relatórios e modelos gerados no navegador em PDF, DOCX ou TXT, sempre com aviso de demonstração.',
     reportsTitle: 'Relatórios gerados',
     reportsDescription: 'Cada análise simulada adiciona um relatório a esta lista.',
     templatesTitle: 'Modelos de documentos',
@@ -64,18 +64,40 @@ export const DOCUMENTS_CONTENT = {
     emptyReports:
       'Nenhum relatório foi gerado ainda. Conclua uma análise simulada para criar o primeiro.',
     emptyTemplates: 'Nenhum modelo disponível.',
-    downloadLabel: 'Baixar PDF',
-    downloadingLabel: 'Gerando PDF...',
-    downloadAriaLabel: 'Baixar PDF de {title}',
+    downloadLabel: 'Baixar',
+    downloadingLabel: 'Gerando {format}...',
+    downloadAriaLabel: 'Escolher formato para baixar {title}',
+    formatMenuLabel: 'Escolha o formato',
+    formatMenuDescription: 'O arquivo é gerado localmente e não é enviado a um servidor.',
     generatedAtLabel: 'Gerado em',
     updatedAtLabel: 'Atualizado em',
-    preparingTitle: 'Gerando PDF de demonstração',
+    preparingTitle: 'Gerando arquivo de demonstração',
     preparingDescription: 'O arquivo é criado localmente no navegador e não é armazenado.',
-    successTitle: 'PDF de demonstração gerado',
+    successTitle: 'Arquivo de demonstração gerado',
     successDescription: 'O download foi criado localmente. Nenhum dado foi enviado a um servidor.',
-    errorTitle: 'Não foi possível gerar o PDF',
+    errorTitle: 'Não foi possível gerar o arquivo',
     errorDescription: 'Tente novamente. Nenhum dado foi alterado.',
-    demoNotice: 'Os PDFs contêm marca de demonstração e não têm validade legal.',
+    demoNotice: 'Os arquivos contêm marca de demonstração e não têm validade legal.',
+  },
+} as const
+
+export const DOWNLOAD_FORMATS = ['pdf', 'docx', 'txt'] as const
+
+export const DOWNLOAD_FORMAT_CONTENT = {
+  pdf: {
+    label: 'PDF',
+    title: 'PDF — pronto para compartilhar',
+    description: 'Layout fixo, ideal para envio e arquivamento.',
+  },
+  docx: {
+    label: 'DOCX',
+    title: 'DOCX — editável',
+    description: 'Abra no Word ou Google Docs para adaptar o conteúdo.',
+  },
+  txt: {
+    label: 'TXT',
+    title: 'TXT — texto simples',
+    description: 'Sem formatação, para copiar e colar rapidamente.',
   },
 } as const
 

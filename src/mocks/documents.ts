@@ -1,5 +1,6 @@
 import {
   ANALYSIS_STEPS,
+  DOWNLOAD_FORMATS,
   REPORT_DEMO_FOOTER,
   SEVERITY_CONTENT,
   TEMPLATE_PDF_CONTENT,
@@ -208,7 +209,8 @@ const TEMPLATE_ITEMS: DownloadItem[] = [
       'Estrutura com finalidades, cookies, direitos do titular, retenção e contato do DPO.',
     pages: 4,
     updatedAt: '2026-09-30T09:00:00.000Z',
-    filename: 'modelo-politica-de-privacidade.pdf',
+    baseFilename: 'modelo-politica-de-privacidade',
+    formats: DOWNLOAD_FORMATS,
   },
   {
     id: 'consent-term-template',
@@ -217,7 +219,8 @@ const TEMPLATE_ITEMS: DownloadItem[] = [
     description: 'Estrutura para registrar finalidade, evidência de consentimento e revogação.',
     pages: 3,
     updatedAt: '2026-09-30T09:00:00.000Z',
-    filename: 'modelo-termo-de-consentimento.pdf',
+    baseFilename: 'modelo-termo-de-consentimento',
+    formats: DOWNLOAD_FORMATS,
   },
 ]
 
@@ -232,7 +235,8 @@ const generatedReports: GeneratedReportRecord[] = [
       description: 'Visão consolidada do site institucional antes das análises de documentos.',
       pages: 4,
       updatedAt: initialDiagnostic.createdAt,
-      filename: 'relatorio-diagnostico-inicial.pdf',
+      baseFilename: 'relatorio-diagnostico-inicial',
+      formats: DOWNLOAD_FORMATS,
     },
     report: initialDiagnostic,
     documentName: 'Site institucional',
@@ -366,7 +370,8 @@ export async function mockAnalyzeDocument(
     )} após a análise de ${document.name}.`,
     pages: 3 + Math.ceil(report.issues.length / 2),
     updatedAt: completedAt,
-    filename: `relatorio-${slugifyFilename(document.name)}.pdf`,
+    baseFilename: `relatorio-${slugifyFilename(document.name)}`,
+    formats: DOWNLOAD_FORMATS,
   }
 
   generatedReports.unshift({

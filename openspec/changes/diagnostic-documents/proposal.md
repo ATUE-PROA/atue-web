@@ -9,8 +9,9 @@ O painel atual exibe apenas uma lista básica de pendências e não oferece uma 
 - Adicionar documentos de exemplo fictícios, sem abrir o seletor de arquivos do sistema.
 - Simular a análise com etapas animadas e anunciadas, sem IA real.
 - Exibir o resultado da análise com score, achados e estados de vazio, erro e sucesso.
-- Criar a Central de Downloads com relatórios gerados e modelos de documentos em PDF.
-- Gerar PDFs fictícios localmente no navegador, com aviso explícito de demonstração.
+- Criar a Central de Downloads com relatórios gerados e modelos de documentos em PDF, DOCX e TXT.
+- Gerar arquivos fictícios localmente no navegador, com aviso explícito de demonstração.
+- Rolar a tela até o processamento assim que a análise simulada começar.
 - Reutilizar o painel de achados no `/dashboard` e linkar para a Central de Documentos.
 - Atualizar `DESIGN.md`, `AGENTS.md`, `README.md` e os artefatos OpenSpec.
 
@@ -34,6 +35,6 @@ Fora de escopo:
 ## Impact
 
 - **Rotas:** nova rota `/documents`; `ProductHeader` passa a exibir o link “Documentos”.
-- **Código:** novos tipos, conteúdo, lib de PDF, mocks, service, componentes de documentos, página e atualização do dashboard.
-- **Dependências:** nenhuma nova biblioteca; o PDF é gerado com uma implementação local.
-- **Risco:** a análise e os PDFs parecem reais, mas são fictícios. A copy, os estados e os avisos devem deixar isso explícito.
+- **Código:** novos tipos, conteúdo, libs de PDF/DOCX/TXT, mocks, service, componentes de documentos, página e atualização do dashboard.
+- **Dependências:** nenhuma nova biblioteca; PDF, DOCX e TXT são gerados com implementações locais.
+- **Risco:** a análise e os arquivos parecem reais, mas são fictícios. A copy, os estados e os avisos devem deixar isso explícito.

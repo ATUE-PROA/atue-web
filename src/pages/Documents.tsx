@@ -10,7 +10,7 @@ import { ProductHeader } from '@/components/layout/product-header'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { ANALYSIS_STEPS, DOCUMENTS_CONTENT } from '@/content/documents'
-import { downloadPdf } from '@/lib/pdf'
+import { saveDocument } from '@/lib/download'
 import {
   analyzeDocument,
   getDownloadContent,
@@ -21,7 +21,9 @@ import type {
   AnalysisProgress as AnalysisProgressState,
   DocumentAnalysisResult as DocumentAnalysisResultData,
   DownloadFeedback,
+  DownloadFormat,
   DownloadItem,
+  PendingDownload,
   SampleDocument,
   SampleDocumentId,
 } from '@/types/documents.types'
@@ -37,6 +39,7 @@ const IDLE_PROGRESS: AnalysisProgressState = {
 
 export function Documents() {
   const isMountedRef = useRef(true)
+  const progressSectionRef = useRef<HTMLDivElement | null>(null)
   const [loadState, setLoadState] = useState<LoadState>('loading')
   const [reloadKey, setReloadKey] = useState(0)
   const [documents, setDocuments] = useState<SampleDocument[]>([])
@@ -46,7 +49,7 @@ export function Documents() {
   const [progress, setProgress] = useState<AnalysisProgressState>(IDLE_PROGRESS)
   const [result, setResult] = useState<DocumentAnalysisResultData | null>(null)
   const [analyzedIds, setAnalyzedIds] = useState<SampleDocumentId[]>([])
-  const [pendingDownloadId, setPendingDownloadId] = useState<string | null>(null)
+  const [pendingDownload, setPendingDownload] = useState<PendingDownload | null>(null)
   const [downloadFeedback, setDownloadFeedback] = useState<DownloadFeedback | null>(null)
 
   useEffect(() => {
@@ -56,6 +59,25 @@ export function Documents() {
       isMountedRef.current = false
     }
   }, [])
+
+  useEffect(() => {
+    if (analysisState !== 'running') {
+      return
+    }
+
+    const section = progressSectionRef.current
+
+    if (!section) {
+      return
+    }
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    section.scrollIntoView({
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      block: 'start',
+    })
+  }, [analysisState])
 
   useEffect(() => {
     let isActive = true
@@ -122,17 +144,17 @@ export function Documents() {
     }
   }
 
-  const handleDownload = async (item: DownloadItem) => {
-    if (pendingDownloadId !== null) {
+  const handleDownload = async (item: DownloadItem, format: DownloadFormat) => {
+    if (pendingDownload !== null) {
       return
     }
 
-    setPendingDownloadId(item.id)
+    setPendingDownload({ itemId: item.id, format })
     setDownloadFeedback(null)
 
     try {
       const content = await getDownloadContent(item.id)
-      downloadPdf(content, item.filename)
+      saveDocument(content, item.baseFilename, format)
 
       if (isMountedRef.current) {
         setDownloadFeedback({
@@ -151,7 +173,7 @@ export function Documents() {
       }
     } finally {
       if (isMountedRef.current) {
-        setPendingDownloadId(null)
+        setPendingDownload(null)
       }
     }
   }
@@ -228,7 +250,7 @@ export function Documents() {
             </div>
 
             {analysisState === 'running' || analysisState === 'error' ? (
-              <div className="mt-6">
+              <div ref={progressSectionRef} className="mt-6 scroll-mt-20">
                 <AnalysisProgress steps={ANALYSIS_STEPS} progress={progress} />
               </div>
             ) : null}
@@ -242,10 +264,10 @@ export function Documents() {
             <div className="mt-6">
               <DownloadCenter
                 items={downloads}
-                pendingId={pendingDownloadId}
+                pending={pendingDownload}
                 feedback={downloadFeedback}
-                onDownload={(item) => {
-                  void handleDownload(item)
+                onDownload={(item, format) => {
+                  void handleDownload(item, format)
                 }}
               />
             </div>

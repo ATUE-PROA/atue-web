@@ -41,3 +41,13 @@
 - [x] 5.4 Rodar `npm run lint`, `npm run build` e Prettier nos arquivos alterados.
 - [x] 5.5 Verificar a análise, os downloads, o dashboard, os temas e os breakpoints no navegador.
 - [x] 5.6 Revisar o diff, publicar a branch e abrir PR para revisão.
+
+## 6. Ajustes de UX e formatos de download
+
+- [x] 6.1 Rolar a tela até o cartão de processamento ao iniciar a análise, respeitando `prefers-reduced-motion`.
+- [x] 6.2 Criar `DropdownMenu` acessível e usar um menu de formatos por item da Central de Downloads.
+- [x] 6.3 Oferecer PDF, DOCX e TXT com descrição de uso, estado pendente e extensão correta.
+- [x] 6.4 Criar `src/lib/docx.ts` com pacote OOXML/ZIP válido e `src/lib/text.ts` com texto UTF-8.
+- [x] 6.5 Centralizar a geração e o download em `src/lib/download.ts` e atualizar mocks e tipos.
+- [x] 6.6 Atualizar `README.md`, `DESIGN.md`, `AGENTS.md` e os artefatos OpenSpec.
+- [x] 6.7 Validar DOCX (ZIP/XML), TXT e PDF, além do scroll e do layout em desktop e mobile.
