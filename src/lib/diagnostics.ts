@@ -1,4 +1,16 @@
+import { z } from 'zod'
+
+import {
+  InvalidApiPayloadError,
+  isRecord,
+  readOptionalString,
+  readRequiredArray,
+  readRequiredNumber,
+  readRequiredString,
+} from '@/lib/api'
+import { isValidDomain } from '@/lib/domain'
 import type {
+  DiagnosticRequest,
   DiagnosticReport,
   DiagnosticStatus,
   DiagnosticSummary,
@@ -12,12 +24,19 @@ const SEVERITY_WEIGHT: Record<IssueSeverity, number> = {
   baixa: 2,
 }
 
+export const SEVERITY_ORDER: readonly IssueSeverity[] = ['alta', 'media', 'baixa']
+
 export interface ScoreLevel {
   label: string
   dotClassName: string
   textClassName: string
   barClassName: string
   chartColor: string
+}
+
+export interface IssueSeverityGroup {
+  severity: IssueSeverity
+  issues: IssueCategory[]
 }
 
 export function getScoreLevel(score: number): ScoreLevel {
@@ -98,6 +117,19 @@ export function sortIssuesBySeverity(issues: readonly IssueCategory[]): IssueCat
   })
 }
 
+export const diagnosticRequestSchema: z.ZodType<DiagnosticRequest, DiagnosticRequest> = z.object({
+  url: z.string().trim().min(1, { message: 'Informe a URL do site.' }).refine(isValidDomain, {
+    message: 'Informe uma URL válida, como https://exemplo.com.br.',
+  }),
+})
+
+export function groupIssuesBySeverity(issues: readonly IssueCategory[]): IssueSeverityGroup[] {
+  return SEVERITY_ORDER.map((severity) => ({
+    severity,
+    issues: sortIssuesBySeverity(issues.filter((issue) => issue.severity === severity)),
+  })).filter((group) => group.issues.length > 0)
+}
+
 export function cloneDiagnosticReport(report: DiagnosticReport): DiagnosticReport {
   return {
     ...report,
@@ -106,5 +138,51 @@ export function cloneDiagnosticReport(report: DiagnosticReport): DiagnosticRepor
       bySeverity: { ...report.summary.bySeverity },
     },
     issues: report.issues.map((issue) => ({ ...issue })),
+  }
+}
+
+function readSeverity(value: unknown): IssueSeverity {
+  if (value === 'alta' || value === 'media' || value === 'baixa') {
+    return value
+  }
+
+  throw new InvalidApiPayloadError(
+    'A API retornou um achado sem severidade. O contrato esperado exige "alta", "media" ou "baixa".',
+  )
+}
+
+function parseIssueCategory(payload: unknown): IssueCategory {
+  if (!isRecord(payload)) {
+    throw new InvalidApiPayloadError('A API retornou um achado inválido.')
+  }
+
+  return {
+    id: readRequiredString(payload, 'id'),
+    name: readRequiredString(payload, 'name'),
+    category: readOptionalString(payload, 'category'),
+    severity: readSeverity(payload.severity),
+    description: readOptionalString(payload, 'description'),
+    explanation: readOptionalString(payload, 'explanation'),
+    recommendation: readOptionalString(payload, 'recommendation'),
+  }
+}
+
+export function parseDiagnosticReport(payload: unknown): DiagnosticReport {
+  if (!isRecord(payload)) {
+    throw new InvalidApiPayloadError('A API retornou um diagnóstico inválido.')
+  }
+
+  const issues = readRequiredArray(payload, 'issues').map(parseIssueCategory)
+  const score = readRequiredNumber(payload, 'score')
+
+  return {
+    id: readRequiredString(payload, 'id'),
+    organizationId: readRequiredString(payload, 'organizationId'),
+    score,
+    status: getStatusFromScore(score),
+    createdAt: readRequiredString(payload, 'createdAt'),
+    summary: summarizeIssues(issues),
+    issues,
+    degraded: payload.degraded === true,
   }
 }
