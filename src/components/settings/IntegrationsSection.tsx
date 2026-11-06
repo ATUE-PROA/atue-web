@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { CheckCircle2, Link2, Loader2, MessageSquare, Search } from 'lucide-react'
 
-import { SettingsSection } from '@/components/settings/SettingsSection'
+import { SectionCard } from '@/components/ui/section-card'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { SETTINGS_CONTENT } from '@/content/settings'
@@ -53,10 +53,7 @@ export function IntegrationsSection({ initialIntegrations }: IntegrationsSection
   }
 
   return (
-    <SettingsSection
-      title={integrationsContent.title}
-      description={integrationsContent.description}
-    >
+    <SectionCard title={integrationsContent.title} description={integrationsContent.description}>
       <ul className="divide-y divide-border">
         {integrations.map((integration) => {
           const content = integrationsContent.items[integration.id]
@@ -132,6 +129,6 @@ export function IntegrationsSection({ initialIntegrations }: IntegrationsSection
       <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
         {integrationsContent.moreLabel}
       </p>
-    </SettingsSection>
+    </SectionCard>
   )
 }

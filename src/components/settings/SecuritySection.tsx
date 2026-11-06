@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Loader2 } from 'lucide-react'
 
-import { SettingsSection } from '@/components/settings/SettingsSection'
+import { SectionCard } from '@/components/ui/section-card'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { FormField } from '@/components/ui/form-field'
@@ -58,7 +58,7 @@ export function SecuritySection() {
   }
 
   return (
-    <SettingsSection title={security.title} description={security.description}>
+    <SectionCard title={security.title} description={security.description}>
       <div className="space-y-4">
         <FormField
           label={security.fields.currentPassword.label}
@@ -137,6 +137,6 @@ export function SecuritySection() {
           </span>
         </div>
       </div>
-    </SettingsSection>
+    </SectionCard>
   )
 }

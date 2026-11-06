@@ -1,6 +1,6 @@
 import { Controller, useFormContext } from 'react-hook-form'
 
-import { SettingsSection } from '@/components/settings/SettingsSection'
+import { SectionCard } from '@/components/ui/section-card'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { SETTINGS_CONTENT } from '@/content/settings'
@@ -27,7 +27,7 @@ export function NotificationsSection() {
   const { control } = useFormContext<AccountSettingsValues>()
 
   return (
-    <SettingsSection title={notifications.title} description={notifications.description}>
+    <SectionCard title={notifications.title} description={notifications.description}>
       <ul className="divide-y divide-border">
         {notificationFields.map((item) => {
           const fieldId = `notification-${item.name}`
@@ -59,6 +59,6 @@ export function NotificationsSection() {
           )
         })}
       </ul>
-    </SettingsSection>
+    </SectionCard>
   )
 }

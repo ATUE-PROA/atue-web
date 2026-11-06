@@ -71,7 +71,7 @@ Follow the existing directory structure. If no clear structure exists, establish
 - Use Lucide React for interface icons.
 - Maintain consistent spacing, typography, colors, borders, and interaction states.
 - Follow `DESIGN.md` for surfaces, color roles, typography, spacing, radius, component recipes, states, and the design PR checklist.
-- Reuse the shared primitives documented in `DESIGN.md` (for example `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `ProductHeader`, `BrandLink`, `Switch`, `NativeSelect`, `AlertDialog`, `SettingsSection`) before creating local implementations.
+- Reuse the shared primitives documented in `DESIGN.md` (for example `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `ProductHeader`, `BrandLink`, `Switch`, `NativeSelect`, `AlertDialog`, `SectionCard`) before creating local implementations.
 - Ensure responsive behavior across mobile and desktop viewports.
 - Avoid unnecessary inline styles, duplicated styling rules, and new CSS frameworks.
 - Do not modify global design tokens or shared components to solve a local problem unless the change is intentional and compatible with other screens.
@@ -102,6 +102,7 @@ Backend availability must not block frontend development.
 - Do not silently replace failed production requests with mock responses.
 - Handle loading, success, empty, and error states explicitly.
 - Keep API base URLs and environment-specific configuration outside application logic, using Vite environment variables where appropriate.
+- Local file previews (for example a profile photo) must validate type and size, revoke object URLs, and state explicitly that the file is not uploaded or persisted.
 - Never commit secrets, API keys, access tokens, or credentials.
 
 Mocks must reflect plausible domain entities and consistent relationships. Do not present simulated data as verified production data.
@@ -118,6 +119,7 @@ When the backend contract changes, update the corresponding types, services, and
 - Prevent duplicate submissions when appropriate.
 - Provide clear submission, success, and failure feedback.
 - Preserve user input when an operation fails, unless there is a specific reason not to.
+- Multiple submit triggers are acceptable only when they send the same payload, disable together, and share feedback.
 - Do not report a successful save when the operation has only been simulated.
 - Require an accessible `AlertDialog` confirmation before destructive or irreversible actions, and state explicitly when the action is simulated.
 

@@ -2,25 +2,25 @@ import { useId, type ReactNode } from 'react'
 
 import { cn } from '@/lib/utils'
 
-type SettingsSectionTone = 'default' | 'danger'
+type SectionCardTone = 'default' | 'danger'
 
-interface SettingsSectionProps {
+interface SectionCardProps {
   title: string
-  description: string
+  description?: string
   children: ReactNode
-  tone?: SettingsSectionTone
+  tone?: SectionCardTone
   id?: string
   className?: string
 }
 
-export function SettingsSection({
+export function SectionCard({
   title,
   description,
   children,
   tone = 'default',
   id,
   className,
-}: SettingsSectionProps) {
+}: SectionCardProps) {
   const generatedId = useId()
   const headingId = id ?? generatedId
 
@@ -42,9 +42,13 @@ export function SettingsSection({
       >
         {title}
       </h2>
-      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
+      {description ? (
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
+      ) : null}
 
       <div className="mt-5">{children}</div>
     </section>
   )
 }
+
+export type { SectionCardProps }
