@@ -64,6 +64,8 @@ Do not create types that merely mirror a copy object. Define copy with `as const
 
 Follow the existing directory structure. If no clear structure exists, establish a minimal organization aligned with the features actually implemented.
 
+Every route added to the SPA must be reachable through a visible control on at least one other screen and must offer a clear path back. Keep shared navigation links revisable in `src/content/navigation.ts` and reuse the layout footer and cross-link components instead of duplicating link lists per page.
+
 ### 3.3. Styling and Design
 
 - Use Tailwind CSS utility classes for application styling.
@@ -107,8 +109,8 @@ Backend availability must not block frontend development.
 
 Simulated document analysis:
 
-- Do not use a real file input, file picker, `File`/`FileReader`, or upload endpoint for the document center unless a real backend contract exists and the requirement explicitly asks for it.
-- Use fictitious sample documents and a `NativeSelect`; state in the interface that no device file is read, sent, or stored.
+- A real file input may be used as an attach control only when the requirement explicitly asks for it. Never read file contents, use `FileReader`, or send files to an upload endpoint without a real backend contract; use only file metadata (name, size, extension), validate accepted types and size, and state clearly that nothing is uploaded, stored, or processed by a real model.
+- Keep fictitious sample documents and a `NativeSelect` as an alternative path; state in the interface when the file remains on the device.
 - Model the analysis as deterministic steps in the service layer with typed progress callbacks. Do not present it as real AI or as a verified legal assessment.
 - Block duplicate submissions, expose the current step through an accessible status region, and support `prefers-reduced-motion`. When starting the analysis, scroll to the progress card with smooth behavior and fall back to instant scrolling under reduced motion.
 - Keep the analysis result in the shared mock state only when the workflow requires other screens to reflect it; label everything as demonstration data.
@@ -118,6 +120,7 @@ Local document generation:
 - Generate files in the browser only when a real document service is unavailable. Prefer small typed generators in `src/lib` over adding a dependency for simple reports.
 - Support only formats the project can generate reliably and explain when each one is useful. Current formats: PDF (sharing), DOCX (editing in Word/Google Docs) and TXT (plain text).
 - Generate DOCX as a valid OOXML/ZIP package with the standard parts and UTF-8 encoding; do not emit HTML renamed to `.docx`.
+- Keep typography, metadata, pagination, headers, footers and section hierarchy consistent across formats so generated files look professional and can be shared in a business context.
 - Include an explicit demonstration notice in every format and never imply legal validity or official certification.
 - Create and revoke object URLs, avoid storing documents, and surface preparing, success, and error states.
 - Keep generated content aligned with the same typed contracts and copy used by the interface.
