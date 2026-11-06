@@ -35,10 +35,10 @@ export function ProductHeader() {
         <Link
           to="/plans"
           aria-label={`Plano atual: ${planLabel}. Ver planos`}
-          className="mr-1 hidden items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background md:inline-flex dark:focus-visible:ring-blue-400/60"
+          className="mr-1 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:focus-visible:ring-blue-400/60"
         >
           <CreditCard aria-hidden="true" className="size-3.5" />
-          {planLabel}
+          <span className="hidden md:inline">{planLabel}</span>
         </Link>
 
         <NavLink

@@ -438,19 +438,6 @@ Os geradores locais (`src/lib/pdf.ts`, `src/lib/docx.ts`, `src/lib/text.ts`) com
 - Os três formatos devem incluir aviso de demonstração e não podem sugerir validade legal. Nenhum arquivo é enviado ou armazenado.
 - O conteúdo de relatórios e modelos deve ser revisável em `src/content/documents.ts` e `src/mocks/documents.ts`, com seções completas, referência, versão e linguagem de recomendação.
 
-### 6.23 Planos, assinatura simulada e ambiente de teste
-
-Use `src/pages/Plans.tsx`, `PlanProvider` (`src/contexts/PlanProvider.tsx`) e `SubscriptionPrompt` (`src/components/plans/SubscriptionPrompt.tsx`) como referência para o fluxo de acesso por plano.
-
-- Login e cadastro encaminham para `/plans`. A escolha do plano é o próximo passo, não o painel.
-- Ao escolher um plano autenticado, `SubscriptionPrompt` desce do topo com um card de confirmação. O CTA “Assinar {plano}” ativa o plano em memória e leva ao painel; “Agora não” fecha sem alterar o estado.
-- Abaixo dos cards de plano, a opção “Testar ambiente” é discreta (`Button variant="ghost" size="lg"` com `FlaskConical`) e libera o plano Início com dados fictícios, sem cobrança.
-- O card de assinatura usa `fixed inset-x-0 top-16 z-40`, `max-w-3xl`, `rounded-xl border border-blue-600/30 bg-card p-4 shadow-lg`, `role="status"` e `animate-in fade-in slide-in-from-top-4 duration-300 motion-reduce:animate-none`. Não cubra o cabeçalho sticky (`h-16`).
-- O fechamento aceita o botão “Agora não”, o ícone `X` com nome acessível e a tecla Escape. A troca de rota também fecha o card; rotas de produto sem plano reabrem o pedido.
-- Use o mesmo card para bloquear recursos de planos superiores, como integrações e download de relatórios detalhados. Nunca esconda o recurso nem simule sucesso sem acesso.
-- Acesso sem plano a `/dashboard`, `/documents`, `/profile` ou `/settings` também abre o card pedindo assinatura; a tela permanece visível para contextualizar o recurso.
-- O chip do `ProductHeader` e o botão do `PublicHeader` refletem o estado: “Sem plano ativo”, “Ambiente de teste” ou o nome do plano. O destino é `/plans` enquanto não houver acesso e `/dashboard` depois dele.
-- Toda a assinatura é simulada e vive apenas em memória. A copy deve dizer que nenhuma cobrança é realizada e que recarregar a página volta ao estado sem plano.
 ### 6.23 Dashboard e diagnóstico
 
 Use `src/pages/Dashboard.tsx` como referência para a tela `/dashboard`.
@@ -461,6 +448,22 @@ Use `src/pages/Dashboard.tsx` como referência para a tela `/dashboard`.
 - Quando o relatório retorna `degraded: true`, exiba `FormAlert tone="info"` explicando que o resumo veio do catálogo de referência e pode estar incompleto. O mesmo aviso aparece no resultado da análise de documentos.
 - Sem diagnóstico carregado, mostre um estado vazio com instrução para gerar o primeiro diagnóstico; não exiba score `0` como se fosse um resultado real.
 - Enquanto a Core API não expõe a leitura do histórico, `getDiagnostic` retorna `null` com `VITE_API_URL` preenchida. A tela então apresenta o estado vazio e mantém o formulário como caminho para um novo diagnóstico.
+- `DemoScenarioCards` (`src/components/diagnostics/DemoScenarioCards.tsx`) apresenta três cenários fictícios como cartões acionáveis. Cada cartão mostra empresa, setor, descrição e score, usa `aria-pressed` para o cenário ativo e nunca afirma que um site real foi acessado.
+- `ScanTerminal` (`src/components/diagnostics/ScanTerminal.tsx`) exibe um registro simulado com `role="log"` e `aria-live="polite"`, revelando linhas entre 3 e 7 segundos. Com `prefers-reduced-motion`, todas as linhas aparecem de imediato. A copy deixa explícito que nenhum site é acessado e nenhuma IA real é executada.
+
+### 6.24 Planos, assinatura simulada e ambiente de teste
+
+Use `src/pages/Plans.tsx`, `PlanProvider` (`src/contexts/PlanProvider.tsx`) e `SubscriptionPrompt` (`src/components/plans/SubscriptionPrompt.tsx`) como referência para o fluxo de acesso por plano.
+
+- Login e cadastro encaminham para `/plans`. A escolha do plano é o próximo passo, não o painel.
+- Ao escolher um plano autenticado, `SubscriptionPrompt` desce do topo com um card de confirmação. O CTA “Assinar {plano}” ativa o plano em memória e leva ao painel; “Agora não” fecha sem alterar o estado.
+- Abaixo dos cards de plano, a opção “Testar ambiente” é discreta (`Button variant="ghost" size="lg"` com `FlaskConical`) e libera o plano Início com dados fictícios, sem cobrança.
+- O card de assinatura usa `fixed inset-x-0 top-16 z-40`, `max-w-3xl`, `rounded-xl border border-blue-600/30 bg-card p-4 shadow-lg`, `role="status"` e `animate-in fade-in slide-in-from-top-4 duration-300 motion-reduce:animate-none`. Não cubra o cabeçalho sticky (`h-16`).
+- O fechamento aceita o botão “Agora não”, o ícone `X` com nome acessível e a tecla Escape. A troca de rota também fecha o card; rotas de produto sem plano reabrem o pedido.
+- Use o mesmo card para bloquear recursos de planos superiores, como integrações e download de relatórios detalhados. Nunca esconda o recurso nem simule sucesso sem acesso.
+- Acesso sem plano a `/dashboard`, `/documents`, `/profile` ou `/settings` também abre o card pedindo assinatura; a tela permanece visível para contextualizar o recurso.
+- O chip do `ProductHeader` e o botão do `PublicHeader` refletem o estado: “Sem plano ativo”, “Ambiente de teste” ou o nome do plano. O destino é `/plans` enquanto não houver acesso e `/dashboard` depois dele. Em telas estreitas, o chip mantém o ícone e oculta o rótulo, preservando o `aria-label`.
+- Toda a assinatura é simulada e vive apenas em memória. A copy deve dizer que nenhuma cobrança é realizada e que recarregar a página volta ao estado sem plano.
 
 ---
 
