@@ -46,6 +46,29 @@ rota -> página -> componente de feature -> service -> mock ou API
 
 O dashboard consome `services/diagnostic.ts`, que delega para `mocks/diagnostics.ts`. A Central de Documentos usa `services/documents.ts` e compartilha o mesmo estado de diagnóstico em memória. Nenhum componente importa mocks diretamente.
 
+## Navegação e rotas
+
+Todas as telas estão conectadas por links visíveis. Os destinos compartilhados ficam em `src/content/navigation.ts`; a área logada usa `ProductHeader` + `ProductFooter`, e as páginas internas usam `CrossLinks` para atalhos contextuais.
+
+| Rota         | Superfície | Principais conexões                                                        |
+| ------------ | ---------- | -------------------------------------------------------------------------- |
+| `/`          | pública    | Planos, cadastro, login, envio de documentos e contato                     |
+| `/register`  | pública    | Login, planos e site; sucesso leva ao painel                               |
+| `/login`     | pública    | Cadastro, planos e site; sucesso leva ao painel                            |
+| `/form`      | pública    | Site, login, cadastro, planos, painel e Central de Documentos após o envio |
+| `/plans`     | pública    | Site, login, cadastro e envio de documentos                                |
+| `/dashboard` | produto    | Documentos, envio, planos, perfil, configurações e site                    |
+| `/documents` | produto    | Painel, envio, preferências de relatório, planos, perfil e configurações   |
+| `/profile`   | produto    | Painel, documentos, configurações, planos e site                           |
+| `/settings`  | produto    | Painel, documentos, perfil, planos e site                                  |
+| 404          | pública    | Início, painel, documentos, planos e login                                 |
+
+```text
+src/
+  content/navigation.ts      destinos compartilhados do rodapé e dos atalhos
+  components/layout/         cabeçalho e rodapé compartilhados, CrossLinks
+```
+
 ## Estrutura
 
 ```text
@@ -83,11 +106,12 @@ Os fluxos válidos criam uma sessão em memória e navegam para `/dashboard`. Os
 
 ## Envio de documentos
 
-A rota `/form` usa `AuthLayout`, `FormBrandPanel` e `DocumentForm` para coletar a URL do site, os dados da empresa e os documentos de conformidade.
+A rota `/form` usa `AuthLayout`, `FormBrandPanel` e `DocumentForm` para coletar a URL do site, os dados da empresa e os documentos de conformidade. É acessada pela landing, pelo rodapé público, pelo painel e pelo rodapé da área logada.
 
 - O CNPJ é validado localmente e consultado em `https://api.opencnpj.org` por `services/cnpj.ts`.
 - Quando a consulta retorna dados, a razão social e o e-mail disponíveis preenchem os campos correspondentes; a pessoa pode revisar e editar.
 - O envio dos dados e arquivos é simulado por `services/form.ts`. Nenhum arquivo é armazenado.
+- Após o sucesso, a pessoa recebe atalhos para o painel e para a Central de Documentos; login, cadastro e planos também estão disponíveis no formulário.
 
 ## Planos
 
@@ -115,14 +139,15 @@ A rota `/profile` reúne dados pessoais, contato, dados da empresa e responsáve
 
 ## Central de Documentos
 
-A rota `/documents` concentra o painel de achados, a análise simulada de documentos fictícios e a Central de Downloads. É acessada pelo link “Documentos” do `ProductHeader` e por atalhos no `/dashboard`.
+A rota `/documents` concentra o painel de achados, a análise simulada de documentos e a Central de Downloads. É acessada pelo link “Documentos” do `ProductHeader`, por atalhos no `/dashboard`, pelo `ProductFooter`, por `CrossLinks` na própria página e por links no perfil e nas configurações.
 
 - `services/documents.ts` é a fronteira de dados; `mocks/documents.ts` mantém documentos, relatórios e modelos em memória.
-- A pessoa escolhe um documento de exemplo em um `NativeSelect`; nenhum `input type="file"` é usado e nenhum arquivo do dispositivo é lido, enviado ou armazenado.
-- `analyzeDocument` executa etapas determinísticas com atraso e devolve o progresso por callback. Ao iniciar, a página rola suavemente até o cartão de processamento (ou de forma imediata com `prefers-reduced-motion`), anuncia a etapa atual em uma região `aria-live` e bloqueia envios duplicados.
+- A entrada principal é o botão “Anexar documento”, que aciona um `input type="file"` apenas como controle de anexo. PDF, DOC, DOCX e TXT de até 10 MB são aceitos; o arquivo permanece no dispositivo e somente nome, tipo e tamanho são usados. Nenhum conteúdo é lido, enviado ou armazenado.
+- Um `NativeSelect` e a lista lateral oferecem documentos fictícios como alternativa de demonstração. O campo de exemplo fica desabilitado enquanto houver arquivo anexado.
+- “Analisar com IA” inicia a análise simulada; a tela informa que não há modelo real. `analyzeDocument` recebe um alvo tipado (arquivo local ou exemplo) e executa etapas determinísticas com atraso, devolvendo o progresso por callback. Ao iniciar, a página rola suavemente até o cartão de processamento (ou de forma imediata com `prefers-reduced-motion`), anuncia a etapa atual em uma região `aria-live` e bloqueia envios duplicados.
 - Ao concluir, o resultado atualiza o diagnóstico compartilhado em `mocks/diagnostics.ts`; o `/dashboard` passa a exibir o mesmo score e os mesmos achados.
 - Cada achado tem severidade, categoria, explicação simulada e recomendação, exibidas em um `<details>` acessível.
-- `src/lib/pdf.ts`, `src/lib/docx.ts` e `src/lib/text.ts` geram PDF, DOCX e TXT válidos no navegador a partir do mesmo contrato `DownloadContent`. O DOCX é um pacote OOXML/ZIP criado sem biblioteca externa; o PDF usa Helvetica/WinAnsi e paginação própria.
+- `src/lib/pdf.ts`, `src/lib/docx.ts` e `src/lib/text.ts` geram PDF, DOCX e TXT válidos no navegador a partir do mesmo contrato `DownloadContent`. O PDF tem capa, métricas em grade, cabeçalho, rodapé e paginação; o DOCX é um pacote OOXML/ZIP com estilos, numeração, tabela de métricas, cabeçalho e rodapé; o TXT usa 78 colunas, cabeçalho, métricas com pontilhado e seções sublinhadas.
 - `src/lib/download.ts` centraliza a criação do `Blob`, a troca de extensão e o link temporário com revogação do object URL. Nenhum arquivo é armazenado.
 - A Central de Downloads lista relatórios gerados e modelos fictícios. Cada item abre um menu acessível com PDF, DOCX e TXT. Todos os arquivos contêm aviso de demonstração e não têm validade legal.
 
@@ -138,5 +163,5 @@ A rota `/documents` concentra o painel de achados, a análise simulada de docume
 - Sem test runner configurado; a validação é feita por lint, build e verificação manual.
 - As configurações da conta são simuladas e voltam ao estado inicial ao recarregar a página.
 - O perfil da conta também é simulado: salvar altera apenas o estado em memória e a foto não é enviada nem persistida.
-- A análise de documentos, os achados e a IA são simulações locais. Nenhum arquivo real é lido, enviado ou armazenado.
+- A análise de documentos, os achados e a IA são simulações locais. O arquivo anexado permanece no dispositivo e somente metadados são usados; nenhum conteúdo real é lido, enviado ou armazenado.
 - Os PDFs, DOCX e TXT são gerados no navegador com marca de demonstração e não representam relatórios oficiais nem garantia de conformidade.
