@@ -1,4 +1,4 @@
-import type { DiagnosticReport, UserToken } from '@/types/api'
+import type { UserToken } from '@/types/api'
 import type { CadastroFormValues } from '@/types/cadastro.types'
 import type { FormSubmission, FormValues } from '@/types/form.types'
 import type { LoginFormValues } from '@/types/login.types'
@@ -9,26 +9,6 @@ function resolveAfter<T>(value: T): Promise<T> {
   return new Promise((resolve) => {
     setTimeout(() => resolve(value), MOCK_DELAY_MS)
   })
-}
-
-const mockDiagnosticReport: DiagnosticReport = {
-  id: 'diag-789',
-  organizationId: 'org-456',
-  score: 80,
-  status: 'amarelo',
-  createdAt: new Date().toISOString(),
-  issues: [
-    {
-      id: '1',
-      name: 'Política de Privacidade',
-      description: 'Documento não encontrado no site.',
-    },
-    {
-      id: '2',
-      name: 'Cookies',
-      description: 'Banner de cookies ausente.',
-    },
-  ],
 }
 
 export function mockSignUp(payload: CadastroFormValues): Promise<UserToken> {
@@ -53,10 +33,6 @@ export function mockSignIn(payload: LoginFormValues): Promise<UserToken> {
       organizationId: 'org-456',
     },
   })
-}
-
-export function mockGetDiagnostic(): Promise<DiagnosticReport> {
-  return resolveAfter(mockDiagnosticReport)
 }
 
 export function mockSubmitForm(payload: FormValues): Promise<FormSubmission> {

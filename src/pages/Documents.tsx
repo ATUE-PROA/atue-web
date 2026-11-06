@@ -1,0 +1,257 @@
+import { useEffect, useRef, useState } from 'react'
+import { Loader2 } from 'lucide-react'
+
+import { AnalysisProgress } from '@/components/documents/AnalysisProgress'
+import { DocumentAnalysisResult } from '@/components/documents/DocumentAnalysisResult'
+import { DocumentsList } from '@/components/documents/DocumentsList'
+import { DocumentUploadCard } from '@/components/documents/DocumentUploadCard'
+import { DownloadCenter } from '@/components/documents/DownloadCenter'
+import { ProductHeader } from '@/components/layout/product-header'
+import { Button } from '@/components/ui/button'
+import { FormAlert } from '@/components/ui/form-alert'
+import { ANALYSIS_STEPS, DOCUMENTS_CONTENT } from '@/content/documents'
+import { downloadPdf } from '@/lib/pdf'
+import {
+  analyzeDocument,
+  getDownloadContent,
+  getDownloads,
+  getDocuments,
+} from '@/services/documents'
+import type {
+  AnalysisProgress as AnalysisProgressState,
+  DocumentAnalysisResult as DocumentAnalysisResultData,
+  DownloadFeedback,
+  DownloadItem,
+  SampleDocument,
+  SampleDocumentId,
+} from '@/types/documents.types'
+
+type LoadState = 'loading' | 'ready' | 'error'
+type AnalysisState = 'idle' | 'running' | 'success' | 'error'
+
+const IDLE_PROGRESS: AnalysisProgressState = {
+  stepIndex: 0,
+  progress: 0,
+  status: 'idle',
+}
+
+export function Documents() {
+  const isMountedRef = useRef(true)
+  const [loadState, setLoadState] = useState<LoadState>('loading')
+  const [reloadKey, setReloadKey] = useState(0)
+  const [documents, setDocuments] = useState<SampleDocument[]>([])
+  const [downloads, setDownloads] = useState<DownloadItem[]>([])
+  const [selectedId, setSelectedId] = useState<SampleDocumentId | null>(null)
+  const [analysisState, setAnalysisState] = useState<AnalysisState>('idle')
+  const [progress, setProgress] = useState<AnalysisProgressState>(IDLE_PROGRESS)
+  const [result, setResult] = useState<DocumentAnalysisResultData | null>(null)
+  const [analyzedIds, setAnalyzedIds] = useState<SampleDocumentId[]>([])
+  const [pendingDownloadId, setPendingDownloadId] = useState<string | null>(null)
+  const [downloadFeedback, setDownloadFeedback] = useState<DownloadFeedback | null>(null)
+
+  useEffect(() => {
+    isMountedRef.current = true
+
+    return () => {
+      isMountedRef.current = false
+    }
+  }, [])
+
+  useEffect(() => {
+    let isActive = true
+
+    Promise.all([getDocuments(), getDownloads()])
+      .then(([documentList, downloadList]) => {
+        if (!isActive) {
+          return
+        }
+
+        setDocuments(documentList)
+        setDownloads(downloadList)
+        setSelectedId((current) => current ?? documentList[0]?.id ?? null)
+        setLoadState('ready')
+      })
+      .catch(() => {
+        if (isActive) {
+          setLoadState('error')
+        }
+      })
+
+    return () => {
+      isActive = false
+    }
+  }, [reloadKey])
+
+  const handleAnalyze = async () => {
+    if (!selectedId || analysisState === 'running') {
+      return
+    }
+
+    setAnalysisState('running')
+    setProgress({ stepIndex: 0, progress: 0, status: 'running' })
+    setResult(null)
+    setDownloadFeedback(null)
+
+    try {
+      const analysis = await analyzeDocument(selectedId, (nextProgress) => {
+        if (isMountedRef.current) {
+          setProgress(nextProgress)
+        }
+      })
+
+      if (!isMountedRef.current) {
+        return
+      }
+
+      setResult(analysis)
+      setAnalyzedIds((current) =>
+        current.includes(selectedId) ? current : [...current, selectedId],
+      )
+      setAnalysisState('success')
+
+      const updatedDownloads = await getDownloads()
+
+      if (isMountedRef.current) {
+        setDownloads(updatedDownloads)
+      }
+    } catch {
+      if (isMountedRef.current) {
+        setAnalysisState('error')
+        setProgress((current) => ({ ...current, status: 'error' }))
+      }
+    }
+  }
+
+  const handleDownload = async (item: DownloadItem) => {
+    if (pendingDownloadId !== null) {
+      return
+    }
+
+    setPendingDownloadId(item.id)
+    setDownloadFeedback(null)
+
+    try {
+      const content = await getDownloadContent(item.id)
+      downloadPdf(content, item.filename)
+
+      if (isMountedRef.current) {
+        setDownloadFeedback({
+          tone: 'success',
+          title: DOCUMENTS_CONTENT.downloads.successTitle,
+          description: DOCUMENTS_CONTENT.downloads.successDescription,
+        })
+      }
+    } catch {
+      if (isMountedRef.current) {
+        setDownloadFeedback({
+          tone: 'error',
+          title: DOCUMENTS_CONTENT.downloads.errorTitle,
+          description: DOCUMENTS_CONTENT.downloads.errorDescription,
+        })
+      }
+    } finally {
+      if (isMountedRef.current) {
+        setPendingDownloadId(null)
+      }
+    }
+  }
+
+  return (
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <ProductHeader />
+
+      <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-10 sm:py-14">
+        <header className="max-w-2xl">
+          <p className="text-xs font-medium tracking-[0.2em] text-blue-600 uppercase dark:text-blue-400">
+            {DOCUMENTS_CONTENT.eyebrow}
+          </p>
+          <h1 className="mt-3 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+            {DOCUMENTS_CONTENT.title}
+          </h1>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
+            {DOCUMENTS_CONTENT.description}
+          </p>
+        </header>
+
+        {loadState === 'loading' ? (
+          <div
+            role="status"
+            className="mt-10 flex items-center gap-2 rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground shadow-sm"
+          >
+            <Loader2
+              aria-hidden="true"
+              className="size-4 animate-spin motion-reduce:animate-none"
+            />
+            {DOCUMENTS_CONTENT.loading}
+          </div>
+        ) : null}
+
+        {loadState === 'error' ? (
+          <div className="mt-10 max-w-2xl">
+            <FormAlert
+              tone="error"
+              title={DOCUMENTS_CONTENT.loadErrorTitle}
+              description={DOCUMENTS_CONTENT.loadErrorDescription}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              className="mt-4"
+              onClick={() => {
+                setLoadState('loading')
+                setReloadKey((current) => current + 1)
+              }}
+            >
+              {DOCUMENTS_CONTENT.retryLabel}
+            </Button>
+          </div>
+        ) : null}
+
+        {loadState === 'ready' ? (
+          <>
+            <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-start">
+              <DocumentUploadCard
+                documents={documents}
+                selectedId={selectedId}
+                onSelect={setSelectedId}
+                onAnalyze={() => {
+                  void handleAnalyze()
+                }}
+                isAnalyzing={analysisState === 'running'}
+              />
+
+              <DocumentsList
+                documents={documents}
+                selectedId={selectedId}
+                analyzedIds={analyzedIds}
+              />
+            </div>
+
+            {analysisState === 'running' || analysisState === 'error' ? (
+              <div className="mt-6">
+                <AnalysisProgress steps={ANALYSIS_STEPS} progress={progress} />
+              </div>
+            ) : null}
+
+            {result ? (
+              <div className="mt-6">
+                <DocumentAnalysisResult result={result} />
+              </div>
+            ) : null}
+
+            <div className="mt-6">
+              <DownloadCenter
+                items={downloads}
+                pendingId={pendingDownloadId}
+                feedback={downloadFeedback}
+                onDownload={(item) => {
+                  void handleDownload(item)
+                }}
+              />
+            </div>
+          </>
+        ) : null}
+      </main>
+    </div>
+  )
+}
