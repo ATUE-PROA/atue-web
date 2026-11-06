@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AlertCircle, CheckCircle2, FileText, Loader2, Search } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
@@ -170,7 +171,17 @@ export function DocumentForm() {
       <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{formDescription}</p>
 
       {result === 'success' ? (
-        <FormAlert tone="success" title={successTitle} description={successDescription} />
+        <div>
+          <FormAlert tone="success" title={successTitle} description={successDescription} />
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Button asChild variant="outline" size="lg">
+              <Link to="/dashboard">Ir para o painel</Link>
+            </Button>
+            <Button asChild variant="ghost" size="lg">
+              <Link to="/documents">Abrir a Central de Documentos</Link>
+            </Button>
+          </div>
+        </div>
       ) : null}
 
       {result === 'error' ? (
@@ -348,6 +359,30 @@ export function DocumentForm() {
       </form>
 
       <p className="mt-5 text-xs leading-relaxed text-muted-foreground">{demoNotice}</p>
+
+      <p className="mt-3 text-sm text-muted-foreground">
+        Já tem uma conta?{' '}
+        <Link
+          to="/login"
+          className="rounded-md font-medium text-blue-700 transition-colors hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:text-blue-300 dark:hover:text-blue-200 dark:focus-visible:ring-blue-400/60"
+        >
+          Entrar
+        </Link>
+        {' · '}
+        <Link
+          to="/register"
+          className="rounded-md font-medium text-blue-700 transition-colors hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:text-blue-300 dark:hover:text-blue-200 dark:focus-visible:ring-blue-400/60"
+        >
+          Criar conta
+        </Link>
+        {' · '}
+        <Link
+          to="/plans"
+          className="rounded-md font-medium text-blue-700 transition-colors hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:text-blue-300 dark:hover:text-blue-200 dark:focus-visible:ring-blue-400/60"
+        >
+          Planos
+        </Link>
+      </p>
     </div>
   )
 }

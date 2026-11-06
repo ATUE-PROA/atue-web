@@ -1,12 +1,14 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts'
-import { Files, Loader2 } from 'lucide-react'
+import { ArrowUpRight, CreditCard, Files, Loader2, Upload } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { FindingsList } from '@/components/documents/FindingsList'
+import { ProductFooter } from '@/components/layout/product-footer'
 import { ProductHeader } from '@/components/layout/product-header'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
+import { DASHBOARD_SHORTCUTS } from '@/content/navigation'
 import { formatDocumentDateTime } from '@/lib/documents'
 import { getScoreLevel } from '@/lib/diagnostics'
 import { getDiagnostic } from '@/services/diagnostic'
@@ -14,11 +16,18 @@ import type { DiagnosticReport } from '@/types/api'
 
 type LoadState = 'loading' | 'ready' | 'error'
 
+const SHORTCUT_ICONS = {
+  '/documents': Files,
+  '/form': Upload,
+  '/plans': CreditCard,
+} as const
+
 function DashboardShell({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <ProductHeader />
-      <main className="mx-auto w-full max-w-6xl px-6 py-10">{children}</main>
+      <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-10">{children}</main>
+      <ProductFooter />
     </div>
   )
 }
@@ -117,14 +126,61 @@ export function Dashboard() {
             </span>
           </div>
 
-          <Button asChild variant="outline" size="lg" className="w-fit">
-            <Link to="/documents">
-              <Files aria-hidden="true" />
-              Central de Documentos
-            </Link>
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline" size="lg" className="w-fit">
+              <Link to="/form">
+                <Upload aria-hidden="true" />
+                Enviar documentos
+              </Link>
+            </Button>
+
+            <Button asChild variant="brand" size="lg" className="w-fit">
+              <Link to="/documents">
+                <Files aria-hidden="true" />
+                Central de Documentos
+              </Link>
+            </Button>
+          </div>
         </div>
       </header>
+
+      <section aria-labelledby="shortcuts-heading" className="mt-8">
+        <h2
+          id="shortcuts-heading"
+          className="text-xs font-medium tracking-wide text-muted-foreground uppercase"
+        >
+          Atalhos
+        </h2>
+
+        <ul className="mt-3 grid gap-3 sm:grid-cols-3">
+          {DASHBOARD_SHORTCUTS.map((shortcut) => {
+            const Icon = SHORTCUT_ICONS[shortcut.to]
+
+            return (
+              <li key={shortcut.to}>
+                <Link
+                  to={shortcut.to}
+                  className="group flex h-full flex-col rounded-xl border border-border bg-card p-4 shadow-sm transition-colors hover:border-blue-600/40 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:hover:border-blue-400/40 dark:focus-visible:ring-blue-400/60"
+                >
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="inline-flex size-8 items-center justify-center rounded-lg bg-blue-600/10 text-blue-700 dark:bg-blue-500/10 dark:text-blue-300">
+                      <Icon aria-hidden="true" className="size-4" />
+                    </span>
+                    <ArrowUpRight
+                      aria-hidden="true"
+                      className="size-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0"
+                    />
+                  </span>
+                  <span className="mt-3 text-sm font-medium text-foreground">{shortcut.label}</span>
+                  <span className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                    {shortcut.description}
+                  </span>
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
+      </section>
 
       <div className="mt-8 grid gap-6 md:grid-cols-2 md:items-start">
         <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-card p-6 shadow-sm">
