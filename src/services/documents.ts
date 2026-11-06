@@ -7,10 +7,10 @@ import {
 import type {
   AnalysisProgressListener,
   DocumentAnalysisResult,
+  DocumentAnalysisTarget,
   DownloadContent,
   DownloadItem,
   SampleDocument,
-  SampleDocumentId,
 } from '@/types/documents.types'
 
 export function getDocuments(): Promise<SampleDocument[]> {
@@ -18,10 +18,10 @@ export function getDocuments(): Promise<SampleDocument[]> {
 }
 
 export function analyzeDocument(
-  documentId: SampleDocumentId,
+  target: DocumentAnalysisTarget,
   onProgress?: AnalysisProgressListener,
 ): Promise<DocumentAnalysisResult> {
-  return mockAnalyzeDocument(documentId, onProgress)
+  return mockAnalyzeDocument(target, onProgress)
 }
 
 export function getDownloads(): Promise<DownloadItem[]> {
