@@ -1,8 +1,11 @@
-import { Files, LayoutDashboard, Settings, UserRound } from 'lucide-react'
-import { NavLink } from 'react-router-dom'
+import { CreditCard, Files, LayoutDashboard, Settings, UserRound } from 'lucide-react'
+import { Link, NavLink } from 'react-router-dom'
 
 import { BrandLink, SiteHeader } from '@/components/layout/site-header'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
+import { PLAN_GATE_CONTENT } from '@/content/plans'
+import { usePlan } from '@/contexts/plan-context'
+import { getPlanName } from '@/lib/plans'
 import { cn } from '@/lib/utils'
 
 const navLinkClasses =
@@ -18,10 +21,26 @@ function getNavLinkClassName({ isActive }: { isActive: boolean }): string {
 }
 
 export function ProductHeader() {
+  const { activePlan, isDemo } = usePlan()
+  const planLabel = isDemo
+    ? PLAN_GATE_CONTENT.demoBadge
+    : activePlan
+      ? getPlanName(activePlan)
+      : PLAN_GATE_CONTENT.noPlanLabel
+
   return (
     <SiteHeader>
       <BrandLink to="/dashboard" />
       <nav aria-label="Navegação da conta" className="flex items-center gap-1">
+        <Link
+          to="/plans"
+          aria-label={`Plano atual: ${planLabel}. Ver planos`}
+          className="mr-1 hidden items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background md:inline-flex dark:focus-visible:ring-blue-400/60"
+        >
+          <CreditCard aria-hidden="true" className="size-3.5" />
+          {planLabel}
+        </Link>
+
         <NavLink
           to="/dashboard"
           aria-label="Painel de controle"

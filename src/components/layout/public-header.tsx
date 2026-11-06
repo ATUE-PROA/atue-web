@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { LayoutDashboard, Menu, X } from 'lucide-react'
+import { CreditCard, LayoutDashboard, Menu, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { BrandLink, SiteHeader } from '@/components/layout/site-header'
@@ -7,6 +7,7 @@ import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { PUBLIC_NAV } from '@/content/navigation'
 import { useAuth } from '@/contexts/auth-context'
+import { usePlan } from '@/contexts/plan-context'
 
 const linkClasses =
   'rounded-md text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:focus-visible:ring-blue-400/60'
@@ -16,8 +17,13 @@ const mobileLinkClasses =
 
 export function PublicHeader() {
   const { user } = useAuth()
+  const { activePlan } = usePlan()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
+
+  const sessionTarget = activePlan ? '/dashboard' : '/plans'
+  const sessionLabel = activePlan ? 'Dashboard' : 'Planos'
+  const SessionIcon = activePlan ? LayoutDashboard : CreditCard
 
   useEffect(() => {
     if (!isMenuOpen) {
@@ -38,9 +44,9 @@ export function PublicHeader() {
 
   const authActions = user ? (
     <Button asChild variant="brand" size="lg">
-      <Link to="/dashboard">
-        <LayoutDashboard aria-hidden="true" />
-        Dashboard
+      <Link to={sessionTarget}>
+        <SessionIcon aria-hidden="true" />
+        {sessionLabel}
       </Link>
     </Button>
   ) : (
@@ -56,9 +62,9 @@ export function PublicHeader() {
 
   const mobileAuthActions = user ? (
     <Button asChild variant="brand" size="xl" className="w-full">
-      <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>
-        <LayoutDashboard aria-hidden="true" />
-        Dashboard
+      <Link to={sessionTarget} onClick={() => setIsMenuOpen(false)}>
+        <SessionIcon aria-hidden="true" />
+        {sessionLabel}
       </Link>
     </Button>
   ) : (

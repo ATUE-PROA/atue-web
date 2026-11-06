@@ -32,7 +32,7 @@ export const CADASTRO_CONTENT = {
   submitLabel: 'Criar conta',
   submittingLabel: 'Criando conta...',
   successTitle: 'Conta de demonstração criada',
-  successDescription: 'Você será encaminhado ao painel.',
+  successDescription: 'Você será encaminhado para a escolha do plano.',
   errorTitle: 'Não foi possível concluir o cadastro',
   errorDescription: 'Tente novamente. Seus dados foram preservados.',
   demoNotice: 'Este é um ambiente de demonstração: nenhuma conta real será criada.',

@@ -2,14 +2,17 @@ import { Check, Plus } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
-import type { Plan } from '@/content/plans'
+import { PLAN_GATE_CONTENT, type Plan } from '@/content/plans'
 import { cn } from '@/lib/utils'
+import type { PlanId } from '@/types/plans.types'
 
 interface PlanCardProps {
   plan: Plan
+  isCurrent?: boolean
+  onSelect?: (planId: PlanId) => void
 }
 
-export function PlanCard({ plan }: PlanCardProps) {
+export function PlanCard({ plan, isCurrent = false, onSelect }: PlanCardProps) {
   return (
     <article
       className={cn(
@@ -39,6 +42,13 @@ export function PlanCard({ plan }: PlanCardProps) {
       </p>
       <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{plan.description}</p>
 
+      {isCurrent ? (
+        <p className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-green-600/30 bg-green-600/10 px-3 py-1 text-xs font-medium text-green-800 dark:border-green-500/30 dark:bg-green-500/10 dark:text-green-300">
+          <Check aria-hidden="true" className="size-3.5" />
+          {PLAN_GATE_CONTENT.currentPlanLabel}
+        </p>
+      ) : null}
+
       <div className="mt-5 flex-1">
         {plan.inherits ? (
           <p className="flex items-center gap-2 text-xs font-medium text-blue-600 dark:text-blue-400">
@@ -60,14 +70,26 @@ export function PlanCard({ plan }: PlanCardProps) {
         </ul>
       </div>
 
-      <Button
-        asChild
-        variant={plan.recommended ? 'brand' : 'inverse'}
-        size="xl"
-        className="mt-6 w-full rounded-full"
-      >
-        <Link to={plan.href}>{plan.ctaLabel}</Link>
-      </Button>
+      {onSelect ? (
+        <Button
+          type="button"
+          variant={plan.recommended ? 'brand' : 'inverse'}
+          size="xl"
+          className="mt-6 w-full rounded-full"
+          onClick={() => onSelect(plan.id)}
+        >
+          {isCurrent ? PLAN_GATE_CONTENT.currentPlanCta : plan.ctaLabel}
+        </Button>
+      ) : (
+        <Button
+          asChild
+          variant={plan.recommended ? 'brand' : 'inverse'}
+          size="xl"
+          className="mt-6 w-full rounded-full"
+        >
+          <Link to={plan.href}>{plan.ctaLabel}</Link>
+        </Button>
+      )}
 
       <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{plan.note}</p>
     </article>

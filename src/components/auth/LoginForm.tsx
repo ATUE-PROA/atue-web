@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { LOGIN_CONTENT } from '@/content/login'
 import { useAuth } from '@/contexts/auth-context'
+import { usePlan } from '@/contexts/plan-context'
 import { loginSchema } from '@/lib/login'
 import { signIn } from '@/services/auth'
 import type { LoginFormValues } from '@/types/login.types'
@@ -32,6 +33,7 @@ const {
 export function LoginForm() {
   const navigate = useNavigate()
   const { signIn: startSession } = useAuth()
+  const { resetPlan } = usePlan()
   const [hasError, setHasError] = useState(false)
 
   const {
@@ -52,7 +54,8 @@ export function LoginForm() {
     try {
       const session = await signIn(values)
       startSession(session)
-      navigate('/dashboard', { replace: true })
+      resetPlan()
+      navigate('/plans', { replace: true })
     } catch {
       setHasError(true)
     }
