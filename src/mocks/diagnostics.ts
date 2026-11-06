@@ -3,6 +3,7 @@ import { delay } from '@/lib/documents'
 import type { DiagnosticReport, IssueCategory } from '@/types/api'
 
 const MOCK_DELAY_MS = 600
+const MOCK_REQUEST_DELAY_MS = 1400
 
 const INITIAL_ISSUES: IssueCategory[] = [
   {
@@ -66,10 +67,45 @@ let diagnosticState: DiagnosticReport = buildDiagnosticReport({
   issues: INITIAL_ISSUES,
 })
 
+function hashText(value: string): number {
+  let hash = 0
+
+  for (const character of value) {
+    const code = character.codePointAt(0) ?? 0
+    hash = (hash * 31 + code) >>> 0
+  }
+
+  return hash
+}
+
 export async function mockGetDiagnostic(): Promise<DiagnosticReport> {
   await delay(MOCK_DELAY_MS)
 
   return cloneDiagnosticReport(diagnosticState)
+}
+
+/**
+ * Simula `POST /v1/diagnostics` sem inventar dados externos: o score e a
+ * quantidade de achados são derivados de forma determinística da URL informada,
+ * reaproveitando os achados já catalogados no mock.
+ */
+export async function mockRequestDiagnostic(url: string): Promise<DiagnosticReport> {
+  await delay(MOCK_REQUEST_DELAY_MS)
+
+  const normalizedUrl = url.trim().toLowerCase()
+  const digest = hashText(normalizedUrl)
+  const score = 40 + (digest % 50)
+  const issueCount = 1 + (digest % INITIAL_ISSUES.length)
+  const report = buildDiagnosticReport({
+    id: `diag-${digest.toString(16)}`,
+    score,
+    createdAt: new Date().toISOString(),
+    issues: INITIAL_ISSUES.slice(0, issueCount),
+  })
+
+  diagnosticState = report
+
+  return cloneDiagnosticReport(report)
 }
 
 export function setMockDiagnostic(report: DiagnosticReport): void {

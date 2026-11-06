@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 
 import { AuthContext } from '@/contexts/auth-context'
+import { signOut as clearSession } from '@/services/auth'
 import type { UserToken } from '@/types/api'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -11,6 +12,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const signOut = () => {
+    clearSession()
     setUser(null)
   }
 

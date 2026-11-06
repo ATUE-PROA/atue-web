@@ -2,6 +2,12 @@ export type DiagnosticStatus = 'vermelho' | 'amarelo' | 'verde'
 
 export type IssueSeverity = 'alta' | 'media' | 'baixa'
 
+export interface ApiProblemDetails {
+  title?: string
+  detail?: string
+  status?: number
+}
+
 export interface UserToken {
   token: string
   user: {
@@ -43,4 +49,25 @@ export interface DiagnosticReport {
   createdAt: string
   summary: DiagnosticSummary
   issues: IssueCategory[]
+  /**
+   * Indica que a análise foi concluída com resumo estático do catálogo
+   * (por exemplo, quando o serviço de IA não respondeu).
+   */
+  degraded?: boolean
+}
+
+export interface DiagnosticRequest {
+  url: string
+}
+
+export interface SignUpPayload {
+  name: string
+  email: string
+  organizationName: string
+  password: string
+}
+
+export interface SignInPayload {
+  email: string
+  password: string
 }

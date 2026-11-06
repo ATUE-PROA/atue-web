@@ -29,6 +29,19 @@ Acesse `http://localhost:5173`.
 | `npm run format:check` | Verifica a formatação sem alterar arquivos     |
 | `npm run preview`      | Pré-visualiza o build de produção              |
 
+## Integração com a Core API
+
+Os services de autenticação e diagnóstico usam `VITE_API_URL` como base da Core API:
+
+```bash
+cp .env.example .env.local
+```
+
+- Com `VITE_API_URL` vazia, a aplicação usa apenas dados de demonstração.
+- Com `VITE_API_URL` preenchida, `signUp`, `signIn` e `requestDiagnostic` chamam a API real.
+- O cliente HTTP fica em `src/services/http.ts`, injeta o token JWT em memória e converte falhas em `HttpError` com mensagem amigável.
+- Requisições reais nunca caem silenciosamente para o mock: falhas são exibidas na interface.
+
 ## Fluxo de dados
 
 A direção da dependência é sempre:

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { SectionCard } from '@/components/ui/section-card'
 import { DOCUMENTS_CONTENT, SEVERITY_CONTENT } from '@/content/documents'
+import { DIAGNOSTICS_CONTENT } from '@/content/diagnostics'
 import { getScoreLevel } from '@/lib/diagnostics'
 import { formatDocumentDateTime, pluralize } from '@/lib/documents'
 import { cn } from '@/lib/utils'
@@ -121,6 +122,14 @@ export function DocumentAnalysisResult({ result }: DocumentAnalysisResultProps) 
         title={DOCUMENTS_CONTENT.result.demoNoticeTitle}
         description={DOCUMENTS_CONTENT.result.demoNoticeDescription}
       />
+
+      {report.degraded ? (
+        <FormAlert
+          tone="info"
+          title={DIAGNOSTICS_CONTENT.degraded.title}
+          description={DIAGNOSTICS_CONTENT.degraded.description}
+        />
+      ) : null}
 
       <div className="mt-6">
         <h3 className="text-base font-semibold text-foreground">
