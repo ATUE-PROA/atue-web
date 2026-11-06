@@ -3,6 +3,9 @@ export interface FormValues {
   url: string
   empresa: string
   email: string
+  dpoNome: string
+  dpoEmail: string
+  finalidades: string
   documentos: FileList | undefined
   observacoes: string
 }

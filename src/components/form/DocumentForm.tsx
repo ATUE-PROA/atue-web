@@ -14,6 +14,7 @@ import { formatCnpj, normalizeCnpj } from '@/lib/cnpj'
 import { formSchema } from '@/lib/form'
 import { lookupCnpj } from '@/services/cnpj'
 import { submitForm } from '@/services/form'
+import { saveInstitutionalProfile } from '@/services/organization'
 import type { FormValues } from '@/types/form.types'
 
 type SubmissionResult = 'idle' | 'success' | 'error'
@@ -96,6 +97,9 @@ export function DocumentForm() {
       url: '',
       empresa: '',
       email: '',
+      dpoNome: '',
+      dpoEmail: '',
+      finalidades: '',
       documentos: undefined,
       observacoes: '',
     },
@@ -113,6 +117,7 @@ export function DocumentForm() {
 
     try {
       await submitForm(values)
+      saveInstitutionalProfile(values)
       reset()
       setResult('success')
     } catch {
@@ -290,6 +295,57 @@ export function DocumentForm() {
               spellCheck={false}
               className={inputClasses}
               {...register('email')}
+            />
+          )}
+        </FormField>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FormField
+            label={fields.dpoNome.label}
+            error={errors.dpoNome?.message}
+            description={fields.dpoNome.helpText}
+            required
+          >
+            {(field) => (
+              <Input
+                {...field}
+                type="text"
+                placeholder={fields.dpoNome.placeholder}
+                autoComplete={fields.dpoNome.autoComplete}
+                className={inputClasses}
+                {...register('dpoNome')}
+              />
+            )}
+          </FormField>
+
+          <FormField label={fields.dpoEmail.label} error={errors.dpoEmail?.message} required>
+            {(field) => (
+              <Input
+                {...field}
+                type="email"
+                placeholder={fields.dpoEmail.placeholder}
+                autoComplete={fields.dpoEmail.autoComplete}
+                spellCheck={false}
+                className={inputClasses}
+                {...register('dpoEmail')}
+              />
+            )}
+          </FormField>
+        </div>
+
+        <FormField
+          label={fields.finalidades.label}
+          error={errors.finalidades?.message}
+          description={fields.finalidades.helpText}
+          required
+        >
+          {(field) => (
+            <Textarea
+              {...field}
+              rows={3}
+              placeholder={fields.finalidades.placeholder}
+              className={textareaClasses}
+              {...register('finalidades')}
             />
           )}
         </FormField>
