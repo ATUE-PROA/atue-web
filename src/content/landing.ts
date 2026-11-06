@@ -1,7 +1,6 @@
 import type {
   LandingDomainCaptureContent,
   LandingFeature,
-  LandingFooterContent,
   LandingHeroContent,
   LandingStep,
   LandingVisionContent,
@@ -69,8 +68,3 @@ export const LANDING_CAPTURE = {
   submitLabel: 'Avaliar meu site agora',
   helperText: 'Leva menos de um minuto. Você será direcionado para criar sua conta.',
 } as const satisfies LandingDomainCaptureContent
-
-export const LANDING_FOOTER = {
-  description: 'Ajudamos a manter a conformidade da sua empresa.',
-  copyright: '© 2026 ATUE. Todos os direitos reservados.',
-} as const satisfies LandingFooterContent

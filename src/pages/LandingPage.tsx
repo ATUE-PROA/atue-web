@@ -1,23 +1,23 @@
+import { PublicFooter } from '@/components/layout/public-footer'
 import { PublicHeader } from '@/components/layout/public-header'
 import LandingHero from '@/components/landing/LandingHero'
 import FeatureStrip from '@/components/landing/FeatureStrip'
 import HowItWorks from '@/components/landing/HowItWorks'
 import BuildSection from '@/components/landing/BuildSection'
 import DomainCapture from '@/components/landing/DomainCapture'
-import LandingFooter from '@/components/landing/LandingFooter'
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <PublicHeader />
-      <main>
+      <main className="flex-1">
         <LandingHero />
         <FeatureStrip />
         <HowItWorks />
         <BuildSection />
         <DomainCapture />
       </main>
-      <LandingFooter />
+      <PublicFooter />
     </div>
   )
 }

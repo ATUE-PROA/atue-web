@@ -21,7 +21,6 @@ export const PLANS_CONTENT = {
     description:
       'Se você não tem certeza sobre o melhor plano para a sua empresa, o nosso time pode ajudar a encontrar o mais adequado para você.',
   },
-  footer: '© 2026 ATUE. Todos os direitos reservados.',
 } as const
 
 export const PLAN_BENEFITS = [

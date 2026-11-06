@@ -38,8 +38,3 @@ export interface LandingDomainCaptureContent {
   readonly submitLabel: string
   readonly helperText: string
 }
-
-export interface LandingFooterContent {
-  readonly description: string
-  readonly copyright: string
-}

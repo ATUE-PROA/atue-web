@@ -296,7 +296,7 @@ Use `src/components/layout/site-header.tsx` como cabeçalho das páginas públic
 - `BrandLink` concentra a marca ATUE e deve ser usado em todas as páginas públicas. Aceita `to` (padrão `/`) para que a marca leve ao painel na área logada.
 - O botão de tema (`ThemeToggle`) fica no cabeçalho ao lado das ações, sempre visível em mobile e desktop.
 - Landing e planos usam `PublicHeader` (`src/components/layout/public-header.tsx`), que reúne a navegação pública, o `ThemeToggle` e as ações de autenticação. Landing e autenticação devem compartilhar esses componentes; não replique a estrutura do cabeçalho.
-- A navegação pública aparece somente no topo da página: “Como funciona”, “Sobre” e “Planos”. Não repita esses destinos no rodapé público.
+- A navegação principal fica no `PublicHeader`: “Como funciona”, “Sobre” e “Planos”. O rodapé público é uma área de continuidade e usa somente os destinos de `PUBLIC_FOOTER_LINKS` (`src/content/navigation.ts`); não monte listas hardcoded por página.
 - As ações de autenticação são idênticas entre landing e planos: “Entrar” como link e “Cadastre-se” como `Button variant="inverse" size="lg"`. Quando há sessão ativa, ambas são substituídas por um `Button variant="brand" size="lg"` com ícone `LayoutDashboard` e rótulo “Dashboard”.
 - O menu móvel reutiliza os mesmos destinos e ações, com botões de largura total e alvos de toque de pelo menos 44px.
 - O logo mantém a mesma posição horizontal entre páginas, inclusive quando apenas uma delas tem barra de rolagem.
@@ -415,16 +415,17 @@ Use `src/components/ui/dropdown-menu.tsx` para menus de ações contextuais, com
 - Para ícones decorativos ou chips de formato, use `aria-hidden="true"` e garanta que o texto do item continue descrevendo a ação.
 - Prefira esse primitive a um select nativo quando a ação tiver descrições e ícones; para seleção simples de valor, use `NativeSelect`.
 
-### 6.21 ProductFooter e CrossLinks
+### 6.21 ProductFooter, PublicFooter e CrossLinks
 
-Use `src/components/layout/product-footer.tsx` e `src/components/layout/cross-links.tsx` para conectar as telas da área logada.
+Use `src/components/layout/product-footer.tsx`, `src/components/layout/public-footer.tsx` e `src/components/layout/cross-links.tsx` para conectar as telas.
 
 - `ProductFooter` é o rodapé compartilhado de painel, documentos, perfil e configurações. Ele usa `mt-auto`, borda superior, contêiner `max-w-6xl px-6`, aviso de demonstração e links para painel, documentos, envio, perfil, configurações, planos e site.
+- `PublicFooter` é o rodapé compartilhado de landing e planos. Exibe marca, descrição, aviso de demonstração, copyright e os links de `PUBLIC_FOOTER_LINKS` (`src/content/navigation.ts`). Landing e planos não devem montar rodapés próprios nem listas de links locais.
 - `CrossLinks` renderiza uma `nav` com `aria-label` e links em formato de chip (`border-border bg-card`, foco azul). Use para atalhos contextuais no topo de páginas internas.
 - Não duplique a lista de destinos em cada página: mantenha os links revisáveis em `src/content/navigation.ts`.
 - Toda rota criada deve ser alcançável por pelo menos um controle visível em outra tela e deve oferecer um caminho de volta. Páginas sem conexão são consideradas incompletas.
 - Toda navegação entre rotas deve começar no topo da página. A landing é a exceção: as âncoras internas (`#como-funciona` e `#sobre`) mantêm a rolagem para a seção clicada. O retorno à landing a partir de outra tela volta ao topo.
-- A navegação pública fica apenas no `PublicHeader`. O rodapé público mostra marca, descrição e copyright, sem repetir links de navegação.
+- O `PublicHeader` concentra a navegação principal; o `PublicFooter` complementa a continuidade com os destinos públicos revisáveis em `PUBLIC_FOOTER_LINKS`.
 - O comportamento fica em `ScrollToTop` (`src/components/layout/scroll-to-top.tsx`), montado no `AppRoot` (`src/components/layout/app-root.tsx`). Não replique `window.scrollTo` em páginas ou componentes.
 
 ### 6.22 Arquivos gerados

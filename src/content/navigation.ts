@@ -10,6 +10,13 @@ export const PUBLIC_NAV = [
   { to: '/plans', label: 'Planos' },
 ] as const satisfies readonly AppNavLink[]
 
+export const PUBLIC_FOOTER_LINKS = [
+  { to: '/', label: 'Início' },
+  ...PUBLIC_NAV,
+  { to: '/login', label: 'Entrar' },
+  { to: '/register', label: 'Cadastre-se' },
+] as const satisfies readonly AppNavLink[]
+
 export const PRODUCT_FOOTER_LINKS = [
   { to: '/dashboard', label: 'Painel' },
   { to: '/documents', label: 'Documentos' },
