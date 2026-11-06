@@ -302,10 +302,10 @@ Use `src/components/layout/site-header.tsx` como cabeçalho das páginas públic
 
 Use `src/components/layout/product-header.tsx` na área logada (painel, perfil e configurações).
 
-- Combina `SiteHeader`, `BrandLink to="/dashboard"`, `NavLink` para painel, perfil e configurações, ícones Lucide e `ThemeToggle`.
+- Combina `SiteHeader`, `BrandLink to="/dashboard"`, `NavLink` para painel, documentos, perfil e configurações, ícones Lucide e `ThemeToggle`.
 - `NavLink` fornece `aria-current`; o estado ativo usa `bg-muted text-foreground`.
-- Em mobile, os rótulos textuais ficam `hidden sm:inline`; os links mantêm `aria-label` claro, como “Perfil da conta” e “Configurações da conta”.
-- Use `LayoutDashboard` para painel e `UserRound` para perfil; o ícone de configurações é obrigatório na área logada.
+- Em mobile, os rótulos textuais ficam `hidden sm:inline`; os links mantêm `aria-label` claro, como “Central de Documentos”, “Perfil da conta” e “Configurações da conta”.
+- Use `LayoutDashboard` para painel, `Files` para documentos e `UserRound` para perfil; o ícone de configurações é obrigatório na área logada.
 - Os ícones são decorativos (`aria-hidden`) porque o link já tem nome acessível.
 - Não use `ProductHeader` em landing, autenticação, planos ou formulário público.
 
@@ -375,6 +375,25 @@ Use `src/pages/Profile.tsx` como referência para telas de perfil editáveis.
 - Reutilize `PROFILE_INPUT_CLASSES` (`src/components/profile/profile-styles.ts`) para manter altura e foco dos inputs iguais entre os cards.
 - A nota do DPO usa `text-xs leading-relaxed text-muted-foreground` com ícone `Info` decorativo.
 - O salvamento é simulado em memória: sucesso, erro e retry são explícitos e nunca prometem persistência real.
+
+### 6.19 Central de Documentos
+
+Use `src/pages/Documents.tsx` como referência para a rota `/documents`.
+
+- Cabeçalho: mesmo padrão do perfil — eyebrow azul em `tracking-[0.2em]`, `h1` “Central de Documentos” e descrição em `max-w-2xl`.
+- Layout principal: grid `lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]` com a análise à esquerda e a lista de documentos fictícios à direita; empilhe em telas menores.
+- Entrada de documento: `NativeSelect` dentro de `FormField`, alimentado por documentos fictícios. Nunca use `input type="file"`. O texto de ajuda deve dizer que o seletor do sistema não é aberto.
+- Documento selecionado: bloco `rounded-lg border border-border bg-muted/40 p-4` com `FileText`, badge “Fictício”, metadados (tipo, tamanho, data) e descrição.
+- Ação principal: `Button variant="brand" size="xl"` de largura total, com `aria-busy`, `Loader2` e bloqueio de envio duplicado.
+- `FormAlert tone="info"` é obrigatório logo abaixo da ação, explicando que nenhum arquivo é lido, enviado ou armazenado e que a IA é uma simulação local.
+- Achados: use `FindingsList`, que ordena por severidade (`alta`, `media`, `baixa`), renderiza badge com cor + rótulo textual e abre explicação e recomendação em `<details>`/`<summary>` nativos com `ChevronDown` e `group-open:rotate-180`.
+- Resultado: `SectionCard` com grade de score (`text-5xl`), nível do score, barra proporcional, documento, data, contagem de achados e resumo por severidade. Sempre inclua `FormAlert tone="info"` com o aviso de demonstração.
+- Análise simulada: `AnalysisProgress` mostra barra `role="progressbar"` com `aria-valuenow` e uma região `role="status"` com a etapa atual. Cada etapa tem estado pendente, ativo, concluído ou erro, com ícone + texto. Transições usam `motion-reduce:animate-none` e `motion-reduce:transition-none`.
+- Central de Downloads: `#central-de-downloads` com dois grupos (relatórios gerados e modelos). Cada item tem título, descrição, data, contagem de páginas e botão “Baixar PDF” com `aria-label` específico.
+- O botão de download desabilita todos os downloads enquanto um PDF é gerado, mostra `Loader2` e usa `FormAlert` de preparação/sucesso/erro. O texto deve deixar claro que o PDF é criado localmente e não é armazenado.
+- Animações de entrada (`animate-in fade-in slide-in-from-bottom-2`) são discretas e sempre respeitam `motion-reduce`.
+- Não afirme que a análise leu um arquivo real, que houve IA real ou que o resultado garante conformidade. Os PDFs e achados são fictícios e não têm validade legal.
+- O dashboard reutiliza `FindingsList` e deve refletir o último diagnóstico simulado salvo em `mocks/diagnostics.ts`.
 
 ---
 

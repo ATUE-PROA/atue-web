@@ -1,57 +1,18 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts'
-import { Loader2 } from 'lucide-react'
+import { Files, Loader2 } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
+import { FindingsList } from '@/components/documents/FindingsList'
 import { ProductHeader } from '@/components/layout/product-header'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
+import { formatDocumentDateTime } from '@/lib/documents'
+import { getScoreLevel } from '@/lib/diagnostics'
 import { getDiagnostic } from '@/services/diagnostic'
 import type { DiagnosticReport } from '@/types/api'
 
-interface ScoreLevel {
-  label: string
-  dotClassName: string
-  textClassName: string
-  chartColor: string
-}
-
 type LoadState = 'loading' | 'ready' | 'error'
-
-function getScoreLevel(score: number): ScoreLevel {
-  if (score < 25) {
-    return {
-      label: 'Crítico',
-      dotClassName: 'bg-red-500',
-      textClassName: 'text-red-600 dark:text-red-400',
-      chartColor: '#ef4444',
-    }
-  }
-
-  if (score < 50) {
-    return {
-      label: 'Atenção',
-      dotClassName: 'bg-orange-500',
-      textClassName: 'text-orange-700 dark:text-orange-400',
-      chartColor: '#f97316',
-    }
-  }
-
-  if (score < 75) {
-    return {
-      label: 'Atenção',
-      dotClassName: 'bg-yellow-500',
-      textClassName: 'text-yellow-700 dark:text-yellow-400',
-      chartColor: '#eab308',
-    }
-  }
-
-  return {
-    label: 'Conforme',
-    dotClassName: 'bg-green-500',
-    textClassName: 'text-green-700 dark:text-green-400',
-    chartColor: '#22c55e',
-  }
-}
 
 function DashboardShell({ children }: { children: ReactNode }) {
   return (
@@ -132,27 +93,40 @@ export function Dashboard() {
 
   return (
     <DashboardShell>
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             Painel de Controle
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">Bem-vindo(a)!</p>
         </div>
-        <div
-          className="flex items-center gap-2"
-          role="group"
-          aria-label={`Status geral: ${nivelScore.label}`}
-        >
-          <span className="text-sm font-medium text-foreground">Status geral:</span>
-          <span aria-hidden="true" className={`h-4 w-4 rounded-full ${nivelScore.dotClassName}`} />
-          <span className={`text-sm font-medium ${nivelScore.textClassName}`}>
-            {nivelScore.label}
-          </span>
+
+        <div className="flex flex-col gap-3 sm:items-end">
+          <div
+            className="flex items-center gap-2"
+            role="group"
+            aria-label={`Status geral: ${nivelScore.label}`}
+          >
+            <span className="text-sm font-medium text-foreground">Status geral:</span>
+            <span
+              aria-hidden="true"
+              className={`h-4 w-4 rounded-full ${nivelScore.dotClassName}`}
+            />
+            <span className={`text-sm font-medium ${nivelScore.textClassName}`}>
+              {nivelScore.label}
+            </span>
+          </div>
+
+          <Button asChild variant="outline" size="lg" className="w-fit">
+            <Link to="/documents">
+              <Files aria-hidden="true" />
+              Central de Documentos
+            </Link>
+          </Button>
         </div>
       </header>
 
-      <div className="mt-8 grid gap-6 md:grid-cols-2">
+      <div className="mt-8 grid gap-6 md:grid-cols-2 md:items-start">
         <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-card p-6 shadow-sm">
           <h2 className="mb-4 text-lg font-semibold text-foreground">Score de Conformidade</h2>
           <div className="relative h-48 w-48">
@@ -164,7 +138,7 @@ export function Dashboard() {
               innerRadius="70%"
               outerRadius="100%"
               barSize={10}
-              data={[{ name: 'Score', value: relatorio?.score ?? 0, fill: nivelScore.chartColor }]}
+              data={[{ name: 'Score', value: score, fill: nivelScore.chartColor }]}
               startAngle={90}
               endAngle={-270}
             >
@@ -172,31 +146,46 @@ export function Dashboard() {
               <RadialBar background dataKey="value" cornerRadius={10} />
             </RadialBarChart>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-4xl font-semibold text-foreground">
-                {relatorio?.score ?? 0}
-              </span>
+              <span className="text-4xl font-semibold text-foreground">{score}</span>
               <span className="text-sm text-muted-foreground">de 100</span>
             </div>
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-          <h2 className="mb-4 text-lg font-semibold text-foreground">Pendências Encontradas</h2>
-          <ul className="space-y-3">
-            {relatorio?.issues.map((issue) => (
-              <li
-                key={issue.id}
-                className="flex flex-col rounded-md border border-border bg-muted p-3"
-              >
-                <span className="font-medium text-foreground">{issue.name}</span>
-                <span className="text-sm text-muted-foreground">{issue.description}</span>
-              </li>
-            ))}
-            {relatorio?.issues.length === 0 && (
-              <li className="text-sm text-muted-foreground">Nenhuma pendência encontrada.</li>
-            )}
-          </ul>
-        </div>
+        <section
+          aria-labelledby="findings-heading"
+          className="rounded-xl border border-border bg-card p-6 shadow-sm"
+        >
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 id="findings-heading" className="text-lg font-semibold text-foreground">
+                Achados e pendências
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Explicações e recomendações da análise simulada.
+              </p>
+            </div>
+            <Link
+              to="/documents"
+              className="text-sm font-medium text-blue-700 transition-colors hover:text-blue-600 focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none dark:text-blue-300 dark:hover:text-blue-200"
+            >
+              Ver central
+            </Link>
+          </div>
+
+          <FindingsList
+            className="mt-4"
+            issues={relatorio?.issues ?? []}
+            emptyMessage="Nenhuma pendência encontrada no diagnóstico atual."
+          />
+
+          {relatorio ? (
+            <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+              Última atualização em {formatDocumentDateTime(relatorio.createdAt)}. Dados de
+              demonstração.
+            </p>
+          ) : null}
+        </section>
       </div>
     </DashboardShell>
   )

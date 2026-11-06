@@ -105,6 +105,21 @@ Backend availability must not block frontend development.
 - Local file previews (for example a profile photo) must validate type and size, revoke object URLs, and state explicitly that the file is not uploaded or persisted.
 - Never commit secrets, API keys, access tokens, or credentials.
 
+Simulated document analysis:
+
+- Do not use a real file input, file picker, `File`/`FileReader`, or upload endpoint for the document center unless a real backend contract exists and the requirement explicitly asks for it.
+- Use fictitious sample documents and a `NativeSelect`; state in the interface that no device file is read, sent, or stored.
+- Model the analysis as deterministic steps in the service layer with typed progress callbacks. Do not present it as real AI or as a verified legal assessment.
+- Block duplicate submissions, expose the current step through an accessible status region, and support `prefers-reduced-motion`.
+- Keep the analysis result in the shared mock state only when the workflow requires other screens to reflect it; label everything as demonstration data.
+
+Local PDF generation:
+
+- Generate PDFs in the browser only when a real document service is unavailable. Prefer a small typed generator in `src/lib` over adding a dependency for simple reports.
+- Include an explicit demonstration notice and never imply legal validity or official certification.
+- Create and revoke object URLs, avoid storing documents, and surface preparing, success, and error states.
+- Keep PDF content aligned with the same typed contracts and copy used by the interface.
+
 Mocks must reflect plausible domain entities and consistent relationships. Do not present simulated data as verified production data.
 
 When the backend contract changes, update the corresponding types, services, and consuming components together.

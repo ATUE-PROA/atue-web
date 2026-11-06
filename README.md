@@ -44,7 +44,7 @@ rota -> página -> componente de feature -> service -> mock ou API
 - **Tipos** (`src/types`): contratos de domínio e de API.
 - **Conteúdo** (`src/content`): copy revisável, em `as const`, sem tipos espelhados.
 
-O dashboard consome `services/diagnostic.ts`, que delega para o mock de diagnóstico. Nenhum componente importa mocks diretamente.
+O dashboard consome `services/diagnostic.ts`, que delega para `mocks/diagnostics.ts`. A Central de Documentos usa `services/documents.ts` e compartilha o mesmo estado de diagnóstico em memória. Nenhum componente importa mocks diretamente.
 
 ## Estrutura
 
@@ -52,6 +52,7 @@ O dashboard consome `services/diagnostic.ts`, que delega para o mock de diagnós
 src/
   components/
     auth/       layouts, painel institucional, formulários de cadastro e login
+    documents/  central de documentos, achados, análise simulada e downloads
     landing/    seções da landing
     layout/     cabeçalho público e cabeçalho de produto compartilhados
     plans/      cards, comparação e FAQ de planos
@@ -112,6 +113,18 @@ A rota `/profile` reúne dados pessoais, contato, dados da empresa e responsáve
 - “Alterar foto” exibe apenas uma prévia local (PNG, JPG ou WebP até 2 MB); nenhum arquivo é enviado ou salvo.
 - Os cards de configurações e perfil compartilham o primitive `SectionCard` (`src/components/ui/section-card.tsx`).
 
+## Central de Documentos
+
+A rota `/documents` concentra o painel de achados, a análise simulada de documentos fictícios e a Central de Downloads. É acessada pelo link “Documentos” do `ProductHeader` e por atalhos no `/dashboard`.
+
+- `services/documents.ts` é a fronteira de dados; `mocks/documents.ts` mantém documentos, relatórios e modelos em memória.
+- A pessoa escolhe um documento de exemplo em um `NativeSelect`; nenhum `input type="file"` é usado e nenhum arquivo do dispositivo é lido, enviado ou armazenado.
+- `analyzeDocument` executa etapas determinísticas com atraso e devolve o progresso por callback. A interface anuncia a etapa atual em uma região `aria-live` e bloqueia envios duplicados.
+- Ao concluir, o resultado atualiza o diagnóstico compartilhado em `mocks/diagnostics.ts`; o `/dashboard` passa a exibir o mesmo score e os mesmos achados.
+- Cada achado tem severidade, categoria, explicação simulada e recomendação, exibidas em um `<details>` acessível.
+- `src/lib/pdf.ts` gera PDFs válidos de uma ou mais páginas no navegador, com fontes Helvetica/WinAnsi, `Blob` e link temporário. Nenhuma biblioteca de PDF foi adicionada e nenhum arquivo é armazenado.
+- A Central de Downloads lista relatórios gerados e modelos fictícios. Os PDFs contêm aviso de demonstração e não têm validade legal.
+
 ## Design e convenções
 
 - `DESIGN.md`: fonte de verdade de superfícies, cores, tipografia, espaçamento, componentes, estados e acessibilidade.
@@ -124,3 +137,5 @@ A rota `/profile` reúne dados pessoais, contato, dados da empresa e responsáve
 - Sem test runner configurado; a validação é feita por lint, build e verificação manual.
 - As configurações da conta são simuladas e voltam ao estado inicial ao recarregar a página.
 - O perfil da conta também é simulado: salvar altera apenas o estado em memória e a foto não é enviada nem persistida.
+- A análise de documentos, os achados e a IA são simulações locais. Nenhum arquivo real é lido, enviado ou armazenado.
+- Os PDFs são gerados no navegador com marca de demonstração e não representam relatórios oficiais nem garantia de conformidade.

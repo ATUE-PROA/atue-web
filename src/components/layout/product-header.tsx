@@ -1,4 +1,4 @@
-import { LayoutDashboard, Settings, UserRound } from 'lucide-react'
+import { Files, LayoutDashboard, Settings, UserRound } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 
 import { BrandLink, SiteHeader } from '@/components/layout/site-header'
@@ -30,6 +30,16 @@ export function ProductHeader() {
         >
           <LayoutDashboard aria-hidden="true" className="size-4" />
           <span className="hidden sm:inline">Painel</span>
+        </NavLink>
+
+        <NavLink
+          to="/documents"
+          aria-label="Central de Documentos"
+          className={getNavLinkClassName}
+          end
+        >
+          <Files aria-hidden="true" className="size-4" />
+          <span className="hidden sm:inline">Documentos</span>
         </NavLink>
 
         <NavLink to="/profile" aria-label="Perfil da conta" className={getNavLinkClassName} end>
