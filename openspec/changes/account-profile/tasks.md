@@ -35,4 +35,4 @@
 - [x] 5.3 Atualizar `README.md` com a área de perfil e a generalização do card.
 - [x] 5.4 Rodar `npm run lint`, `npm run build` e Prettier nos arquivos alterados; corrigir regressões. (`npm run format:check` ainda falha em arquivos preexistentes com CRLF, fora deste escopo.)
 - [x] 5.5 Revisar o diff final e garantir que apenas arquivos relacionados foram alterados.
-- [ ] 5.6 Publicar a branch `feat/account-profile` e abrir PR para revisão de Matheus Coletti.
+- [x] 5.6 Publicar a branch `feat/account-profile` e abrir PR para revisão de Matheus Coletti. (PR #8: https://github.com/ATUE-PROA/atue-web/pull/8)
