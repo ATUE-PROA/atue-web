@@ -35,6 +35,23 @@ export const FORM_CONTENT = {
       placeholder: 'voce@empresa.com.br',
       autoComplete: 'email',
     },
+    dpoNome: {
+      label: 'Encarregado pelo tratamento (DPO)',
+      placeholder: 'Nome do responsável',
+      autoComplete: 'name',
+      helpText: 'Pessoa indicada como canal de contato entre a organização e os titulares.',
+    },
+    dpoEmail: {
+      label: 'E-mail do DPO',
+      placeholder: 'dpo@empresa.com.br',
+      autoComplete: 'email',
+    },
+    finalidades: {
+      label: 'Finalidades do tratamento',
+      placeholder: 'Ex.: cadastro de clientes, envio de newsletter e suporte.',
+      helpText:
+        'Liste as finalidades declaradas. Essas informações aparecem no relatório gerado localmente.',
+    },
     documentos: {
       label: 'Documentos',
       helpText: 'PDF, DOC ou DOCX, até 10 MB por arquivo. Você pode selecionar mais de um.',

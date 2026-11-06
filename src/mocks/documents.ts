@@ -5,6 +5,7 @@ import {
   SEVERITY_CONTENT,
   TEMPLATE_PDF_CONTENT,
 } from '@/content/documents'
+import { formatCnpj } from '@/lib/cnpj'
 import { cloneDiagnosticReport, getScoreLevel } from '@/lib/diagnostics'
 import { delay, formatDocumentDateTime, pluralize, slugifyFilename } from '@/lib/documents'
 import {
@@ -12,6 +13,7 @@ import {
   getMockDiagnosticSnapshot,
   setMockDiagnostic,
 } from '@/mocks/diagnostics'
+import { getMockInstitutionalProfile } from '@/mocks/organization'
 import type { DiagnosticReport, IssueCategory } from '@/types/api'
 import type {
   AnalysisProgressListener,
@@ -356,13 +358,25 @@ function buildReportDownloadContent(record: GeneratedReportRecord): DownloadCont
     documentSource === 'local'
       ? 'Arquivo anexado neste dispositivo'
       : 'Documento de exemplo da demonstração'
+  const profile = getMockInstitutionalProfile()
+  const organizationLabel = profile
+    ? `${profile.companyName} — CNPJ ${formatCnpj(profile.cnpj)}`
+    : 'Sua Empresa Ltda. (organização fictícia)'
+  const institutionalBullets = profile
+    ? [
+        `Organização informada: ${profile.companyName}.`,
+        `CNPJ informado: ${formatCnpj(profile.cnpj)}.`,
+        `Encarregado (DPO): ${profile.dpoName} — ${profile.dpoEmail}.`,
+        `Finalidades declaradas: ${profile.purposes}.`,
+      ]
+    : []
 
   return {
     title: 'Relatório de diagnóstico de conformidade',
     subtitle: `Análise simulada de ${documentName}`,
     documentType: 'Relatório de diagnóstico',
     reference: `ATUE-DEMO-${item.id.replace(/\D/g, '').padStart(3, '0')}`,
-    organization: 'Sua Empresa Ltda. (organização fictícia)',
+    organization: organizationLabel,
     generatedAt: item.updatedAt,
     metrics: [
       {
@@ -455,8 +469,9 @@ function buildReportDownloadContent(record: GeneratedReportRecord): DownloadCont
       {
         heading: '8. Controle do documento',
         bullets: [
-          `Organização: Sua Empresa Ltda. (fictícia).`,
+          `Organização: ${profile ? profile.companyName : 'Sua Empresa Ltda. (fictícia)'}.`,
           `Gerado em: ${formatDocumentDateTime(item.updatedAt)}.`,
+          ...institutionalBullets,
           'Classificação: documento de demonstração, sem validade legal.',
           'Distribuição: apenas para fins de apresentação do produto.',
         ],
