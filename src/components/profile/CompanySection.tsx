@@ -1,17 +1,25 @@
-import { useFormContext } from 'react-hook-form'
+import { Controller, useFormContext } from 'react-hook-form'
 
 import { PROFILE_INPUT_CLASSES } from '@/components/profile/profile-styles'
 import { SectionCard } from '@/components/ui/section-card'
 import { FormField } from '@/components/ui/form-field'
 import { Input } from '@/components/ui/input'
-import { NativeSelect } from '@/components/ui/native-select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { COMPANY_SECTOR_OPTIONS, PROFILE_CONTENT } from '@/content/profile'
+import { cn } from '@/lib/utils'
 import type { AccountProfile } from '@/types/profile.types'
 
 const { company } = PROFILE_CONTENT
 
 export function CompanySection() {
   const {
+    control,
     register,
     formState: { errors },
   } = useFormContext<AccountProfile>()
@@ -54,13 +62,35 @@ export function CompanySection() {
           required
         >
           {(field) => (
-            <NativeSelect {...field} {...register('company.sector')}>
-              {COMPANY_SECTOR_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </NativeSelect>
+            <Controller
+              control={control}
+              name="company.sector"
+              render={({ field: controlledField }) => (
+                <Select
+                  name={controlledField.name}
+                  value={controlledField.value}
+                  onValueChange={controlledField.onChange}
+                >
+                  <SelectTrigger
+                    id={field.id}
+                    aria-invalid={field['aria-invalid']}
+                    aria-describedby={field['aria-describedby']}
+                    aria-required={field['aria-required']}
+                    onBlur={controlledField.onBlur}
+                    className={cn(PROFILE_INPUT_CLASSES, 'w-full data-[size=default]:h-11')}
+                  >
+                    <SelectValue placeholder={company.fields.sector.label} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {COMPANY_SECTOR_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
           )}
         </FormField>
 

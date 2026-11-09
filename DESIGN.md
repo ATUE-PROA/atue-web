@@ -255,22 +255,24 @@ Use `src/components/ui/password-input.tsx` para senhas. O controle de mostrar/oc
 
 ### 6.6 Cards
 
-- Cards: `rounded-xl border border-border bg-card p-6`.
+- Use `Card` (`src/components/ui/card.tsx`) como superfície base. `SectionCard` compõe `Card`, `CardHeader`, `CardContent` e `CardDescription`, mantendo `role="region"` e `aria-labelledby` para o título.
+- Cards: `p-6`; o `SectionCard` usa `CardHeader`/`CardContent` com `p-0` para preservar o espaçamento interno.
 - Card principal de autenticação: `rounded-2xl border border-border bg-card p-6 shadow-lg shadow-black/5 sm:p-8 dark:shadow-2xl dark:shadow-black/30`.
-- Card de plano: `rounded-xl border border-border bg-card p-6 shadow-sm`; o plano recomendado usa `border-blue-600/50 ring-1 ring-blue-600/20` e um badge textual “Recomendado”.
+- Card de plano: `article` com `rounded-xl border border-border bg-card p-6 shadow-sm`; o plano recomendado usa `border-blue-600/50 ring-1 ring-blue-600/20` e um `Badge` textual “Recomendado”.
 - Título do card: `text-lg font-semibold`.
 - Não aninhe mais de dois níveis de card.
 
 ### 6.7 Badges e chips
 
-- `inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium`.
-- Use cor + ícone + texto.
+- Use `Badge` (`src/components/ui/badge.tsx`) com `variant="outline"` e as classes de tom (`green`, `yellow`, `blue`, `red`).
+- Para chips maiores, use `h-auto rounded-full px-3 py-1`; para chips compactos, mantenha `px-2 py-0.5`.
+- Use cor + ícone + texto; não comunique estado apenas por cor.
 - Para domínio conectado: `Globe` + texto do domínio em `font-mono` ou `font-medium`.
 
 ### 6.8 Alertas de estado
 
 - Estrutura: `div` com `role="alert"` (erro) ou `role="status"` (sucesso ou informação), ícone, título curto e descrição.
-- Use `FormAlert` (`src/components/ui/form-alert.tsx`) para os alertas de sucesso, erro e informação de formulários e fluxos simulados.
+- Use `FormAlert` (`src/components/ui/form-alert.tsx`), que compõe `Alert`, `AlertTitle` e `AlertDescription` (`src/components/ui/alert.tsx`), para os alertas de sucesso, erro e informação de formulários e fluxos simulados.
 - Tons disponíveis: `success`, `error` e `info`. Use `info` para explicar que uma ação é apenas uma demonstração, sem sugerir falha ou sucesso real.
 - Não use apenas `bg-green-100`/`bg-red-100`; use as receitas da seção 2.3.
 - Em sucesso simulado, diga explicitamente que a conta é de demonstração.
@@ -283,7 +285,7 @@ Use `src/components/auth/AuthLayout.tsx` como layout base de telas de autentica�
 - Recebe o painel institucional como `aside` (no cadastro, `AuthBrandPanel`).
 - Recebe o formulário como `children`.
 - Card de formulário à direita.
-- Cabeçalho via `SiteHeader` e `BrandLink`, com caminho de volta. Quando já existe sessão ativa, o cabeçalho troca o caminho de volta por um botão `variant="brand"`: “Planos” (ícone `CreditCard`) enquanto não houver plano ativo e “Dashboard” (ícone `LayoutDashboard`) depois da assinatura simulada ou do ambiente de teste.
+- Cabeçalho via `SiteHeader` e `BrandLink`, com caminho de volta. Quando já existe sessão ativa, o cabeçalho troca o caminho de volta por um botão `variant="brand"`: “Planos” (ícone `CreditCard`) enquanto não houver plano ativo e “Dashboard” (ícone `LayoutDashboard`) depois da assinatura simulada.
 - Para telas com um único card centralizado (login), use `AuthCenteredLayout` do mesmo arquivo; ele compartilha o cabeçalho e centraliza o conteúdo em `max-w-md`.
 - O painel institucional pode incluir elementos decorativos com gradientes e `aria-hidden`.
 - Não replique esse layout em páginas de produto.
@@ -297,8 +299,8 @@ Use `src/components/layout/site-header.tsx` como cabeçalho das páginas públic
 - O botão de tema (`ThemeToggle`) fica no cabeçalho ao lado das ações, sempre visível em mobile e desktop.
 - Landing e planos usam `PublicHeader` (`src/components/layout/public-header.tsx`), que reúne a navegação pública, o `ThemeToggle` e as ações de autenticação. Landing e autenticação devem compartilhar esses componentes; não replique a estrutura do cabeçalho.
 - A navegação pública aparece somente no topo da página: “Como funciona”, “Sobre” e “Planos”. Não repita esses destinos no rodapé público.
-- As ações de autenticação são idênticas entre landing e planos: “Entrar” como link e “Cadastre-se” como `Button variant="inverse" size="lg"`. Quando há sessão ativa, ambas são substituídas por um `Button variant="brand" size="lg"`: “Planos” com `CreditCard` enquanto não houver plano ativo e “Dashboard” com `LayoutDashboard` depois da assinatura simulada ou do ambiente de teste.
-- O menu móvel reutiliza os mesmos destinos e ações, com botões de largura total e alvos de toque de pelo menos 44px.
+- As ações de autenticação são idênticas entre landing e planos: “Entrar” como link e “Cadastre-se” como `Button variant="inverse" size="lg"`. Quando há sessão ativa, ambas são substituídas por um `Button variant="brand" size="lg"`: “Planos” com `CreditCard` enquanto não houver plano ativo e “Dashboard” com `LayoutDashboard` depois da assinatura simulada.
+- O menu móvel usa `Sheet` (`src/components/ui/sheet.tsx`) com `SheetTrigger`, `SheetContent`, `SheetHeader` e `SheetTitle`; o Radix cuida de foco, Escape e overlay. Mantenha os mesmos destinos e ações, com botões de largura total e alvos de toque de pelo menos 44px.
 - O logo mantém a mesma posição horizontal entre páginas, inclusive quando apenas uma delas tem barra de rolagem.
 
 ### 6.11 ProductHeader
@@ -306,7 +308,7 @@ Use `src/components/layout/site-header.tsx` como cabeçalho das páginas públic
 Use `src/components/layout/product-header.tsx` na área logada (painel, documentos, perfil e configurações).
 
 - Combina `SiteHeader`, `BrandLink to="/dashboard"`, `NavLink` para painel, documentos, perfil e configurações, ícones Lucide e `ThemeToggle`.
-- Exibe um chip discreto à esquerda dos links com o plano atual, “Ambiente de teste” ou “Sem plano ativo”. O chip é um link para `/plans` e usa `CreditCard`.
+- Exibe um chip discreto à esquerda dos links com o plano atual ou “Sem plano ativo”. O chip é um link para `/plans` e usa `CreditCard`.
 - Nas páginas internas, use `ProductFooter` ao final do `main` ou como último filho do shell flexível. O rodapé garante caminhos para painel, documentos, envio, perfil, configurações, planos e site.
 - `NavLink` fornece `aria-current`; o estado ativo usa `bg-muted text-foreground`.
 - Em mobile, os rótulos textuais ficam `hidden sm:inline`; os links mantêm `aria-label` claro, como “Central de Documentos”, “Perfil da conta” e “Configurações da conta”.
@@ -316,16 +318,16 @@ Use `src/components/layout/product-header.tsx` na área logada (painel, document
 
 ### 6.12 Tabelas comparativas
 
-- Contêiner: `rounded-xl border border-border bg-card`.
+- Use `Table`, `TableHeader`, `TableBody`, `TableRow`, `TableHead`, `TableCell` e `TableCaption` (`src/components/ui/table.tsx`).
 - Cabeçalho: `bg-muted/40`, `text-xs tracking-wide text-muted-foreground uppercase`; destaque de coluna com texto e `text-blue-600 dark:text-blue-400`.
 - Linhas separadas por `border-b border-border`; a primeira célula usa `font-medium text-foreground`.
 - Em telas estreitas, substitua a tabela por cartões empilhados em vez de criar rolagem horizontal na página.
 
 ### 6.13 FAQ
 
-- Use `<details>` e `<summary>` nativos para perguntas frequentes.
-- O `summary` deve ter foco visível e `list-none`; use `ChevronDown` com `group-open:rotate-180` como indicador.
-- Mantenha uma pergunta por item e a resposta em `text-sm leading-relaxed text-muted-foreground`.
+- Use `Accordion` (`src/components/ui/accordion.tsx`) com `type="single" collapsible` para perguntas frequentes.
+- Use um `AccordionItem` por pergunta; o `AccordionTrigger` já fornece foco visível e o indicador de abrir/fechar.
+- Mantenha a resposta em `text-sm leading-relaxed text-muted-foreground`.
 
 ### 6.14 Switch
 
@@ -337,14 +339,14 @@ Use `src/components/ui/switch.tsx` para alternâncias binárias.
 - Foco visível com anel azul e `ring-offset-background`; estado desabilitado com `opacity-50`.
 - Associe um `Label` visível por `htmlFor`/`id`. Não use apenas cor para comunicar o estado.
 
-### 6.15 NativeSelect
+### 6.15 Select
 
-Use `src/components/ui/native-select.tsx` para seleções simples que não precisam de busca ou agrupamento complexo.
+Use `src/components/ui/select.tsx` para seleções simples.
 
-- Encapsula um `<select>` nativo com `h-11`, `rounded-lg`, `border-input` e `bg-background`.
-- O chevron é decorativo (`aria-hidden`) e não substitui o comportamento nativo.
-- Mantenha `focus-visible` azul e `aria-invalid` destrutivo.
-- Use `FormField` para rótulo, ajuda e erro. Prefira esse primitive ao Select Radix quando um select nativo resolver.
+- Base Radix (`radix-ui`) com `Select`, `SelectTrigger`, `SelectValue`, `SelectContent` e `SelectItem`.
+- Use `h-11 w-full` no `SelectTrigger` para alinhar com os inputs.
+- Em React Hook Form, use `Controller` e passe `id`, `aria-invalid`, `aria-describedby` e `aria-required` do `FormField` para o `SelectTrigger`.
+- Para listas muito longas que precisam de busca, avalie outro padrão antes de usar `Select`.
 
 ### 6.16 AlertDialog
 
@@ -358,7 +360,7 @@ Use `src/components/ui/alert-dialog.tsx` para confirmações destrutivas ou irre
 
 ### 6.17 Tela de configurações
 
-- Use `SectionCard` (`src/components/ui/section-card.tsx`) para cada card: `rounded-xl border border-border bg-card p-6 shadow-sm`, título `h2` e descrição opcional.
+- Use `SectionCard` (`src/components/ui/section-card.tsx`) para cada card; ele compõe `Card` (`src/components/ui/card.tsx`) com `p-6`, título `h2` e descrição opcional.
 - A variação `danger` usa `border-destructive/30` e título `text-destructive`.
 - Layout: duas colunas a partir de `lg`, empilhamento abaixo disso; a coluna direita concentra domínio, relatórios, integrações e a ação de salvar.
 - O formulário principal salva notificações e preferências de relatório. Segurança e zona de risco usam ações próprias com `type="button"` para não criar formulários aninhados.
@@ -373,7 +375,7 @@ Use `src/pages/Profile.tsx` como referência para telas de perfil editáveis.
 
 - Cabeçalho do conteúdo: `h1` “Perfil”, eyebrow `text-xs font-medium tracking-[0.2em] text-blue-600 uppercase dark:text-blue-400` e link “Voltar ao site” com `ArrowLeft`.
 - Cards em `SectionCard`: dados pessoais, contato, dados da empresa e responsável legal / DPO. Duas colunas a partir de `lg`; empilhamento abaixo disso.
-- Avatar: círculo `size-16 rounded-full bg-blue-600 text-white`, iniciais derivadas do nome e imagem de prévia local com `object-cover`.
+- Avatar: use `Avatar`, `AvatarImage` e `AvatarFallback` (`src/components/ui/avatar.tsx`) com `size-16 bg-blue-600 text-white`; iniciais derivadas do nome e imagem de prévia local com `object-cover`.
 - “Alterar foto” abre um seletor escondido. Aceite PNG, JPG e WebP de até 2 MB, valide tipo e tamanho, revogue o object URL e informe com `FormAlert` que a imagem não é enviada nem salva.
 - O formulário é único (React Hook Form + Zod). “Salvar dados” no card pessoal e “Salvar perfil” ao final da coluna direita enviam o mesmo payload, desabilitam juntos e compartilham o feedback no topo.
 - O aviso fixo “Ambiente de demonstração: as alterações não serão salvas.” fica sob a ação principal.
@@ -391,13 +393,13 @@ Use `src/pages/Documents.tsx` como referência para a rota `/documents`.
 - Entrada de documento: a ação primária é o botão “Anexar documento” (`Paperclip`), que aciona um `input type="file"` visualmente oculto. Aceite PDF, DOC, DOCX e TXT de até 10 MB, valide extensão e tamanho, mostre o arquivo anexado com nome, tipo, tamanho e uma ação “Remover arquivo” com nome acessível. Nenhum conteúdo do arquivo pode ser lido, enviado ou armazenado; use apenas metadados (`File.name`, `File.size`, extensão).
 - A cópia deve deixar explícito que o arquivo permanece no dispositivo e que a IA é uma simulação local. Não afirme que houve leitura de conteúdo, upload ou processamento por modelo real.
 - O envio agrega os dados institucionais necessários ao relatório: CNPJ (com consulta OpenCNPJ), nome da empresa, e-mail de contato, encarregado (DPO) e finalidades do tratamento. Esses dados ficam em memória e alimentam o relatório gerado localmente.
-- Alternativa de demonstração: abaixo do anexo, `NativeSelect` dentro de `FormField` permite escolher um documento fictício. O campo fica desabilitado enquanto houver arquivo anexado; a lista lateral também permite selecionar um exemplo.
+- Alternativa de demonstração: abaixo do anexo, `Select` dentro de `FormField` permite escolher um documento fictício. O campo fica desabilitado enquanto houver arquivo anexado; a lista lateral também permite selecionar um exemplo.
 - Ação principal: `Button variant="brand" size="xl"` com rótulo “Analisar com IA”, `aria-busy`, `Loader2` e bloqueio de envio duplicado. O botão permanece desabilitado até existir arquivo anexado ou documento de exemplo selecionado.
 - Ao iniciar a análise, role até o cartão de processamento com `scrollIntoView` e `scroll-mt-20` para compensar o cabeçalho fixo. Use `behavior: 'smooth'` por padrão e `'auto'` quando `prefers-reduced-motion: reduce`.
 - `FormAlert tone="info"` é obrigatório logo abaixo da ação, explicando que nenhum conteúdo é enviado ou processado por IA real e que a análise é determinística.
-- Achados: use `FindingsList`, que agrupa por severidade (`alta`, `media`, `baixa`) com título e contagem por grupo, renderiza badge com cor + rótulo textual e abre explicação e recomendação em `<details>`/`<summary>` nativos com `ChevronDown` e `group-open:rotate-180`.
-- Resultado: `SectionCard` com grade de score (`text-5xl`), nível do score, barra proporcional, documento, origem (arquivo anexado ou exemplo), data, contagem de achados e resumo por severidade. Sempre inclua `FormAlert tone="info"` com o aviso de demonstração.
-- Análise simulada: `AnalysisProgress` mostra barra `role="progressbar"` com `aria-valuenow` e uma região `role="status"` com a etapa atual. Cada etapa tem estado pendente, ativo, concluído ou erro, com ícone + texto. Transições usam `motion-reduce:animate-none` e `motion-reduce:transition-none`.
+- Achados: use `FindingsList`, que agrupa por severidade (`alta`, `media`, `baixa`) com título e contagem por grupo, renderiza `Badge` com cor + rótulo textual e abre explicação e recomendação em `Accordion` (`src/components/ui/accordion.tsx`).
+- Resultado: `SectionCard` com grade de score (`text-5xl`), nível do score, `Progress` proporcional, documento, origem (arquivo anexado ou exemplo), data, contagem de achados e resumo por severidade. Sempre inclua `FormAlert tone="info"` com o aviso de demonstração.
+- Análise simulada: `AnalysisProgress` usa `Progress` (`src/components/ui/progress.tsx`) com `aria-label` e uma região `role="status"` com a etapa atual. Cada etapa tem estado pendente, ativo, concluído ou erro, com ícone + texto. Transições usam `motion-reduce:animate-none` e `motion-reduce:transition-none`.
 - Central de Downloads: `#central-de-downloads` com dois grupos (relatórios gerados e modelos). Cada item tem título, descrição, data, contagem de páginas e os formatos disponíveis.
 - O download usa `DropdownMenu` (`src/components/ui/dropdown-menu.tsx`) com os formatos PDF, DOCX e TXT. O gatilho é um `Button variant="outline"` com `Download`, `ChevronDown` e `aria-label` “Escolher formato para baixar {título}”.
 - Cada item do menu combina um chip textual do formato (PDF/DOCX/TXT) com título e descrição curta. PDF é “pronto para compartilhar”, DOCX é “editável” e TXT é “texto simples”.
@@ -415,7 +417,7 @@ Use `src/components/ui/dropdown-menu.tsx` para menus de ações contextuais, com
 - Itens usam `focus:bg-muted` e `data-[disabled]:opacity-50`; mantenha o item inteiro acionável por teclado.
 - Use `DropdownMenuTrigger asChild` com um `Button` e preserve um `aria-label` específico no gatilho.
 - Para ícones decorativos ou chips de formato, use `aria-hidden="true"` e garanta que o texto do item continue descrevendo a ação.
-- Prefira esse primitive a um select nativo quando a ação tiver descrições e ícones; para seleção simples de valor, use `NativeSelect`.
+- Prefira esse primitive a um select nativo quando a ação tiver descrições e ícones; para seleção simples de valor, use `Select`.
 
 ### 6.21 ProductFooter e CrossLinks
 
@@ -449,21 +451,18 @@ Use `src/pages/Dashboard.tsx` como referência para a tela `/dashboard`.
 - Quando o relatório retorna `degraded: true`, exiba `FormAlert tone="info"` explicando que o resumo veio do catálogo de referência e pode estar incompleto. O mesmo aviso aparece no resultado da análise de documentos.
 - Sem diagnóstico carregado, mostre um estado vazio com instrução para gerar o primeiro diagnóstico; não exiba score `0` como se fosse um resultado real.
 - Enquanto a Core API não expõe a leitura do histórico, `getDiagnostic` retorna `null` com `VITE_API_URL` preenchida. A tela então apresenta o estado vazio e mantém o formulário como caminho para um novo diagnóstico.
-- `DemoScenarioCards` (`src/components/diagnostics/DemoScenarioCards.tsx`) apresenta três cenários fictícios como cartões acionáveis. Cada cartão mostra empresa, setor, descrição e score, usa `aria-pressed` para o cenário ativo e nunca afirma que um site real foi acessado.
-- `ScanTerminal` (`src/components/diagnostics/ScanTerminal.tsx`) exibe um registro simulado com `role="log"` e `aria-live="polite"`, revelando linhas entre 3 e 7 segundos. Com `prefers-reduced-motion`, todas as linhas aparecem de imediato. A copy deixa explícito que nenhum site é acessado e nenhuma IA real é executada.
 
-### 6.24 Planos, assinatura simulada e ambiente de teste
+### 6.24 Planos e assinatura simulada
 
 Use `src/pages/Plans.tsx`, `PlanProvider` (`src/contexts/PlanProvider.tsx`) e `SubscriptionPrompt` (`src/components/plans/SubscriptionPrompt.tsx`) como referência para o fluxo de acesso por plano.
 
 - Login e cadastro encaminham para `/plans`. A escolha do plano é o próximo passo, não o painel.
-- Ao escolher um plano autenticado, `SubscriptionPrompt` desce do topo com um card de confirmação. O CTA “Assinar {plano}” ativa o plano em memória e leva ao painel; “Agora não” fecha sem alterar o estado.
-- Abaixo dos cards de plano, a opção “Testar ambiente” é discreta (`Button variant="ghost" size="lg"` com `FlaskConical`) e libera o plano Início com dados fictícios, sem cobrança.
-- O card de assinatura usa `fixed inset-x-0 top-16 z-40`, `max-w-3xl`, `rounded-xl border border-blue-600/30 bg-card p-4 shadow-lg`, `role="status"` e `animate-in fade-in slide-in-from-top-4 duration-300 motion-reduce:animate-none`. Não cubra o cabeçalho sticky (`h-16`).
-- O fechamento aceita o botão “Agora não”, o ícone `X` com nome acessível e a tecla Escape. A troca de rota também fecha o card; rotas de produto sem plano reabrem o pedido.
-- Use o mesmo card para bloquear recursos de planos superiores, como integrações e download de relatórios detalhados. Nunca esconda o recurso nem simule sucesso sem acesso.
-- Acesso sem plano a `/dashboard`, `/documents`, `/profile` ou `/settings` também abre o card pedindo assinatura; a tela permanece visível para contextualizar o recurso.
-- O chip do `ProductHeader` e o botão do `PublicHeader` refletem o estado: “Sem plano ativo”, “Ambiente de teste” ou o nome do plano. O destino é `/plans` enquanto não houver acesso e `/dashboard` depois dele. Em telas estreitas, o chip mantém o ícone e oculta o rótulo, preservando o `aria-label`.
+- `SubscriptionPrompt` usa o `AlertDialog` de `src/components/ui/alert-dialog.tsx` com `open={gate !== null}`. O fechamento (`onOpenChange`) chama `dismissGate`.
+- A ação principal usa `AlertDialogAction variant="brand"`: na confirmação de assinatura, “Assinar {plano}” ativa o plano em memória e leva ao painel; no bloqueio de recurso ou rota, navega para `/plans`.
+- O diálogo é modal: overlay escuro, foco preso e retorno de foco ao fechar. Escape, clique fora e “Agora não” fecham sem alterar o estado. A troca de rota também fecha; rotas de produto sem plano reabrem o pedido.
+- Use o mesmo diálogo para bloquear recursos de planos superiores, como integrações e download de relatórios detalhados. Nunca esconda o recurso nem simule sucesso sem acesso.
+- Acesso sem plano a `/dashboard`, `/documents`, `/profile` ou `/settings` também abre o diálogo pedindo assinatura; a tela permanece visível atrás do overlay.
+- O chip do `ProductHeader` e o botão do `PublicHeader` refletem o estado: “Sem plano ativo” ou o nome do plano. O destino é `/plans` enquanto não houver acesso e `/dashboard` depois dele. Em telas estreitas, o chip mantém o ícone e oculta o rótulo, preservando o `aria-label`.
 - Toda a assinatura é simulada e vive apenas em memória. A copy deve dizer que nenhuma cobrança é realizada e que recarregar a página volta ao estado sem plano.
 
 ---
@@ -576,7 +575,7 @@ Obrigatório em toda tela:
 
 ### Do
 
-- Reutilize `Button`, `Input`, `Label`, `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `ProductHeader`, `ProductFooter`, `CrossLinks`, `BrandLink`, `Switch`, `NativeSelect`, `AlertDialog`, `SectionCard` e `ThemeToggle`.
+- Reutilize `Button`, `Input`, `Label`, `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `ProductHeader`, `ProductFooter`, `CrossLinks`, `BrandLink`, `Switch`, `Select`, `AlertDialog`, `SectionCard`, `Card`, `Badge`, `Accordion`, `Sheet`, `Table`, `Avatar`, `Progress`, `Skeleton` e `ThemeToggle`.
 - Use `max-w-6xl px-6` para páginas.
 - Use as receitas de superfície e estado deste guia.
 - Conecte cada rota a pelo menos uma outra tela e ofereça caminho de volta.

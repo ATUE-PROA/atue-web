@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Definir a costura de integração com a Core API, os dados institucionais do relatório, o agrupamento de achados e os cenários de demonstração do `atue-web`.
+Definir a costura de integração com a Core API, os dados institucionais do relatório e o agrupamento de achados do `atue-web`.
 
 ## ADDED Requirements
 
@@ -68,28 +68,8 @@ O formulário de envio SHALL coletar CNPJ, empresa, e-mail, DPO (nome e e-mail) 
 - **THEN** o relatório gerado cita a organização, o CNPJ, o DPO e as finalidades informadas
 - **AND** o arquivo continua marcado como demonstração
 
-### Requirement: Cenários de demonstração
-
-O painel SHALL oferecer três cenários fictícios acionáveis (e-commerce, clínica e agência B2B). Cada cartão SHALL exibir empresa, setor, descrição e score, indicar o cenário ativo com `aria-pressed` e nunca afirmar que um site real foi acessado.
-
-#### Scenario: Carregar cenário
-
-- **WHEN** a pessoa aciona um cartão de cenário
-- **THEN** o score e os achados daquele cenário são exibidos no painel
-- **AND** o cartão indica que está ativo
-
-### Requirement: Registro simulado da varredura
-
-Durante a solicitação de diagnóstico, a interface SHALL exibir um registro simulado com `role="log"` e `aria-live="polite"`, revelando linhas ao longo de 3 a 7 segundos. Com `prefers-reduced-motion`, todas as linhas SHALL aparecer de imediato. A copy SHALL afirmar que nenhum site é acessado e nenhuma IA real é executada.
-
-#### Scenario: Movimento reduzido
-
-- **WHEN** o sistema solicita movimento reduzido
-- **THEN** o registro aparece completo sem animação
-- **AND** o estado é anunciado de forma acessível
-
 ## Out of scope
 
 - Deploy do app de demonstração na Vercel (DEV-690).
 - Leitura do histórico de diagnósticos na Core API.
-- Persistência de sessão, perfil institucional ou cenários.
+- Persistência de sessão ou perfil institucional.

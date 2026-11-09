@@ -73,7 +73,7 @@ Every route added to the SPA must be reachable through a visible control on at l
 - Use Lucide React for interface icons.
 - Maintain consistent spacing, typography, colors, borders, and interaction states.
 - Follow `DESIGN.md` for surfaces, color roles, typography, spacing, radius, component recipes, states, and the design PR checklist.
-- Reuse the shared primitives documented in `DESIGN.md` (for example `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `ProductHeader`, `BrandLink`, `Switch`, `NativeSelect`, `AlertDialog`, `SectionCard`) before creating local implementations.
+- Reuse the shared primitives documented in `DESIGN.md` (for example `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `ProductHeader`, `BrandLink`, `Switch`, `Select`, `AlertDialog`, `SectionCard`, `Card`, `Badge`, `Accordion`, `Sheet`, `Table`, `Avatar`, `Progress`, `Skeleton`) before creating local implementations.
 - Ensure responsive behavior across mobile and desktop viewports.
 - Avoid unnecessary inline styles, duplicated styling rules, and new CSS frameworks.
 - Do not modify global design tokens or shared components to solve a local problem unless the change is intentional and compatible with other screens.
@@ -110,7 +110,7 @@ Backend availability must not block frontend development.
 Simulated document analysis:
 
 - A real file input may be used as an attach control only when the requirement explicitly asks for it. Never read file contents, use `FileReader`, or send files to an upload endpoint without a real backend contract; use only file metadata (name, size, extension), validate accepted types and size, and state clearly that nothing is uploaded, stored, or processed by a real model.
-- Keep fictitious sample documents and a `NativeSelect` as an alternative path; state in the interface when the file remains on the device.
+- Keep fictitious sample documents and a `Select` as an alternative path; state in the interface when the file remains on the device.
 - Model the analysis as deterministic steps in the service layer with typed progress callbacks. Do not present it as real AI or as a verified legal assessment.
 - Block duplicate submissions, expose the current step through an accessible status region, and support `prefers-reduced-motion`. When starting the analysis, scroll to the progress card with smooth behavior and fall back to instant scrolling under reduced motion.
 - Keep the analysis result in the shared mock state only when the workflow requires other screens to reflect it; label everything as demonstration data.

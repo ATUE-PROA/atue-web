@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { Loader2 } from 'lucide-react'
 
 import { AnalysisProgress } from '@/components/documents/AnalysisProgress'
 import { DocumentAnalysisResult } from '@/components/documents/DocumentAnalysisResult'
@@ -11,6 +10,7 @@ import { ProductFooter } from '@/components/layout/product-footer'
 import { ProductHeader } from '@/components/layout/product-header'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
+import { Skeleton } from '@/components/ui/skeleton'
 import { ANALYSIS_STEPS, DOCUMENTS_CONTENT } from '@/content/documents'
 import { DOCUMENT_SHORTCUTS } from '@/content/navigation'
 import { usePlan } from '@/contexts/plan-context'
@@ -241,13 +241,12 @@ export function Documents() {
         {loadState === 'loading' ? (
           <div
             role="status"
-            className="mt-10 flex items-center gap-2 rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground shadow-sm"
+            className="mt-10 space-y-3 rounded-xl border border-border bg-card p-6 shadow-sm"
           >
-            <Loader2
-              aria-hidden="true"
-              className="size-4 animate-spin motion-reduce:animate-none"
-            />
-            {DOCUMENTS_CONTENT.loading}
+            <span className="sr-only">{DOCUMENTS_CONTENT.loading}</span>
+            <Skeleton className="h-4 w-40" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
           </div>
         ) : null}
 

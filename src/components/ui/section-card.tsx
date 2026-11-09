@@ -1,5 +1,6 @@
 import { useId, type ReactNode } from 'react'
 
+import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
 type SectionCardTone = 'default' | 'danger'
@@ -25,29 +26,28 @@ export function SectionCard({
   const headingId = id ?? generatedId
 
   return (
-    <section
+    <Card
+      role="region"
       aria-labelledby={headingId}
-      className={cn(
-        'rounded-xl border border-border bg-card p-6 shadow-sm',
-        tone === 'danger' && 'border-destructive/30',
-        className,
-      )}
+      className={cn('gap-0 p-6', tone === 'danger' && 'ring-destructive/30', className)}
     >
-      <h2
-        id={headingId}
-        className={cn(
-          'text-lg font-semibold tracking-tight',
-          tone === 'danger' ? 'text-destructive' : 'text-foreground',
-        )}
-      >
-        {title}
-      </h2>
-      {description ? (
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
-      ) : null}
+      <CardHeader className="p-0">
+        <h2
+          id={headingId}
+          className={cn(
+            'text-lg font-semibold tracking-tight',
+            tone === 'danger' ? 'text-destructive' : 'text-foreground',
+          )}
+        >
+          {title}
+        </h2>
+        {description ? (
+          <CardDescription className="mt-2 leading-relaxed">{description}</CardDescription>
+        ) : null}
+      </CardHeader>
 
-      <div className="mt-5">{children}</div>
-    </section>
+      <CardContent className="p-0 pt-5">{children}</CardContent>
+    </Card>
   )
 }
 

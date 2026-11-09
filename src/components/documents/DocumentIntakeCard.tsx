@@ -2,10 +2,17 @@ import { useRef, useState } from 'react'
 import { ArrowUpRight, FileCheck2, FileText, Loader2, Paperclip, Sparkles, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { FormField } from '@/components/ui/form-field'
-import { NativeSelect } from '@/components/ui/native-select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { SectionCard } from '@/components/ui/section-card'
 import { DOCUMENTS_CONTENT } from '@/content/documents'
 import {
@@ -194,14 +201,11 @@ export function DocumentIntakeCard({
           className="mt-3"
         >
           {(field) => (
-            <NativeSelect
-              {...field}
+            <Select
               value={selectedId ?? ''}
               disabled={isAnalyzing || attachedDocument !== null || documents.length === 0}
-              onChange={(event) => {
-                const nextDocument = documents.find(
-                  (document) => document.id === event.currentTarget.value,
-                )
+              onValueChange={(value) => {
+                const nextDocument = documents.find((document) => document.id === value)
 
                 if (nextDocument) {
                   setFileError(null)
@@ -209,15 +213,27 @@ export function DocumentIntakeCard({
                 }
               }}
             >
-              {documents.length === 0 ? (
-                <option value="">{DOCUMENTS_CONTENT.catalog.empty}</option>
-              ) : null}
-              {documents.map((document) => (
-                <option key={document.id} value={document.id}>
-                  {document.name}
-                </option>
-              ))}
-            </NativeSelect>
+              <SelectTrigger
+                id={field.id}
+                aria-invalid={field['aria-invalid']}
+                aria-describedby={field['aria-describedby']}
+                aria-required={field['aria-required']}
+                className="h-11 w-full data-[size=default]:h-11"
+              >
+                <SelectValue
+                  placeholder={
+                    documents.length === 0 ? DOCUMENTS_CONTENT.catalog.empty : intake.sampleLabel
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {documents.map((document) => (
+                  <SelectItem key={document.id} value={document.id}>
+                    {document.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           )}
         </FormField>
       </div>
@@ -242,9 +258,12 @@ export function DocumentIntakeCard({
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <p className="text-sm font-medium text-foreground">{selectedDocument.name}</p>
-              <span className="inline-flex items-center rounded-full border border-blue-600/30 bg-blue-600/10 px-2 py-0.5 text-xs font-medium text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300">
+              <Badge
+                variant="outline"
+                className="rounded-full border-blue-600/30 bg-blue-600/10 px-2 py-0.5 text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300"
+              >
                 Fictício
-              </span>
+              </Badge>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
               {selectedDocument.kind} · {selectedDocument.sizeLabel} · Atualizado em{' '}

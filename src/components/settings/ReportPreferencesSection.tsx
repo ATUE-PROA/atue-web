@@ -1,8 +1,14 @@
-import { useFormContext } from 'react-hook-form'
+import { Controller, useFormContext } from 'react-hook-form'
 
 import { SectionCard } from '@/components/ui/section-card'
 import { FormField } from '@/components/ui/form-field'
-import { NativeSelect } from '@/components/ui/native-select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   REPORT_FREQUENCY_OPTIONS,
   REPORT_LANGUAGE_OPTIONS,
@@ -14,7 +20,7 @@ const { reports } = SETTINGS_CONTENT
 
 export function ReportPreferencesSection() {
   const {
-    register,
+    control,
     formState: { errors },
   } = useFormContext<AccountSettingsValues>()
 
@@ -23,13 +29,35 @@ export function ReportPreferencesSection() {
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField label={reports.languageLabel} error={errors.reports?.language?.message} required>
           {(field) => (
-            <NativeSelect {...field} {...register('reports.language')}>
-              {REPORT_LANGUAGE_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </NativeSelect>
+            <Controller
+              control={control}
+              name="reports.language"
+              render={({ field: controlledField }) => (
+                <Select
+                  name={controlledField.name}
+                  value={controlledField.value}
+                  onValueChange={controlledField.onChange}
+                >
+                  <SelectTrigger
+                    id={field.id}
+                    aria-invalid={field['aria-invalid']}
+                    aria-describedby={field['aria-describedby']}
+                    aria-required={field['aria-required']}
+                    onBlur={controlledField.onBlur}
+                    className="h-11 w-full data-[size=default]:h-11"
+                  >
+                    <SelectValue placeholder={reports.languageLabel} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {REPORT_LANGUAGE_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
           )}
         </FormField>
 
@@ -39,13 +67,35 @@ export function ReportPreferencesSection() {
           required
         >
           {(field) => (
-            <NativeSelect {...field} {...register('reports.frequency')}>
-              {REPORT_FREQUENCY_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </NativeSelect>
+            <Controller
+              control={control}
+              name="reports.frequency"
+              render={({ field: controlledField }) => (
+                <Select
+                  name={controlledField.name}
+                  value={controlledField.value}
+                  onValueChange={controlledField.onChange}
+                >
+                  <SelectTrigger
+                    id={field.id}
+                    aria-invalid={field['aria-invalid']}
+                    aria-describedby={field['aria-describedby']}
+                    aria-required={field['aria-required']}
+                    onBlur={controlledField.onBlur}
+                    className="h-11 w-full data-[size=default]:h-11"
+                  >
+                    <SelectValue placeholder={reports.frequencyLabel} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {REPORT_FREQUENCY_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
           )}
         </FormField>
       </div>

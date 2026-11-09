@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { PROFILE_CONTENT } from '@/content/profile'
@@ -58,18 +59,22 @@ export function ProfileAvatar({ name }: ProfileAvatarProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-4">
-        <span className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-600 text-lg font-semibold text-white">
+        <Avatar className="size-16 bg-blue-600 text-white">
           {photoUrl ? (
-            <img
+            <AvatarImage
               src={photoUrl}
               alt={`Prévia da foto de perfil de ${name}`}
-              className="size-full object-cover"
-              onError={handlePhotoError}
+              onLoadingStatusChange={(status) => {
+                if (status === 'error') {
+                  handlePhotoError()
+                }
+              }}
             />
-          ) : (
+          ) : null}
+          <AvatarFallback className="bg-blue-600 text-lg font-semibold text-white">
             <span aria-hidden="true">{getProfileInitials(name)}</span>
-          )}
-        </span>
+          </AvatarFallback>
+        </Avatar>
 
         <Button
           type="button"

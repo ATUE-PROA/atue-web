@@ -11,7 +11,6 @@ export const PLANS_CONTENT = {
     title: 'Compare os planos',
     description:
       'Os recursos abaixo são ilustrativos e servem para demonstrar como os planos podem evoluir. Nenhum valor, recurso ou condição comercial é real.',
-    demoLabel: 'Estamos em demonstração',
   },
   plans: {
     title: 'Escolha o plano',
@@ -201,32 +200,19 @@ export const PLAN_FEATURES = {
 } as const satisfies Record<PlanFeatureId, PlanFeatureDefinition>
 
 export const PLAN_GATE_CONTENT = {
-  eyebrow: 'Recurso de outro plano',
   title: 'Assine um plano para continuar',
   description:
     'O recurso “{feature}” faz parte do plano {plan}. Escolha um plano para liberar esta interação.',
-  demoDescription:
-    'O recurso “{feature}” faz parte do plano {plan}. Você está no ambiente de teste do plano Início; assine para liberar a versão completa.',
   primaryLabel: 'Ver planos',
   secondaryLabel: 'Agora não',
-  closeLabel: 'Fechar aviso de assinatura',
   currentPlanLabel: 'Plano atual',
   currentPlanCta: 'Continuar no painel',
-  demoBadge: 'Ambiente de teste',
   noPlanLabel: 'Sem plano ativo',
   subscription: {
-    eyebrow: 'Confirmação de assinatura',
     title: 'Assinar o plano {plan}?',
     description:
       'A assinatura é simulada e não gera cobrança. O plano {plan} libera os recursos descritos na página de planos.',
     primaryLabel: 'Assinar {plan}',
-  },
-  testEnvironment: {
-    title: 'Prefere conhecer antes de assinar?',
-    description: 'Teste a área logada com dados fictícios e sem cobrança.',
-    note: 'Ambiente de teste do plano Início. Nenhuma cobrança é realizada.',
-    label: 'Testar ambiente',
-    loginLabel: 'Entrar para testar',
   },
 } as const
 

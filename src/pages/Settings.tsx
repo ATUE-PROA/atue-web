@@ -14,6 +14,7 @@ import { ReportPreferencesSection } from '@/components/settings/ReportPreference
 import { SecuritySection } from '@/components/settings/SecuritySection'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
+import { Skeleton } from '@/components/ui/skeleton'
 import { SETTINGS_CONTENT } from '@/content/settings'
 import { SETTINGS_SHORTCUTS } from '@/content/navigation'
 import { accountSettingsSchema } from '@/lib/settings'
@@ -121,9 +122,12 @@ export function Settings() {
         {loadState === 'loading' ? (
           <div
             role="status"
-            className="mt-10 rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground shadow-sm"
+            className="mt-10 space-y-3 rounded-xl border border-border bg-card p-6 shadow-sm"
           >
-            {SETTINGS_CONTENT.loading}
+            <span className="sr-only">{SETTINGS_CONTENT.loading}</span>
+            <Skeleton className="h-4 w-40" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
           </div>
         ) : null}
 

@@ -7,7 +7,6 @@ import type { PlanFeatureId, PlanGateRequest, PlanId } from '@/types/plans.types
 
 export function PlanProvider({ children }: { children: ReactNode }) {
   const [activePlan, setActivePlan] = useState<PlanId | null>(null)
-  const [isDemo, setIsDemo] = useState(false)
   const [gate, setGate] = useState<PlanGateRequest | null>(null)
 
   const canAccess = useCallback(
@@ -34,21 +33,13 @@ export function PlanProvider({ children }: { children: ReactNode }) {
     setGate({ kind: 'subscription', planId })
   }, [])
 
-  const startDemo = useCallback(() => {
-    setActivePlan('start')
-    setIsDemo(true)
-    setGate(null)
-  }, [])
-
   const subscribe = useCallback((planId: PlanId) => {
     setActivePlan(planId)
-    setIsDemo(false)
     setGate(null)
   }, [])
 
   const resetPlan = useCallback(() => {
     setActivePlan(null)
-    setIsDemo(false)
     setGate(null)
   }, [])
 
@@ -59,12 +50,10 @@ export function PlanProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       activePlan,
-      isDemo,
       gate,
       canAccess,
       requestFeature,
       requestSubscription,
-      startDemo,
       subscribe,
       resetPlan,
       dismissGate,
@@ -74,11 +63,9 @@ export function PlanProvider({ children }: { children: ReactNode }) {
       canAccess,
       dismissGate,
       gate,
-      isDemo,
       requestFeature,
       requestSubscription,
       resetPlan,
-      startDemo,
       subscribe,
     ],
   )
