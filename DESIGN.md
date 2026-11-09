@@ -451,6 +451,8 @@ Use `src/pages/Dashboard.tsx` como referência para a tela `/dashboard`.
 - Quando o relatório retorna `degraded: true`, exiba `FormAlert tone="info"` explicando que o resumo veio do catálogo de referência e pode estar incompleto. O mesmo aviso aparece no resultado da análise de documentos.
 - Sem diagnóstico carregado, mostre um estado vazio com instrução para gerar o primeiro diagnóstico; não exiba score `0` como se fosse um resultado real.
 - Enquanto a Core API não expõe a leitura do histórico, `getDiagnostic` retorna `null` com `VITE_API_URL` preenchida. A tela então apresenta o estado vazio e mantém o formulário como caminho para um novo diagnóstico.
+- `DemoScenarioCards` (`src/components/diagnostics/DemoScenarioCards.tsx`) apresenta três cenários fictícios como cartões acionáveis. Cada cartão mostra empresa, setor, descrição e score, usa `aria-pressed` para o cenário ativo e nunca afirma que um site real foi acessado.
+- `ScanTerminal` (`src/components/diagnostics/ScanTerminal.tsx`) exibe um registro simulado com `role="log"` e `aria-live="polite"`, revelando linhas entre 3 e 7 segundos. Com `prefers-reduced-motion`, todas as linhas aparecem de imediato. A copy deixa explícito que nenhum site é acessado e nenhuma IA real é executada.
 
 ### 6.24 Planos e assinatura simulada
 

@@ -25,10 +25,17 @@
 - [x] 3.3 Usar os dados informados no relatório gerado localmente.
 - [x] 3.4 Manter a consulta OpenCNPJ existente.
 
-## 4. Documentação e verificação
+## 4. Demonstração
 
-- [x] 4.1 Atualizar `DESIGN.md` com o painel.
-- [x] 4.2 Atualizar `README.md` com a integração via `VITE_API_URL`.
-- [x] 4.3 Rodar `npm run lint`, `npm run format:check` e `npm run build`.
-- [ ] 4.4 Validar manualmente no navegador os temas, os breakpoints e os estados.
-- [ ] 4.5 Publicar o app de demonstração na Vercel (DEV-690), fora deste repositório.
+- [x] 4.1 Criar cenários fictícios de e-commerce, clínica e agência B2B.
+- [x] 4.2 Expor cenários por service e aplicar ao estado de diagnóstico.
+- [x] 4.3 Criar `DemoScenarioCards` com `aria-pressed` e aviso de ficção.
+- [x] 4.4 Criar `ScanTerminal` com 3 a 7 segundos, `aria-live` e `motion-reduce`.
+
+## 5. Documentação e verificação
+
+- [x] 5.1 Atualizar `DESIGN.md` com o painel, os cenários e o terminal.
+- [x] 5.2 Atualizar `README.md` com a integração via `VITE_API_URL`.
+- [x] 5.3 Rodar `npm run lint`, `npm run format:check` e `npm run build`.
+- [ ] 5.4 Validar manualmente no navegador os temas, os breakpoints e os estados.
+- [ ] 5.5 Publicar o app de demonstração na Vercel (DEV-690), fora deste repositório.

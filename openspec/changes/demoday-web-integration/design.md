@@ -10,11 +10,12 @@ A Core API local ainda é um esqueleto (`Program.cs` sem controllers de autentic
 - Permitir que login, cadastro e diagnóstico usem a API real sem reescrever a interface.
 - Melhorar a leitura do diagnóstico com agrupamento por severidade e aviso de resultado degradado.
 - Alimentar o relatório local com os dados institucionais informados.
+- Oferecer cenários e um registro simulado para a demonstração.
 
 ## Non-Goals
 
 - Implementar os endpoints na Core API.
-- Persistir sessão ou perfil.
+- Persistir sessão, perfil ou cenários.
 - Ler, enviar ou processar arquivos reais.
 - Publicar o app de demonstração na Vercel (DEV-690), que depende de outro repositório e de acesso de deploy.
 
@@ -44,8 +45,14 @@ O token JWT fica em variável de módulo (`setAuthToken`/`getAuthToken`) e é li
 
 O envio grava `InstitutionalProfile` em `mocks/organization.ts` após o sucesso do submit. O relatório local passa a mostrar organização, CNPJ, DPO e finalidades informados. Nada é enviado.
 
+### Cenários e terminal explícitos
+
+Os três cenários vêm de `mocks/scenarios.ts` e são aplicados ao mesmo estado de diagnóstico. O terminal revela linhas entre 3 e 7 segundos, usa `role="log"`, `aria-live="polite"` e mostra todas as linhas de imediato com `prefers-reduced-motion`. Toda a copy diz que a varredura e a IA são simulações.
+
 ## Risks / Trade-offs
 
 - [Contrato real divergente] → o parse falha de forma explícita e a interface mostra erro; o contrato fica em `types/api.ts` para reconciliação com a Core API.
 - [Token em memória encerra a sessão ao recarregar] → aceito até existir desenho de persistência revisado.
+- [Cenários parecem empresas reais] → nomes, descrições e aviso deixam claro que são fictícios.
+- [Terminal pode parecer uma varredura real] → linhas prefixadas com “Simulação” e aviso no cartão.
 - [Dados institucionais só existem em memória] → o relatório é gerado na mesma sessão e a limitação está documentada.

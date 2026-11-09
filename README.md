@@ -59,6 +59,8 @@ rota -> página -> componente de feature -> service -> mock ou API
 
 O dashboard consome `services/diagnostic.ts`, que delega para `mocks/diagnostics.ts`. A Central de Documentos usa `services/documents.ts` e compartilha o mesmo estado de diagnóstico em memória. Nenhum componente importa mocks diretamente.
 
+O painel também oferece três cenários fictícios por meio de `services/scenarios.ts` e um registro simulado da varredura (`ScanTerminal`). A copy deixa explícito que nenhum site real é acessado e que a IA é uma simulação local.
+
 ## Navegação e rotas
 
 Todas as telas estão conectadas por links visíveis. Os destinos compartilhados ficam em `src/content/navigation.ts`; a área logada usa `ProductHeader` + `ProductFooter`, e as páginas internas usam `CrossLinks` para atalhos contextuais.
