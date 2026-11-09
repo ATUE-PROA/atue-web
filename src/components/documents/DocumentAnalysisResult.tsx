@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom'
 
 import { FindingsList } from '@/components/documents/FindingsList'
 import { SEVERITY_STYLES } from '@/components/documents/severity'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
+import { Progress } from '@/components/ui/progress'
 import { SectionCard } from '@/components/ui/section-card'
 import { DOCUMENTS_CONTENT, SEVERITY_CONTENT } from '@/content/documents'
 import { DIAGNOSTICS_CONTENT } from '@/content/diagnostics'
@@ -49,12 +51,11 @@ export function DocumentAnalysisResult({ result }: DocumentAnalysisResultProps) 
             <span aria-hidden="true" className={cn('size-2.5 rounded-full', level.dotClassName)} />
             <span className={cn('text-sm font-medium', level.textClassName)}>{level.label}</span>
           </div>
-          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
-            <div
-              className={cn('h-full rounded-full', level.barClassName)}
-              style={{ width: `${Math.min(100, Math.max(0, report.score))}%` }}
-            />
-          </div>
+          <Progress
+            value={report.score}
+            className="mt-2 h-2"
+            indicatorClassName={level.barClassName}
+          />
         </div>
 
         <dl className="grid gap-3 text-sm">
@@ -100,10 +101,11 @@ export function DocumentAnalysisResult({ result }: DocumentAnalysisResultProps) 
         </p>
         <div className="mt-2 flex flex-wrap gap-2">
           {SEVERITIES.map((severity) => (
-            <span
+            <Badge
               key={severity}
+              variant="outline"
               className={cn(
-                'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium',
+                'h-auto rounded-full px-3 py-1',
                 SEVERITY_STYLES[severity].badgeClassName,
               )}
             >
@@ -112,7 +114,7 @@ export function DocumentAnalysisResult({ result }: DocumentAnalysisResultProps) 
                 className={cn('size-1.5 rounded-full', SEVERITY_STYLES[severity].dotClassName)}
               />
               {SEVERITY_CONTENT[severity].label}: {report.summary.bySeverity[severity]}
-            </span>
+            </Badge>
           ))}
         </div>
       </div>

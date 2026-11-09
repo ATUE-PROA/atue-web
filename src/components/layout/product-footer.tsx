@@ -10,7 +10,7 @@ export function ProductFooter() {
     <footer className="mt-auto border-t border-border bg-background">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-8 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-xs leading-relaxed text-muted-foreground">
-          ATUE · Ambiente de demonstração. Nenhum dado é persistido.
+          ATUE · Nenhum dado é persistido.
         </p>
 
         <nav aria-label="Navegação do rodapé da área logada">

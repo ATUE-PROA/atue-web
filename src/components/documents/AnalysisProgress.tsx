@@ -1,5 +1,6 @@
 import { AlertCircle, Check, Circle, Loader2 } from 'lucide-react'
 
+import { Progress } from '@/components/ui/progress'
 import { SectionCard } from '@/components/ui/section-card'
 import { DOCUMENTS_CONTENT } from '@/content/documents'
 import { cn } from '@/lib/utils'
@@ -54,22 +55,12 @@ export function AnalysisProgress({ steps, progress }: AnalysisProgressProps) {
       }
       className="animate-in fade-in slide-in-from-bottom-2 duration-300 motion-reduce:animate-none"
     >
-      <div
-        role="progressbar"
+      <Progress
         aria-label={DOCUMENTS_CONTENT.intake.progressAriaLabel}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={Math.round(progress.progress)}
-        className="h-2 w-full overflow-hidden rounded-full bg-muted"
-      >
-        <div
-          className={cn(
-            'h-full rounded-full transition-[width] duration-500 ease-out motion-reduce:transition-none',
-            hasError ? 'bg-destructive' : 'bg-blue-600 dark:bg-blue-500',
-          )}
-          style={{ width: `${Math.min(100, Math.max(0, progress.progress))}%` }}
-        />
-      </div>
+        value={progress.progress}
+        className="h-2"
+        indicatorClassName={hasError ? 'bg-destructive' : 'bg-blue-600 dark:bg-blue-500'}
+      />
 
       <p role="status" className="mt-3 text-sm font-medium text-foreground">
         {statusText}

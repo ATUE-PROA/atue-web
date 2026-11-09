@@ -117,7 +117,7 @@ A rota `/register` usa:
 
 A rota `/login` usa `AuthCenteredLayout` e `LoginForm` para um único card centralizado, também com React Hook Form + Zod e `services/auth.ts` como fronteira do login simulado.
 
-Os fluxos válidos criam uma sessão em memória e navegam para `/plans`, onde a pessoa escolhe um plano ou testa o ambiente. Os avisos informam explicitamente que a conta é de demonstração.
+Os fluxos válidos criam uma sessão em memória e navegam para `/plans`, onde a pessoa escolhe um plano. Os avisos informam explicitamente que a conta é de demonstração.
 
 ## Envio de documentos
 
@@ -133,9 +133,8 @@ A rota `/form` usa `AuthLayout`, `FormBrandPanel` e `DocumentForm` para coletar 
 As rotas `/plans` e `/plan` apresentam uma comparação entre os planos Início, Cresce e Escala, cards ilustrativos e uma seção de ajuda com perguntas frequentes. A página está linkada no rodapé da landing e não há cobrança nesta demonstração.
 
 - Depois do login ou cadastro, a pessoa é encaminhada para `/plans`.
-- Ao escolher um plano autenticada, um card de confirmação desce do topo da tela. A assinatura é simulada e não gera cobrança.
-- Abaixo dos cards, a opção discreta “Testar ambiente” libera a área logada com o plano Início e dados fictícios, sem exigir assinatura.
-- Recursos de outros planos, como integrações e download de relatórios detalhados, exibem o mesmo card de assinatura ao serem acionados.
+- Ao escolher um plano autenticada, um diálogo de confirmação (`AlertDialog`) é exibido. A assinatura é simulada e não gera cobrança.
+- Recursos de outros planos, como integrações e download de relatórios detalhados, exibem o mesmo diálogo de assinatura ao serem acionados.
 - O acesso por plano fica em `PlanProvider` (`src/contexts/PlanProvider.tsx`) e vive apenas em memória; recarregar a página volta ao estado sem plano.
 
 ## Configurações da conta
@@ -164,10 +163,10 @@ A rota `/documents` concentra o painel de achados, a análise simulada de docume
 
 - `services/documents.ts` é a fronteira de dados; `mocks/documents.ts` mantém documentos, relatórios e modelos em memória.
 - A entrada principal é o botão “Anexar documento”, que aciona um `input type="file"` apenas como controle de anexo. PDF, DOC, DOCX e TXT de até 10 MB são aceitos; o arquivo permanece no dispositivo e somente nome, tipo e tamanho são usados. Nenhum conteúdo é lido, enviado ou armazenado.
-- Um `NativeSelect` e a lista lateral oferecem documentos fictícios como alternativa de demonstração. O campo de exemplo fica desabilitado enquanto houver arquivo anexado.
+- Um `Select` e a lista lateral oferecem documentos fictícios como alternativa de demonstração. O campo de exemplo fica desabilitado enquanto houver arquivo anexado.
 - “Analisar com IA” inicia a análise simulada; a tela informa que não há modelo real. `analyzeDocument` recebe um alvo tipado (arquivo local ou exemplo) e executa etapas determinísticas com atraso, devolvendo o progresso por callback. Ao iniciar, a página rola suavemente até o cartão de processamento (ou de forma imediata com `prefers-reduced-motion`), anuncia a etapa atual em uma região `aria-live` e bloqueia envios duplicados.
 - Ao concluir, o resultado atualiza o diagnóstico compartilhado em `mocks/diagnostics.ts`; o `/dashboard` passa a exibir o mesmo score e os mesmos achados.
-- Cada achado tem severidade, categoria, explicação simulada e recomendação, exibidas em um `<details>` acessível.
+- Cada achado tem severidade, categoria, explicação simulada e recomendação, exibidas em um `Accordion` acessível.
 - `src/lib/pdf.ts`, `src/lib/docx.ts` e `src/lib/text.ts` geram PDF, DOCX e TXT válidos no navegador a partir do mesmo contrato `DownloadContent`. O PDF tem capa, métricas em grade, cabeçalho, rodapé e paginação; o DOCX é um pacote OOXML/ZIP com estilos, numeração, tabela de métricas, cabeçalho e rodapé; o TXT usa 78 colunas, cabeçalho, métricas com pontilhado e seções sublinhadas.
 - `src/lib/download.ts` centraliza a criação do `Blob`, a troca de extensão e o link temporário com revogação do object URL. Nenhum arquivo é armazenado.
 - A Central de Downloads lista relatórios gerados e modelos fictícios. Cada item abre um menu acessível com PDF, DOCX e TXT. Todos os arquivos contêm aviso de demonstração e não têm validade legal.

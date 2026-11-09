@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 
 import { BrandLink, SiteHeader } from '@/components/layout/site-header'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
+import { Badge } from '@/components/ui/badge'
 import { PLAN_GATE_CONTENT } from '@/content/plans'
 import { usePlan } from '@/contexts/plan-context'
 import { getPlanName } from '@/lib/plans'
@@ -21,25 +22,23 @@ function getNavLinkClassName({ isActive }: { isActive: boolean }): string {
 }
 
 export function ProductHeader() {
-  const { activePlan, isDemo } = usePlan()
-  const planLabel = isDemo
-    ? PLAN_GATE_CONTENT.demoBadge
-    : activePlan
-      ? getPlanName(activePlan)
-      : PLAN_GATE_CONTENT.noPlanLabel
+  const { activePlan } = usePlan()
+  const planLabel = activePlan ? getPlanName(activePlan) : PLAN_GATE_CONTENT.noPlanLabel
 
   return (
     <SiteHeader>
       <BrandLink to="/dashboard" />
       <nav aria-label="Navegação da conta" className="flex items-center gap-1">
-        <Link
-          to="/plans"
-          aria-label={`Plano atual: ${planLabel}. Ver planos`}
-          className="mr-1 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:focus-visible:ring-blue-400/60"
+        <Badge
+          asChild
+          variant="outline"
+          className="mr-1 h-auto rounded-full px-2.5 py-1 text-muted-foreground hover:bg-muted hover:text-foreground [a]:hover:text-foreground"
         >
-          <CreditCard aria-hidden="true" className="size-3.5" />
-          <span className="hidden md:inline">{planLabel}</span>
-        </Link>
+          <Link to="/plans" aria-label={`Plano atual: ${planLabel}. Ver planos`}>
+            <CreditCard aria-hidden="true" />
+            <span className="hidden md:inline">{planLabel}</span>
+          </Link>
+        </Badge>
 
         <NavLink
           to="/dashboard"

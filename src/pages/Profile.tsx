@@ -13,6 +13,7 @@ import { DpoSection } from '@/components/profile/DpoSection'
 import { PersonalDataSection } from '@/components/profile/PersonalDataSection'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
+import { Skeleton } from '@/components/ui/skeleton'
 import { PROFILE_CONTENT } from '@/content/profile'
 import { PROFILE_SHORTCUTS } from '@/content/navigation'
 import { profileSchema } from '@/lib/profile'
@@ -145,9 +146,12 @@ export function Profile() {
         {loadState === 'loading' ? (
           <div
             role="status"
-            className="mt-10 rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground shadow-sm"
+            className="mt-10 space-y-3 rounded-xl border border-border bg-card p-6 shadow-sm"
           >
-            {PROFILE_CONTENT.loading}
+            <span className="sr-only">{PROFILE_CONTENT.loading}</span>
+            <Skeleton className="h-4 w-40" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
           </div>
         ) : null}
 

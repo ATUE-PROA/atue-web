@@ -1,10 +1,18 @@
-import { useEffect, useRef, useState } from 'react'
-import { CreditCard, LayoutDashboard, Menu, X } from 'lucide-react'
+import { useState } from 'react'
+import { CreditCard, LayoutDashboard, Menu } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { BrandLink, SiteHeader } from '@/components/layout/site-header'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { Button } from '@/components/ui/button'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 import { PUBLIC_NAV } from '@/content/navigation'
 import { useAuth } from '@/contexts/auth-context'
 import { usePlan } from '@/contexts/plan-context'
@@ -19,28 +27,10 @@ export function PublicHeader() {
   const { user } = useAuth()
   const { activePlan } = usePlan()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const menuButtonRef = useRef<HTMLButtonElement>(null)
 
   const sessionTarget = activePlan ? '/dashboard' : '/plans'
   const sessionLabel = activePlan ? 'Dashboard' : 'Planos'
   const SessionIcon = activePlan ? LayoutDashboard : CreditCard
-
-  useEffect(() => {
-    if (!isMenuOpen) {
-      return
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsMenuOpen(false)
-        menuButtonRef.current?.focus()
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [isMenuOpen])
 
   const authActions = user ? (
     <Button asChild variant="brand" size="lg">
@@ -83,39 +73,7 @@ export function PublicHeader() {
   )
 
   return (
-    <SiteHeader
-      submenu={
-        isMenuOpen ? (
-          <div
-            id="public-mobile-menu"
-            className="border-t border-border bg-background/95 backdrop-blur md:hidden"
-          >
-            <nav
-              aria-label="Navegação principal móvel"
-              className="mx-auto w-full max-w-6xl px-6 py-4"
-            >
-              <ul className="flex flex-col gap-1">
-                {PUBLIC_NAV.map((item) => (
-                  <li key={item.to}>
-                    <Link
-                      to={item.to}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={mobileLinkClasses}
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3">
-                {mobileAuthActions}
-              </div>
-            </nav>
-          </div>
-        ) : null
-      }
-    >
+    <SiteHeader>
       <BrandLink onClick={() => setIsMenuOpen(false)} />
 
       <nav aria-label="Navegação principal" className="hidden md:block">
@@ -136,19 +94,45 @@ export function PublicHeader() {
       </div>
 
       <div className="flex items-center gap-2 md:hidden">
-        <Button
-          ref={menuButtonRef}
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="text-foreground hover:bg-muted"
-          aria-label={isMenuOpen ? 'Fechar menu' : 'Abrir menu'}
-          aria-expanded={isMenuOpen}
-          aria-controls="public-mobile-menu"
-          onClick={() => setIsMenuOpen((current) => !current)}
-        >
-          {isMenuOpen ? <X /> : <Menu />}
-        </Button>
+        <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+          <SheetTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="text-foreground hover:bg-muted"
+              aria-label="Abrir menu"
+            >
+              <Menu aria-hidden="true" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="data-[side=right]:w-4/5 max-w-sm gap-0 p-0">
+            <SheetHeader className="border-b border-border p-4 pr-12">
+              <SheetTitle>Menu</SheetTitle>
+              <SheetDescription>Navegação principal e acesso à conta.</SheetDescription>
+            </SheetHeader>
+
+            <nav aria-label="Navegação principal móvel" className="flex flex-1 flex-col gap-1 p-4">
+              <ul className="flex flex-col gap-1">
+                {PUBLIC_NAV.map((item) => (
+                  <li key={item.to}>
+                    <Link
+                      to={item.to}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={mobileLinkClasses}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-auto flex flex-col gap-2 border-t border-border pt-3">
+                {mobileAuthActions}
+              </div>
+            </nav>
+          </SheetContent>
+        </Sheet>
         <ThemeToggle />
       </div>
     </SiteHeader>

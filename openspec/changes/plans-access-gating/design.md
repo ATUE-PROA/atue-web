@@ -2,15 +2,14 @@
 
 `/plans` já apresenta comparação, cards, FAQ e suporte, mas não participa do fluxo de autenticação. `LoginForm` e `CadastroForm` navegam para `/dashboard`, e as rotas de produto não possuem noção de plano contratado. A área logada tem `ProductHeader` compartilhado e a página de documentos concentra análise simulada e downloads; configurações expõem integrações.
 
-A change introduz estado de plano em memória, sem backend de assinatura. O objetivo é demonstrar a escolha de plano, o teste do ambiente e o bloqueio de recursos de planos superiores de forma honesta.
+A change introduz estado de plano em memória, sem backend de assinatura. O objetivo é demonstrar a escolha de plano e o bloqueio de recursos de planos superiores de forma honesta.
 
 ## Goals / Non-Goals
 
 **Goals:**
 
 - Levar login e cadastro para `/plans`.
-- Permitir escolher um plano com confirmação simulada em card superior.
-- Oferecer um ambiente de teste discreto abaixo dos cards.
+- Permitir escolher um plano com confirmação simulada em `AlertDialog`.
 - Bloquear recursos dos planos Cresce e Escala quando o acesso ativo é o Início.
 - Refletir o plano ativo nos cabeçalhos e manter caminhos de volta.
 - Preservar acessibilidade, responsividade e a natureza simulada do fluxo.
@@ -27,7 +26,7 @@ A change introduz estado de plano em memória, sem backend de assinatura. O obje
 
 ### Estado de plano em memória com ranking explícito
 
-`PlanProvider` mantém `activePlan`, `isDemo` e o card pendente. O ranking `start < growth < scale` fica em `src/lib/plans.ts`, junto de `hasPlanAccess`, `getRequiredPlan` e `getPlanName`. O contexto oferece `canAccess`, `requestFeature`, `requestSubscription`, `startDemo`, `subscribe` e `dismissGate`.
+`PlanProvider` mantém `activePlan` e o diálogo pendente. O ranking `start < growth < scale` fica em `src/lib/plans.ts`, junto de `hasPlanAccess`, `getRequiredPlan` e `getPlanName`. O contexto oferece `canAccess`, `requestFeature`, `requestSubscription`, `subscribe` e `dismissGate`.
 
 Alternativa descartada: persistir em `localStorage`. Não há requisito de persistência e a assinatura é simulada; armazenar estado comercial no navegador sugeriria uma contratação que não existe.
 
@@ -35,18 +34,14 @@ Alternativa descartada: persistir em `localStorage`. Não há requisito de persi
 
 Os formulários navegam para `/plans` com `replace: true` e chamam `resetPlan` para que uma nova sessão sempre comece sem plano ativo. A copy de sucesso do cadastro também aponta para a escolha do plano. `PublicHeader` e `AuthLayout` trocam o botão de sessão para “Planos” enquanto não houver plano ativo, evitando que o atalho de dashboard pule a etapa.
 
-### Card superior para assinatura e bloqueio
+### AlertDialog para assinatura e bloqueio
 
-`SubscriptionPrompt` é montado no `AppRoot` e usa `fixed inset-x-0 top-16 z-40`. O card desce do topo com `animate-in fade-in slide-in-from-top-4`, respeitando `motion-reduce`. Ele cobre dois casos:
+`SubscriptionPrompt` é montado no `AppRoot` e usa o `AlertDialog` de `src/components/ui/alert-dialog.tsx` com `open={gate !== null}`. O diálogo cobre dois casos:
 
 1. **Assinatura:** a pessoa escolhe um plano autenticada. O CTA “Assinar {plano}” ativa o plano em memória e navega ao painel.
 2. **Recurso bloqueado:** integrações e downloads detalhados chamam `requestFeature`. O CTA leva a `/plans`.
 
-Fechar por “Agora não”, botão `X` ou Escape. O card não é modal: a página permanece visível para contextualizar o recurso, e o foco não é sequestrado. Ao mudar de rota, o card é fechado; em rotas de produto sem plano, o guarda do `AppRoot` reabre o pedido de acesso.
-
-### Ambiente de teste libera o plano Início
-
-“Testar ambiente” fica abaixo dos cards, usa `Button variant="ghost"` com `FlaskConical` e chama `startDemo`, que ativa `start` com `isDemo = true`. A opção exige sessão: sem usuário, leva a `/login`.
+O diálogo é modal: overlay escuro, foco preso e retorno de foco ao fechar. “Agora não” (`AlertDialogCancel`), Escape e clique fora chamam `dismissGate`. Ao mudar de rota, o diálogo é fechado; em rotas de produto sem plano, o guarda do `AppRoot` reabre o pedido de acesso.
 
 ### Bloqueio de recursos representativos
 
@@ -60,12 +55,12 @@ O bloqueio é visual e de experiência. Quando a Core API validar plano, a autor
 
 ### Acesso direto a rotas de produto
 
-`AppRoot` observa `/dashboard`, `/documents`, `/profile` e `/settings`. Sem plano ativo, abre o card de assinatura. A tela continua acessível para que a pessoa entenda o recurso e encontre o caminho para `/plans`.
+`AppRoot` observa `/dashboard`, `/documents`, `/profile` e `/settings`. Sem plano ativo, abre o diálogo de assinatura. A tela permanece visível atrás do overlay para que a pessoa entenda o recurso e encontre o caminho para `/plans`.
 
 ## Risks / Trade-offs
 
-- [A assinatura parece real] → copy explícita de simulação e ausência de cobrança no card e no `DESIGN.md`.
+- [A assinatura parece real] → copy explícita de simulação e ausência de cobrança no diálogo e no `DESIGN.md`.
 - [Estado some ao recarregar] → aceito no MVP; documentado em `README.md`, `DESIGN.md` e na seção de dívidas.
 - [Bloqueio apenas no frontend] → aceito para demonstração; a autorização real deve ser aplicada pelo backend.
-- [Card fixo pode competir com o conteúdo] → largura `max-w-3xl`, posição abaixo do cabeçalho e fechamento fácil.
-- [Escolher plano diretamente pode pular a leitura] → o card resume que a assinatura é simulada e o plano pode ser revisto em `/plans`.
+- [Diálogo modal interrompe a navegação] → fechamento por “Agora não”, Escape e clique fora; o caminho para `/plans` fica no CTA principal.
+- [Escolher plano diretamente pode pular a leitura] → o diálogo resume que a assinatura é simulada e o plano pode ser revisto em `/plans`.

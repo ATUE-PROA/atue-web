@@ -3,6 +3,8 @@
 @import '@fontsource-variable/geist';
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant data-open (&[data-state=open]);
+@custom-variant data-closed (&[data-state=closed]);
 @plugin "@tailwindcss/typography";
 
 @theme inline {

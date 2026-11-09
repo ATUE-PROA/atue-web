@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { CheckCircle2, Link2, Loader2, MessageSquare, Search } from 'lucide-react'
 
 import { SectionCard } from '@/components/ui/section-card'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { SETTINGS_CONTENT } from '@/content/settings'
 import { usePlan } from '@/contexts/plan-context'
 import { connectIntegration } from '@/services/settings'
+import { cn } from '@/lib/utils'
 import type { AccountIntegration, IntegrationId, IntegrationStatus } from '@/types/settings.types'
 
 interface IntegrationsSectionProps {
@@ -85,12 +87,13 @@ export function IntegrationsSection({ initialIntegrations }: IntegrationsSection
               </div>
 
               {isConnected ? (
-                <span
-                  className={`inline-flex w-fit items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium ${connectedBadgeClasses}`}
+                <Badge
+                  variant="outline"
+                  className={cn('h-auto w-fit rounded-full px-3 py-1', connectedBadgeClasses)}
                 >
-                  <CheckCircle2 aria-hidden="true" className="size-3.5" />
+                  <CheckCircle2 aria-hidden="true" />
                   {getStatusLabel(integration.status)}
-                </span>
+                </Badge>
               ) : (
                 <Button
                   type="button"

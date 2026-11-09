@@ -1,5 +1,6 @@
 import { AlertCircle, CheckCircle2, Info } from 'lucide-react'
 
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
 
 type FormAlertTone = 'success' | 'error' | 'info'
@@ -42,15 +43,15 @@ export function FormAlert({ tone, title, description }: FormAlertProps) {
   const Icon = toneIcons[tone]
 
   return (
-    <div
+    <Alert
       role={tone === 'error' ? 'alert' : 'status'}
-      className={cn('mt-6 flex items-start gap-3 rounded-lg border p-4', styles.container)}
+      className={cn('mt-6 gap-1 p-4', styles.container)}
     >
       <Icon aria-hidden="true" className={cn('mt-0.5 size-4 shrink-0', styles.icon)} />
-      <div>
-        <p className={cn('text-sm font-medium', styles.title)}>{title}</p>
-        <p className={cn('mt-1 text-sm', styles.description)}>{description}</p>
-      </div>
-    </div>
+      <AlertTitle className={cn('text-sm font-medium', styles.title)}>{title}</AlertTitle>
+      <AlertDescription className={cn('text-sm', styles.description)}>
+        {description}
+      </AlertDescription>
+    </Alert>
   )
 }

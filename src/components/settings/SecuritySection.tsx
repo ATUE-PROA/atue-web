@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { Loader2 } from 'lucide-react'
 
 import { SectionCard } from '@/components/ui/section-card'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { FormField } from '@/components/ui/form-field'
@@ -132,9 +133,12 @@ export function SecuritySection() {
               {security.twoFactorDescription}
             </p>
           </div>
-          <span className="inline-flex w-fit items-center gap-1.5 rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+          <Badge
+            variant="outline"
+            className="h-auto w-fit rounded-full bg-muted px-3 py-1 text-muted-foreground"
+          >
             {security.twoFactorStatus}
-          </span>
+          </Badge>
         </div>
       </div>
     </SectionCard>

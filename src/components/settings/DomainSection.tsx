@@ -1,6 +1,7 @@
 import { ShieldAlert, ShieldCheck } from 'lucide-react'
 
 import { SectionCard } from '@/components/ui/section-card'
+import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { SETTINGS_CONTENT } from '@/content/settings'
@@ -41,19 +42,20 @@ export function DomainSection({ domain }: DomainSectionProps) {
             className="h-11 rounded-lg border-input bg-muted/40 text-foreground sm:flex-1"
           />
 
-          <span
+          <Badge
+            variant="outline"
             className={cn(
-              'inline-flex w-fit items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium',
+              'h-auto w-fit rounded-full px-3 py-1',
               domain.verified ? verifiedBadgeClasses : unverifiedBadgeClasses,
             )}
           >
             {domain.verified ? (
-              <ShieldCheck aria-hidden="true" className="size-3.5" />
+              <ShieldCheck aria-hidden="true" />
             ) : (
-              <ShieldAlert aria-hidden="true" className="size-3.5" />
+              <ShieldAlert aria-hidden="true" />
             )}
             {domain.verified ? domainContent.verifiedLabel : domainContent.unverifiedLabel}
-          </span>
+          </Badge>
         </div>
 
         <p id={helpId} className="text-xs leading-relaxed text-muted-foreground">

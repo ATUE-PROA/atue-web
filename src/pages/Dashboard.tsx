@@ -1,27 +1,24 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { ArrowUpRight, CreditCard, Files, Loader2, Upload } from 'lucide-react'
+import { ArrowUpRight, CreditCard, Files, Upload } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import {
   DiagnosticRequestForm,
   type DiagnosticRequestStatus,
 } from '@/components/diagnostics/DiagnosticRequestForm'
-import { DemoScenarioCards } from '@/components/diagnostics/DemoScenarioCards'
-import { ScanTerminal } from '@/components/diagnostics/ScanTerminal'
 import { ScoreGauge } from '@/components/diagnostics/ScoreGauge'
 import { FindingsList } from '@/components/documents/FindingsList'
 import { ProductFooter } from '@/components/layout/product-footer'
 import { ProductHeader } from '@/components/layout/product-header'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
+import { Skeleton } from '@/components/ui/skeleton'
 import { DIAGNOSTICS_CONTENT } from '@/content/diagnostics'
 import { DASHBOARD_SHORTCUTS } from '@/content/navigation'
 import { formatDocumentDateTime } from '@/lib/documents'
 import { getScoreLevel } from '@/lib/diagnostics'
 import { getDiagnostic, requestDiagnostic } from '@/services/diagnostic'
-import { applyDemoScenario, getDemoScenarios } from '@/services/scenarios'
 import type { DiagnosticReport } from '@/types/api'
-import type { DemoScenario, DemoScenarioId } from '@/types/scenarios.types'
 
 type LoadState = 'loading' | 'ready' | 'error'
 
@@ -46,10 +43,6 @@ export function Dashboard() {
   const [loadState, setLoadState] = useState<LoadState>('loading')
   const [reloadKey, setReloadKey] = useState(0)
   const [requestState, setRequestState] = useState<DiagnosticRequestStatus>('idle')
-  const [scenarios, setScenarios] = useState<DemoScenario[]>([])
-  const [scenarioState, setScenarioState] = useState<'loading' | 'ready' | 'error'>('loading')
-  const [scenarioReloadKey, setScenarioReloadKey] = useState(0)
-  const [activeScenarioId, setActiveScenarioId] = useState<DemoScenarioId | null>(null)
 
   useEffect(() => {
     let isActive = true
@@ -74,40 +67,6 @@ export function Dashboard() {
     }
   }, [reloadKey])
 
-  useEffect(() => {
-    let isActive = true
-
-    getDemoScenarios()
-      .then((data) => {
-        if (!isActive) {
-          return
-        }
-
-        setScenarios(data)
-        setScenarioState('ready')
-      })
-      .catch(() => {
-        if (isActive) {
-          setScenarioState('error')
-        }
-      })
-
-    return () => {
-      isActive = false
-    }
-  }, [scenarioReloadKey])
-
-  const handleApplyScenario = (scenarioId: DemoScenarioId) => {
-    try {
-      const report = applyDemoScenario(scenarioId)
-      setRelatorio(report)
-      setActiveScenarioId(scenarioId)
-      setRequestState('idle')
-    } catch {
-      setScenarioState('error')
-    }
-  }
-
   const handleRequestDiagnostic = async (url: string) => {
     if (requestState === 'running') {
       return
@@ -118,7 +77,6 @@ export function Dashboard() {
     try {
       const nextReport = await requestDiagnostic(url)
       setRelatorio(nextReport)
-      setActiveScenarioId(null)
       setRequestState('success')
     } catch {
       setRequestState('error')
@@ -130,10 +88,12 @@ export function Dashboard() {
       <DashboardShell>
         <div
           role="status"
-          className="flex items-center gap-2 rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground shadow-sm"
+          className="space-y-3 rounded-xl border border-border bg-card p-6 shadow-sm"
         >
-          <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-          Carregando diagnóstico...
+          <span className="sr-only">Carregando diagnóstico...</span>
+          <Skeleton className="h-4 w-40" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-3/4" />
         </div>
       </DashboardShell>
     )
@@ -211,29 +171,12 @@ export function Dashboard() {
       </header>
 
       <div className="mt-8">
-        <DemoScenarioCards
-          scenarios={scenarios}
-          activeScenarioId={activeScenarioId}
-          status={scenarioState}
-          onApply={handleApplyScenario}
-          onRetry={() => {
-            setScenarioState('loading')
-            setScenarioReloadKey((current) => current + 1)
-          }}
-        />
-      </div>
-
-      <div className="mt-8">
         <DiagnosticRequestForm
           status={requestState}
           onSubmit={(url) => {
             void handleRequestDiagnostic(url)
           }}
         />
-
-        {requestState === 'running' || requestState === 'success' ? (
-          <ScanTerminal key={requestState} active={requestState === 'running'} />
-        ) : null}
       </div>
 
       <section aria-labelledby="shortcuts-heading" className="mt-8">
