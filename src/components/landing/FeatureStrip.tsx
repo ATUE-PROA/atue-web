@@ -1,8 +1,8 @@
-import { FileText, Lock, ShieldCheck, Sparkles } from 'lucide-react'
+import { FileText, Shield, ShieldCheck, TrendingUp } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { LANDING_FEATURES } from '@/content/landing'
 
-const FEATURE_ICONS: readonly LucideIcon[] = [ShieldCheck, FileText, Lock, Sparkles] as const
+const FEATURE_ICONS: readonly LucideIcon[] = [Shield, FileText, ShieldCheck, TrendingUp] as const
 
 export default function FeatureStrip() {
   return (

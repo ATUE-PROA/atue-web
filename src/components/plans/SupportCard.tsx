@@ -14,7 +14,7 @@ export function SupportCard() {
   return (
     <section
       aria-labelledby="plan-support-heading"
-      className="flex h-full flex-col rounded-xl border border-border bg-card p-6"
+      className="flex h-full flex-col rounded-xl border border-blue-100 bg-blue-50/50 p-6 dark:border-border dark:bg-card"
     >
       <h3
         id="plan-support-heading"

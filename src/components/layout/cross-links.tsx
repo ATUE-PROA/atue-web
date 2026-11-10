@@ -5,7 +5,7 @@ import type { AppNavLink } from '@/content/navigation'
 import { cn } from '@/lib/utils'
 
 const linkClasses =
-  'inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:focus-visible:ring-blue-400/60'
+  'inline-flex items-center gap-1.5 rounded-md border border-blue-100 bg-blue-50/50 px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-blue-100/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-border dark:bg-card dark:hover:bg-muted dark:focus-visible:ring-blue-400/60'
 
 interface CrossLinksProps {
   links: readonly AppNavLink[]

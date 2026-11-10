@@ -6,6 +6,7 @@ export interface AppNavLink {
 
 export const PUBLIC_NAV = [
   { to: '/#como-funciona', label: 'Como funciona' },
+  { to: '/#beneficios', label: 'Benefícios' },
   { to: '/#sobre', label: 'Sobre' },
   { to: '/plans', label: 'Planos' },
 ] as const satisfies readonly AppNavLink[]

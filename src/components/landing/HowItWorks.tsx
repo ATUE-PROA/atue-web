@@ -18,7 +18,10 @@ export default function HowItWorks() {
           const Icon = STEP_ICONS[index]
 
           return (
-            <article key={step.title} className="rounded-xl border border-border bg-card p-6">
+            <article
+              key={step.title}
+              className="rounded-xl border border-blue-100 bg-blue-50/60 p-6 dark:border-border dark:bg-card"
+            >
               <Icon aria-hidden="true" className="size-6 text-blue-600 dark:text-blue-400" />
               <h3 className="mt-5 text-lg font-semibold text-foreground">{step.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -30,23 +33,23 @@ export default function HowItWorks() {
 
         <div
           aria-hidden="true"
-          className="relative flex min-h-56 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-neutral-900 to-neutral-950 p-6"
+          className="relative flex min-h-56 items-center justify-center overflow-hidden rounded-xl border border-blue-300/60 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 p-6 dark:border-white/10 dark:from-neutral-900 dark:to-neutral-950"
         >
-          <div className="absolute inset-x-6 top-8 h-24 rounded-full bg-blue-500/20 blur-2xl" />
+          <div className="absolute inset-x-6 top-8 h-24 rounded-full bg-white/20 blur-2xl dark:bg-blue-500/20" />
           <div className="relative w-full max-w-48">
-            <div className="mx-auto h-2.5 w-16 rounded-t-md border border-b-0 border-white/10 bg-neutral-800" />
-            <div className="rounded-md border border-white/15 bg-neutral-900 p-2 shadow-2xl">
-              <div className="h-20 rounded-sm border border-white/10 bg-gradient-to-br from-blue-500/20 via-neutral-900 to-neutral-950 p-2">
-                <div className="h-1.5 w-2/3 rounded-full bg-blue-400/50" />
-                <div className="mt-2 h-1.5 w-1/2 rounded-full bg-white/15" />
+            <div className="mx-auto h-2.5 w-16 rounded-t-md border border-b-0 border-white/30 bg-white/25 dark:border-white/10 dark:bg-neutral-800" />
+            <div className="rounded-md border border-white/30 bg-white/20 p-2 shadow-2xl dark:border-white/15 dark:bg-neutral-900">
+              <div className="h-20 rounded-sm bg-white/90 p-2 dark:border dark:border-white/10 dark:bg-gradient-to-br dark:from-blue-500/20 dark:via-neutral-900 dark:to-neutral-950">
+                <div className="h-1.5 w-2/3 rounded-full bg-blue-500" />
+                <div className="mt-2 h-1.5 w-1/2 rounded-full bg-blue-200 dark:bg-white/15" />
                 <div className="mt-4 grid grid-cols-3 gap-1">
-                  <span className="h-5 rounded-sm bg-white/10" />
-                  <span className="h-5 rounded-sm bg-white/10" />
-                  <span className="h-5 rounded-sm bg-white/10" />
+                  <span className="h-5 rounded-sm bg-blue-100 dark:bg-white/10" />
+                  <span className="h-5 rounded-sm bg-blue-100 dark:bg-white/10" />
+                  <span className="h-5 rounded-sm bg-blue-100 dark:bg-white/10" />
                 </div>
               </div>
             </div>
-            <div className="mx-auto mt-1 h-1.5 w-24 rounded-b-md border border-t-0 border-white/10 bg-neutral-800" />
+            <div className="mx-auto mt-1 h-1.5 w-24 rounded-b-md border border-t-0 border-white/30 bg-white/25 dark:border-white/10 dark:bg-neutral-800" />
           </div>
         </div>
       </div>

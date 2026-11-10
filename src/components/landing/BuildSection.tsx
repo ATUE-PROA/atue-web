@@ -1,5 +1,13 @@
-import { CheckCircle2 } from 'lucide-react'
+import { BarChart3, CheckCircle2, FileText, ShieldCheck } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { LANDING_VISION } from '@/content/landing'
+
+const COMMITMENT_ICONS: readonly LucideIcon[] = [
+  ShieldCheck,
+  BarChart3,
+  FileText,
+  CheckCircle2,
+] as const
 
 export default function BuildSection() {
   return (
@@ -15,18 +23,22 @@ export default function BuildSection() {
         </div>
 
         <ul className="grid gap-4 sm:grid-cols-2">
-          {LANDING_VISION.commitments.map((commitment) => (
-            <li
-              key={commitment}
-              className="flex items-start gap-3 rounded-xl border border-border bg-card p-4"
-            >
-              <CheckCircle2
-                aria-hidden="true"
-                className="mt-0.5 size-5 shrink-0 text-blue-600 dark:text-blue-400"
-              />
-              <span className="text-sm text-foreground">{commitment}</span>
-            </li>
-          ))}
+          {LANDING_VISION.commitments.map((commitment, index) => {
+            const Icon = COMMITMENT_ICONS[index]
+
+            return (
+              <li
+                key={commitment}
+                className="flex items-center gap-3 rounded-lg border border-blue-100 bg-blue-50/50 p-4 dark:border-border dark:bg-card"
+              >
+                <Icon
+                  aria-hidden="true"
+                  className="size-5 shrink-0 text-blue-600 dark:text-blue-400"
+                />
+                <span className="text-sm text-foreground">{commitment}</span>
+              </li>
+            )
+          })}
         </ul>
       </div>
     </section>

@@ -44,7 +44,7 @@ export function PublicHeader() {
       <Link to="/login" className={linkClasses}>
         Entrar
       </Link>
-      <Button asChild variant="inverse" size="lg">
+      <Button asChild variant="brand" size="lg" className="rounded-full">
         <Link to="/register">Cadastre-se</Link>
       </Button>
     </>
@@ -64,7 +64,7 @@ export function PublicHeader() {
           Entrar
         </Link>
       </Button>
-      <Button asChild variant="inverse" size="xl" className="w-full">
+      <Button asChild variant="brand" size="xl" className="w-full rounded-full">
         <Link to="/register" onClick={() => setIsMenuOpen(false)}>
           Cadastre-se
         </Link>
@@ -76,7 +76,10 @@ export function PublicHeader() {
     <SiteHeader>
       <BrandLink onClick={() => setIsMenuOpen(false)} />
 
-      <nav aria-label="Navegação principal" className="hidden md:block">
+      <nav
+        aria-label="Navegação principal"
+        className="absolute left-1/2 hidden -translate-x-1/2 md:block"
+      >
         <ul className="flex items-center gap-6">
           {PUBLIC_NAV.map((item) => (
             <li key={item.to}>
