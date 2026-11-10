@@ -30,7 +30,7 @@ export default function DomainCapture() {
       id="avaliar"
       className="mx-auto w-full max-w-6xl scroll-mt-16 px-6 py-16 sm:py-20 lg:py-24"
     >
-      <div className="rounded-2xl border border-border bg-gradient-to-br from-muted via-card to-background p-8 sm:p-12">
+      <div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-100 via-sky-50 to-white p-8 sm:p-12 dark:border-border dark:from-muted dark:via-card dark:to-background">
         <div className="max-w-2xl">
           <p className="text-xs font-medium tracking-[0.2em] text-blue-600 uppercase dark:text-blue-400">
             {LANDING_CAPTURE.eyebrow}

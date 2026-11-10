@@ -2,6 +2,7 @@ import { ArrowLeft } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { PublicHeader } from '@/components/layout/public-header'
+import { PublicFooter } from '@/components/layout/public-footer'
 import { PlanBenefits } from '@/components/plans/PlanBenefits'
 import { PlanCard } from '@/components/plans/PlanCard'
 import { PlanComparison } from '@/components/plans/PlanComparison'
@@ -124,11 +125,10 @@ export function Plans() {
         </section>
       </main>
 
-      <footer className="border-t border-border">
-        <div className="mx-auto w-full max-w-6xl px-6 py-8">
-          <p className="text-xs text-muted-foreground">{PLANS_CONTENT.footer}</p>
-        </div>
-      </footer>
+      <PublicFooter
+        description={PLANS_CONTENT.footerDescription}
+        copyright={PLANS_CONTENT.footer}
+      />
     </div>
   )
 }

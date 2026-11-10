@@ -16,20 +16,21 @@ O projeto tem duas superfícies visuais. Elas compartilham tipografia, espaçame
 
 Usada em landing page, cadastro, login e páginas institucionais. Usa os mesmos tokens da superfície de produto, com acentos de marca em azul e CTAs em pílula.
 
-| Papel                  | Classes canônicas                                        |
-| ---------------------- | -------------------------------------------------------- |
-| Fundo da página        | `bg-background text-foreground`                          |
-| Texto secundário       | `text-muted-foreground`                                  |
-| Borda padrão           | `border-border`                                          |
-| Borda de campo         | `border-input`                                           |
-| Superfície elevada     | `bg-card`                                                |
-| Superfície em destaque | `bg-gradient-to-br from-muted via-card to-background`    |
-| Destaque de marca      | `text-blue-600 dark:text-blue-400`                       |
-| Foco                   | `ring-blue-600/60 dark:ring-blue-400/60`                 |
-| Ação primária          | `bg-blue-600 text-white hover:bg-blue-500`               |
-| Ação neutra/invertida  | `bg-primary text-primary-foreground hover:bg-primary/90` |
+| Papel                  | Classes canônicas                                               |
+| ---------------------- | --------------------------------------------------------------- |
+| Fundo da página        | `bg-background text-foreground`                                 |
+| Texto secundário       | `text-muted-foreground`                                         |
+| Borda padrão           | `border-border`                                                 |
+| Borda de campo         | `border-input`                                                  |
+| Superfície elevada     | `bg-card`                                                       |
+| Superfície em destaque | `bg-gradient-to-br from-muted via-card to-background`           |
+| Superfície azul clara  | `border-blue-100 bg-blue-50/50 dark:border-border dark:bg-card` |
+| Destaque de marca      | `text-blue-600 dark:text-blue-400`                              |
+| Foco                   | `ring-blue-600/60 dark:ring-blue-400/60`                        |
+| Ação primária          | `bg-blue-600 text-white hover:bg-blue-500`                      |
+| Ação neutra/invertida  | `bg-primary text-primary-foreground hover:bg-primary/90`        |
 
-Mockups decorativos (visual do hero, prévia da autenticação, ilustração de “como funciona”) continuam escuros nos dois temas, como capturas de tela do produto. Eles podem usar `bg-neutral-950`, `border-white/10` e gradientes escuros localmente; não são superfícies de leitura.
+Mockups decorativos (visual do hero, prévia da autenticação, ilustração de “como funciona”) usam gradiente azul de marca no tema claro, como uma vitrine do produto, e continuam escuros no tema escuro. Eles podem usar `from-blue-500 via-blue-600 to-blue-700`, detalhes em `white/25` e `border-white/40` no claro, e `bg-neutral-950`, `border-white/10` e gradientes escuros no escuro; não são superfícies de leitura.
 
 ### 1.2 Superfície de produto
 
@@ -44,7 +45,7 @@ Usada na área logada, como o dashboard. Deriva dos tokens shadcn definidos em `
 | Ação primária    | `bg-primary text-primary-foreground` |
 | Erro             | `text-destructive`                   |
 
-As duas superfícies compartilham os mesmos tokens. Use `dark:` apenas quando um valor precisar mudar entre temas (por exemplo, o azul de marca).
+As duas superfícies compartilham os mesmos tokens. No tema claro, `--primary`, `--ring`, `--muted`, `--accent`, `--secondary`, `--border` e `--input` são azulados: isso mantém landing, autenticação, planos e área logada com a mesma paleta de marca sem recriar estilos por tela. Use `dark:` apenas quando um valor precisar mudar entre temas (por exemplo, o azul de marca).
 
 A área logada usa `ProductHeader` (`src/components/layout/product-header.tsx`) como cabeçalho compartilhado entre painel, documentos, perfil e configurações. Ele combina `SiteHeader`, `BrandLink` com `to`, navegação por `NavLink` (painel, documentos, perfil e configurações), ícones com nomes acessíveis e `ThemeToggle`. Em mobile, os rótulos visuais dos links são ocultados, mas os nomes acessíveis permanecem.
 
@@ -68,8 +69,9 @@ A interface usa tokens semânticos. As cores abaixo ficam restritas a acentos, m
 - `blue-600`: ação primária e acentos no tema claro.
 - `blue-400`: acentos e foco no tema escuro.
 - `blue-500`: hover de ações de marca.
-- `neutral-950` a `neutral-700`: mockups decorativos escuros (hero, prévia de auth, ilustração).
-- `white` e `white/10` a `white/15`: detalhes dentro dos mockups escuros.
+- `neutral-950` a `neutral-700`: mockups decorativos escuros no tema escuro (hero, prévia de auth, ilustração).
+- `blue-50` a `blue-100`: superfícies de destaque no tema claro (cards de “como funciona”, chips de compromissos, painel de captura, benefícios e cartões de plano).
+- `white` e `white/10` a `white/40`: detalhes dentro dos mockups.
 
 ### 2.2 Paleta de interface
 
@@ -110,18 +112,18 @@ Os limites pertencem à faixa superior (`25` já é laranja, `50` já é amarelo
 
 ### 2.5 Tokens globais (`src/index.css`)
 
-| Token                                | Uso                                                    |
-| ------------------------------------ | ------------------------------------------------------ |
-| `--background` / `--foreground`      | Página em ambos os temas.                              |
-| `--card` / `--card-foreground`       | Cards e superfícies elevadas.                          |
-| `--muted` / `--muted-foreground`     | Superfície discreta e texto secundário.                |
-| `--primary` / `--primary-foreground` | Ação primária e CTA invertido pelo tema.               |
-| `--secondary` / `--accent`           | Hover e seleção.                                       |
-| `--destructive`                      | Erro e ações destrutivas.                              |
-| `--border`, `--input`, `--ring`      | Bordas, campos e foco.                                 |
-| `--radius`                           | Raio base de `0.625rem`; os demais raios derivam dele. |
-| `--chart-1` a `--chart-5`            | Séries de gráficos.                                    |
-| `--sidebar-*`                        | Navegação lateral do produto.                          |
+| Token                                | Uso                                                                  |
+| ------------------------------------ | -------------------------------------------------------------------- |
+| `--background` / `--foreground`      | Página em ambos os temas.                                            |
+| `--card` / `--card-foreground`       | Cards e superfícies elevadas.                                        |
+| `--muted` / `--muted-foreground`     | Superfície discreta azulada no claro e texto secundário.             |
+| `--primary` / `--primary-foreground` | Ação primária e CTA invertido pelo tema; no claro é o azul de marca. |
+| `--secondary` / `--accent`           | Hover e seleção.                                                     |
+| `--destructive`                      | Erro e ações destrutivas.                                            |
+| `--border`, `--input`, `--ring`      | Bordas, campos e foco.                                               |
+| `--radius`                           | Raio base de `0.625rem`; os demais raios derivam dele.               |
+| `--chart-1` a `--chart-5`            | Séries de gráficos.                                                  |
+| `--sidebar-*`                        | Navegação lateral do produto.                                        |
 
 A classe `.dark` é aplicada em `<html>` pelo controle de tema (seção 1.3); os tokens abaixo trocam de valor nos blocos `:root` e `.dark` de `src/index.css`. Não crie um segundo conjunto de variáveis para uma tela isolada.
 
@@ -182,7 +184,7 @@ O `html` reserva `scrollbar-gutter: stable` para que contêineres centralizados 
 - **Shells e containers grandes:** `rounded-2xl`.
 - **CTAs de marketing:** `rounded-full`.
 - **Badges/chips:** `rounded-full`.
-- **Bordas:** `border-border` na interface e `border-input` em campos; mockups decorativos escuros mantêm `border-white/10`.
+- **Bordas:** `border-border` na interface e `border-input` em campos; mockups decorativos no tema claro usam `border-white/40` e, no escuro, `border-white/10`.
 - **Sombras:** `shadow-sm` em cards; `shadow-2xl` apenas em elementos decorativos. Não use sombras coloridas fora de gradientes decorativos.
 
 ---
@@ -197,7 +199,7 @@ Variantes disponíveis:
 
 - `default`: ação neutra baseada em tokens.
 - `brand`: ação primária em azul (`bg-blue-600 text-white hover:bg-blue-500`).
-- `inverse`: CTA de marketing em pílula, invertido pelo tema (`bg-primary text-primary-foreground hover:bg-primary/90`).
+- `inverse`: CTA de marketing em pílula usando `--primary`; no tema claro isso resolve para o azul de marca.
 - `outline`, `secondary`, `ghost`, `destructive`, `link`: variações shadcn.
 
 Regras:
@@ -255,10 +257,10 @@ Use `src/components/ui/password-input.tsx` para senhas. O controle de mostrar/oc
 
 ### 6.6 Cards
 
-- Use `Card` (`src/components/ui/card.tsx`) como superfície base. `SectionCard` compõe `Card`, `CardHeader`, `CardContent` e `CardDescription`, mantendo `role="region"` e `aria-labelledby` para o título.
+- Use `Card` (`src/components/ui/card.tsx`) como superfície base, com anel `ring-border` azulado no tema claro. `SectionCard` compõe `Card`, `CardHeader`, `CardContent` e `CardDescription`, mantendo `role="region"` e `aria-labelledby` para o título.
 - Cards: `p-6`; o `SectionCard` usa `CardHeader`/`CardContent` com `p-0` para preservar o espaçamento interno.
 - Card principal de autenticação: `rounded-2xl border border-border bg-card p-6 shadow-lg shadow-black/5 sm:p-8 dark:shadow-2xl dark:shadow-black/30`.
-- Card de plano: `article` com `rounded-xl border border-border bg-card p-6 shadow-sm`; o plano recomendado usa `border-blue-600/50 ring-1 ring-blue-600/20` e um `Badge` textual “Recomendado”.
+- Card de plano: `article` com `rounded-xl border border-blue-100 bg-blue-50/40 p-6 shadow-sm dark:border-border dark:bg-card`; o plano recomendado usa `border-blue-600/50 bg-blue-50/80 ring-1 ring-blue-600/20` e um `Badge` textual “Recomendado”.
 - Título do card: `text-lg font-semibold`.
 - Não aninhe mais de dois níveis de card.
 
@@ -295,11 +297,11 @@ Use `src/components/auth/AuthLayout.tsx` como layout base de telas de autentica�
 Use `src/components/layout/site-header.tsx` como cabeçalho das páginas públicas.
 
 - `SiteHeader` concentra `sticky top-0`, borda, fundo e o contêiner `max-w-6xl px-6`.
-- `BrandLink` concentra a marca ATUE e deve ser usado em todas as páginas públicas. Aceita `to` (padrão `/`) para que a marca leve ao painel na área logada.
+- `BrandLink` concentra a marca ATUE e deve ser usado em todas as páginas públicas. Renderiza `public/brand/atue-logo-light.svg` no tema claro e `public/brand/atue-logo-dark.svg` no escuro (839×302), sem filtros CSS. Aceita `to` (padrão `/`) para que a marca leve ao painel na área logada. O favicon é `public/favicon.svg`, o ícone sozinho, sem fundo, com o `viewBox` recortado no limite da arte para preencher o espaço da aba.
 - O botão de tema (`ThemeToggle`) fica no cabeçalho ao lado das ações, sempre visível em mobile e desktop.
 - Landing e planos usam `PublicHeader` (`src/components/layout/public-header.tsx`), que reúne a navegação pública, o `ThemeToggle` e as ações de autenticação. Landing e autenticação devem compartilhar esses componentes; não replique a estrutura do cabeçalho.
-- A navegação pública aparece somente no topo da página: “Como funciona”, “Sobre” e “Planos”. Não repita esses destinos no rodapé público.
-- As ações de autenticação são idênticas entre landing e planos: “Entrar” como link e “Cadastre-se” como `Button variant="inverse" size="lg"`. Quando há sessão ativa, ambas são substituídas por um `Button variant="brand" size="lg"`: “Planos” com `CreditCard` enquanto não houver plano ativo e “Dashboard” com `LayoutDashboard` depois da assinatura simulada.
+- A navegação pública aparece no topo e é repetida no rodapé público (landing e planos): “Como funciona”, “Benefícios”, “Sobre” e “Planos”, mais “Cadastre-se”. Mantenha a lista em `src/content/navigation.ts` e o rodapé em `src/components/layout/public-footer.tsx`.
+- As ações de autenticação são idênticas entre landing e planos: “Entrar” como link e “Cadastre-se” como `Button variant="brand" size="lg"` em pílula (`rounded-full`). Quando há sessão ativa, ambas são substituídas por um `Button variant="brand" size="lg"`: “Planos” com `CreditCard` enquanto não houver plano ativo e “Dashboard” com `LayoutDashboard` depois da assinatura simulada.
 - O menu móvel usa `Sheet` (`src/components/ui/sheet.tsx`) com `SheetTrigger`, `SheetContent`, `SheetHeader` e `SheetTitle`; o Radix cuida de foco, Escape e overlay. Mantenha os mesmos destinos e ações, com botões de largura total e alvos de toque de pelo menos 44px.
 - O logo mantém a mesma posição horizontal entre páginas, inclusive quando apenas uma delas tem barra de rolagem.
 
@@ -428,7 +430,7 @@ Use `src/components/layout/product-footer.tsx` e `src/components/layout/cross-li
 - Não duplique a lista de destinos em cada página: mantenha os links revisáveis em `src/content/navigation.ts`.
 - Toda rota criada deve ser alcançável por pelo menos um controle visível em outra tela e deve oferecer um caminho de volta. Páginas sem conexão são consideradas incompletas.
 - Toda navegação entre rotas deve começar no topo da página. A landing é a exceção: as âncoras internas (`#como-funciona` e `#sobre`) mantêm a rolagem para a seção clicada. O retorno à landing a partir de outra tela volta ao topo.
-- A navegação pública fica apenas no `PublicHeader`. O rodapé público mostra marca, descrição e copyright, sem repetir links de navegação.
+- A navegação pública fica no `PublicHeader` e é repetida no rodapé da landing e de planos pelo `PublicFooter` (`src/components/layout/public-footer.tsx`), que concentra marca, descrição, links públicos e copyright. A área logada usa `ProductFooter`, com os destinos de produto.
 - O comportamento fica em `ScrollToTop` (`src/components/layout/scroll-to-top.tsx`), montado no `AppRoot` (`src/components/layout/app-root.tsx`). Não replique `window.scrollTo` em páginas ou componentes.
 
 ### 6.22 Arquivos gerados
@@ -457,6 +459,7 @@ Use `src/pages/Dashboard.tsx` como referência para a tela `/dashboard`.
 Use `src/pages/Plans.tsx`, `PlanProvider` (`src/contexts/PlanProvider.tsx`) e `SubscriptionPrompt` (`src/components/plans/SubscriptionPrompt.tsx`) como referência para o fluxo de acesso por plano.
 
 - Login e cadastro encaminham para `/plans`. A escolha do plano é o próximo passo, não o painel.
+- A página usa `PublicHeader` e `PublicFooter`, com superfícies azul-claras nos benefícios, cartões de plano e suporte, mantendo a mesma paleta da landing.
 - `SubscriptionPrompt` usa o `AlertDialog` de `src/components/ui/alert-dialog.tsx` com `open={gate !== null}`. O fechamento (`onOpenChange`) chama `dismissGate`.
 - A ação principal usa `AlertDialogAction variant="brand"`: na confirmação de assinatura, “Assinar {plano}” ativa o plano em memória e leva ao painel; no bloqueio de recurso ou rota, navega para `/plans`.
 - O diálogo é modal: overlay escuro, foco preso e retorno de foco ao fechar. Escape, clique fora e “Agora não” fecham sem alterar o estado. A troca de rota também fecha; rotas de produto sem plano reabrem o pedido.
@@ -628,7 +631,7 @@ Obrigatório em toda tela:
 
 ## 17. Dívidas e próximos passos
 
-- Os mockups decorativos da landing/auth ainda usam a paleta neutra escura fixa; tokenizá-los exigiria arte própria para o tema claro.
+- Os mockups decorativos da landing e da prévia de autenticação usam gradiente azul no tema claro e paleta neutra escura no tema escuro.
 - O botão de tema não oferece um terceiro estado explícito “seguir sistema”; depois de uma escolha manual, a preferência salva prevalece.
 - O mock de login/cadastro não falha naturalmente; o caminho de erro existe, mas não é exercitável sem gatilho de teste.
 - As configurações da conta operam apenas em memória: salvar, conectar integração, alterar senha e solicitar exclusão são simulações e voltam ao estado inicial ao recarregar.

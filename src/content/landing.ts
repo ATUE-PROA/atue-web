@@ -18,15 +18,15 @@ export const LANDING_HERO = {
 export const LANDING_FEATURES = [
   {
     title: 'Confiança',
-    description: 'Centralize evidências e demonstre maturidade para clientes e auditorias.',
+    description: 'Conquiste mais valor e fortaleça sua reputação com clientes e parceiros.',
   },
   {
     title: 'Documentos',
-    description: 'Organize políticas, registros e comprovações em um só lugar.',
+    description: 'Organize políticas, registros e comunicações em um só lugar.',
   },
   {
     title: 'Conformidade',
-    description: 'Acompanhe requisitos de LGPD e segurança da informação.',
+    description: 'Acompanhe requisitos da LGPD e as práticas de privacidade.',
   },
   {
     title: 'Mais transparência para o seu negócio',

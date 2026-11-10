@@ -14,9 +14,23 @@ export function BrandLink({ to = '/', onClick }: BrandLinkProps) {
     <Link
       to={to}
       onClick={onClick}
-      className={`text-lg font-semibold tracking-widest text-foreground uppercase ${focusClasses}`}
+      aria-label="ATUE"
+      className={`inline-flex items-center ${focusClasses}`}
     >
-      ATUE
+      <img
+        src="/brand/atue-logo-light.svg"
+        alt=""
+        width={839}
+        height={302}
+        className="h-8 w-auto dark:hidden"
+      />
+      <img
+        src="/brand/atue-logo-dark.svg"
+        alt=""
+        width={839}
+        height={302}
+        className="hidden h-8 w-auto dark:block"
+      />
     </Link>
   )
 }
@@ -29,7 +43,7 @@ interface SiteHeaderProps {
 export function SiteHeader({ children, submenu }: SiteHeaderProps) {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur">
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-6">
+      <div className="relative mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-6">
         {children}
       </div>
       {submenu}

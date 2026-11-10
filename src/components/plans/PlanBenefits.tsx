@@ -24,7 +24,7 @@ export function PlanBenefits() {
       {PLAN_BENEFITS.map((benefit) => (
         <li
           key={benefit.id}
-          className="flex items-start gap-3 rounded-xl border border-border bg-card p-5"
+          className="flex items-start gap-3 rounded-xl border border-blue-100 bg-blue-50/50 p-5 dark:border-border dark:bg-card"
         >
           <BenefitIcon icon={benefit.icon} />
           <div>

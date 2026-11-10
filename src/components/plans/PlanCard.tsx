@@ -17,10 +17,10 @@ export function PlanCard({ plan, isCurrent = false, onSelect }: PlanCardProps) {
   return (
     <article
       className={cn(
-        'flex h-full flex-col rounded-xl border bg-card p-6 shadow-sm',
+        'flex h-full flex-col rounded-xl border border-blue-100 bg-blue-50/40 p-6 shadow-sm dark:border-border dark:bg-card',
         plan.recommended
-          ? 'border-blue-600/50 ring-1 ring-blue-600/20 dark:border-blue-400/50 dark:ring-blue-400/20'
-          : 'border-border',
+          ? 'border-blue-600/50 bg-blue-50/80 ring-1 ring-blue-600/20 dark:border-blue-400/50 dark:bg-card dark:ring-blue-400/20'
+          : '',
       )}
     >
       <div className="flex items-start justify-between gap-3">
