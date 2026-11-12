@@ -47,6 +47,8 @@ export interface DiagnosticReport {
   score: number
   status: DiagnosticStatus
   createdAt: string
+  /** Endereço analisado, quando o serviço informa. */
+  url?: string
   summary: DiagnosticSummary
   issues: IssueCategory[]
   /**

@@ -15,6 +15,8 @@ export type DiagnosticRequestStatus = 'idle' | 'running' | 'success' | 'error'
 interface DiagnosticRequestFormProps {
   onSubmit: (url: string) => void
   status: DiagnosticRequestStatus
+  /** Muda a copy quando já existe um diagnóstico na tela. */
+  hasReport?: boolean
 }
 
 const inputClasses =
@@ -22,11 +24,14 @@ const inputClasses =
 
 const {
   title,
+  updateTitle,
   description,
+  updateDescription,
   label,
   placeholder,
   helpText,
   submitLabel,
+  updateSubmitLabel,
   submittingLabel,
   successTitle,
   successDescription,
@@ -34,7 +39,11 @@ const {
   errorDescription,
 } = DIAGNOSTICS_CONTENT.request
 
-export function DiagnosticRequestForm({ onSubmit, status }: DiagnosticRequestFormProps) {
+export function DiagnosticRequestForm({
+  onSubmit,
+  status,
+  hasReport = false,
+}: DiagnosticRequestFormProps) {
   const {
     register,
     handleSubmit,
@@ -48,13 +57,16 @@ export function DiagnosticRequestForm({ onSubmit, status }: DiagnosticRequestFor
 
   return (
     <section
+      id="novo-diagnostico"
       aria-labelledby="diagnostic-request-title"
-      className="rounded-xl border border-border bg-card p-6 shadow-sm"
+      className="scroll-mt-24 rounded-xl bg-card p-6 ring-1 ring-border"
     >
       <h2 id="diagnostic-request-title" className="text-lg font-semibold text-foreground">
-        {title}
+        {hasReport ? updateTitle : title}
       </h2>
-      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{description}</p>
+      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+        {hasReport ? updateDescription : description}
+      </p>
 
       <form
         onSubmit={handleSubmit((values) => onSubmit(values.url.trim()))}
@@ -90,7 +102,7 @@ export function DiagnosticRequestForm({ onSubmit, status }: DiagnosticRequestFor
           ) : (
             <Search aria-hidden="true" />
           )}
-          {isRunning ? submittingLabel : submitLabel}
+          {isRunning ? submittingLabel : hasReport ? updateSubmitLabel : submitLabel}
         </Button>
       </form>
 

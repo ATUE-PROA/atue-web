@@ -1,7 +1,7 @@
 import type { ReportFrequency, ReportLanguage } from '@/types/settings.types'
 
 export const SETTINGS_CONTENT = {
-  eyebrow: 'Gerais da conta',
+  eyebrow: 'Preferências da conta',
   title: 'Configurações',
   description:
     'Revise as preferências da conta, o domínio monitorado e as integrações disponíveis nesta demonstração.',

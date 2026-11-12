@@ -3,7 +3,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Loader2, Save } from 'lucide-react'
 
-import { CrossLinks } from '@/components/layout/cross-links'
 import { ProductFooter } from '@/components/layout/product-footer'
 import { ProductHeader } from '@/components/layout/product-header'
 import { DangerSection } from '@/components/settings/DangerSection'
@@ -16,7 +15,6 @@ import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { Skeleton } from '@/components/ui/skeleton'
 import { SETTINGS_CONTENT } from '@/content/settings'
-import { SETTINGS_SHORTCUTS } from '@/content/navigation'
 import { accountSettingsSchema } from '@/lib/settings'
 import { getAccountSettings, updateAccountSettings } from '@/services/settings'
 import type { AccountSettings, AccountSettingsValues } from '@/types/settings.types'
@@ -100,24 +98,16 @@ export function Settings() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <ProductHeader />
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-10 sm:py-14">
+      <main id="conteudo" className="mx-auto w-full max-w-6xl flex-1 px-6 py-10 sm:py-14">
         <header className="max-w-3xl">
-          <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-            {SETTINGS_CONTENT.title}
-          </h1>
-          <p className="mt-3 text-xs font-medium tracking-[0.2em] text-blue-600 uppercase dark:text-blue-400">
+          <p className="text-eyebrow text-blue-600 dark:text-blue-400">
             {SETTINGS_CONTENT.eyebrow}
           </p>
+          <h1 className="text-display mt-3 text-foreground">{SETTINGS_CONTENT.title}</h1>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
             {SETTINGS_CONTENT.description}
           </p>
         </header>
-
-        <CrossLinks
-          className="mt-6"
-          ariaLabel="Atalhos das configurações"
-          links={SETTINGS_SHORTCUTS}
-        />
 
         {loadState === 'loading' ? (
           <div

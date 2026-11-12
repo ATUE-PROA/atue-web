@@ -45,6 +45,7 @@ interface DiagnosticReportInput {
   id: string
   score: number
   createdAt: string
+  url?: string
   issues: IssueCategory[]
 }
 
@@ -55,6 +56,7 @@ export function buildDiagnosticReport(input: DiagnosticReportInput): DiagnosticR
     score: input.score,
     status: getStatusFromScore(input.score),
     createdAt: input.createdAt,
+    url: input.url,
     summary: summarizeIssues(input.issues),
     issues: input.issues.map((issue) => ({ ...issue })),
   }
@@ -64,6 +66,7 @@ let diagnosticState: DiagnosticReport = buildDiagnosticReport({
   id: 'diag-789',
   score: 72,
   createdAt: '2026-10-28T14:20:00.000Z',
+  url: 'https://demonstracao.atue.com.br',
   issues: INITIAL_ISSUES,
 })
 
@@ -100,6 +103,7 @@ export async function mockRequestDiagnostic(url: string): Promise<DiagnosticRepo
     id: `diag-${digest.toString(16)}`,
     score,
     createdAt: new Date().toISOString(),
+    url: url.trim(),
     issues: INITIAL_ISSUES.slice(0, issueCount),
   })
 

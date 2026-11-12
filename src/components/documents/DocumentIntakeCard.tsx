@@ -222,7 +222,9 @@ export function DocumentIntakeCard({
               >
                 <SelectValue
                   placeholder={
-                    documents.length === 0 ? DOCUMENTS_CONTENT.catalog.empty : intake.sampleLabel
+                    documents.length === 0
+                      ? DOCUMENTS_CONTENT.catalog.empty
+                      : intake.samplePlaceholder
                   }
                 />
               </SelectTrigger>
@@ -292,6 +294,10 @@ export function DocumentIntakeCard({
         )}
         {isAnalyzing ? intake.analyzeBusyLabel : intake.analyzeLabel}
       </Button>
+
+      {!canAnalyze ? (
+        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{intake.selectHint}</p>
+      ) : null}
 
       <FormAlert
         tone="info"

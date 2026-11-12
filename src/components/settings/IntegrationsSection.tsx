@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CheckCircle2, Link2, Loader2, MessageSquare, Search } from 'lucide-react'
+import { CheckCircle2, Link2, Loader2, Lock, MessageSquare, Search } from 'lucide-react'
 
 import { SectionCard } from '@/components/ui/section-card'
 import { Badge } from '@/components/ui/badge'
@@ -34,7 +34,8 @@ function getStatusLabel(status: IntegrationStatus): string {
 }
 
 export function IntegrationsSection({ initialIntegrations }: IntegrationsSectionProps) {
-  const { requestFeature } = usePlan()
+  const { canAccess, requestFeature } = usePlan()
+  const hasIntegrationAccess = canAccess('integrations')
   const [integrations, setIntegrations] = useState(initialIntegrations)
   const [connectingId, setConnectingId] = useState<IntegrationId | null>(null)
   const [result, setResult] = useState<ConnectionResult>('idle')
@@ -95,24 +96,36 @@ export function IntegrationsSection({ initialIntegrations }: IntegrationsSection
                   {getStatusLabel(integration.status)}
                 </Badge>
               ) : (
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-9 w-full sm:w-auto"
-                  disabled={isConnecting}
-                  onClick={() => {
-                    void handleConnect(integration.id)
-                  }}
-                >
-                  {isConnecting ? (
-                    <Loader2 aria-hidden="true" className="animate-spin" />
-                  ) : (
-                    <Link2 aria-hidden="true" />
+                <div className="flex w-full flex-col items-start gap-2 sm:w-auto sm:items-end">
+                  {hasIntegrationAccess ? null : (
+                    <Badge
+                      variant="outline"
+                      className="h-auto rounded-full border-border bg-muted px-2.5 py-1 text-xs text-muted-foreground"
+                    >
+                      <Lock aria-hidden="true" />
+                      Requer plano Cresce
+                    </Badge>
                   )}
-                  {isConnecting
-                    ? integrationsContent.connectingLabel
-                    : integrationsContent.connectLabel}
-                </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-9 w-full sm:w-auto"
+                    disabled={isConnecting}
+                    onClick={() => {
+                      void handleConnect(integration.id)
+                    }}
+                  >
+                    {isConnecting ? (
+                      <Loader2 aria-hidden="true" className="animate-spin" />
+                    ) : (
+                      <Link2 aria-hidden="true" />
+                    )}
+                    {isConnecting
+                      ? integrationsContent.connectingLabel
+                      : integrationsContent.connectLabel}
+                  </Button>
+                </div>
               )}
             </li>
           )

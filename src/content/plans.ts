@@ -7,15 +7,25 @@ export const PLANS_CONTENT = {
     description:
       'Compare os planos abaixo e escolha o plano que melhor acompanha o tamanho e a maturidade da sua empresa.',
   },
+  demoBanner: {
+    title: 'Esta página é uma demonstração',
+    description:
+      'Planos, valores e limites são ilustrativos. A assinatura é simulada na memória do navegador e nenhuma cobrança é feita.',
+    loggedInCta: 'Explorar demonstração',
+    loggedOutCta: 'Entrar para explorar',
+    loggedInNote:
+      'Abre o painel com acesso de demonstração nesta sessão. Nenhuma cobrança é feita.',
+    loggedOutNote:
+      'Você entra com uma conta de demonstração e pode explorar o painel antes de escolher um plano.',
+  },
   comparison: {
     title: 'Compare os planos',
-    description:
-      'Os recursos abaixo são ilustrativos e servem para demonstrar como os planos podem evoluir. Nenhum valor, recurso ou condição comercial é real.',
+    description: 'Veja, recurso por recurso, o que muda entre Início, Cresce e Escala.',
   },
   plans: {
     title: 'Escolha o plano',
     description:
-      'Cada plano abaixo é ilustrativo e serve apenas para demonstrar os cartões de planos nesta página. Nenhum valor, recurso ou condição comercial é real.',
+      'Escolha o plano que acompanha o tamanho da sua operação. Todos podem ser explorados na demonstração.',
   },
   help: {
     title: 'Precisa de ajuda para escolher?',
@@ -123,7 +133,7 @@ export const PLANS = [
       'Integrações com ferramentas',
     ],
     ctaLabel: 'Escolher Cresce',
-    href: '/form',
+    href: '/register',
     note: 'Recomendado para a maioria das empresas.',
   },
   {
@@ -143,7 +153,7 @@ export const PLANS = [
       'Suporte prioritário e onboarding',
     ],
     ctaLabel: 'Escolher Escala',
-    href: '/form',
+    href: '/register',
     note: 'Para operações que exigem governança e auditoria.',
   },
 ] as const satisfies readonly PlanDefinition[]
@@ -173,18 +183,24 @@ export const PLAN_SUPPORT = {
   title: 'Fale com o suporte',
   description:
     'Se você ainda tiver dúvidas, o nosso time pode ajudar a escolher o plano mais adequado.',
+  photo: {
+    src: '/photos/conversa-equipe.jpg',
+    alt: 'Três pessoas conversando durante uma reunião de trabalho',
+    width: 1100,
+    height: 733,
+  },
   items: [
     { id: 'contact', icon: 'mail', label: 'Atendimento', value: 'Pelo formulário de contato' },
     { id: 'hours', icon: 'clock', label: 'Horário', value: 'Segunda a sexta, das 9h às 18h' },
     { id: 'response', icon: 'message', label: 'Retorno', value: 'Em até 1 dia útil' },
   ],
   ctaLabel: 'Falar com o suporte',
-  href: '/form',
+  href: '/contato',
 } as const
 
 export const PLAN_FEATURES = {
   'product-access': {
-    label: 'Área logada',
+    label: 'Painel e documentos',
     description: 'Painel, documentos, perfil e configurações.',
     requiredPlan: 'start',
   },
@@ -209,6 +225,14 @@ export const PLAN_GATE_CONTENT = {
   currentPlanLabel: 'Plano atual',
   currentPlanCta: 'Continuar no painel',
   noPlanLabel: 'Sem plano ativo',
+  productAccess: {
+    title: 'Explore o ATUE antes de escolher',
+    description:
+      'O painel e os documentos fazem parte do plano {plan}. Você pode ver os planos ou explorar a demonstração com dados fictícios, sem cobrança.',
+    demoLabel: 'Explorar demonstração',
+    plansLabel: 'Ver planos',
+    demoNote: 'A demonstração libera o plano Cresce apenas nesta sessão e não salva dados.',
+  },
   subscription: {
     title: 'Assinar o plano {plan}?',
     description:

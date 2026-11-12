@@ -1,24 +1,16 @@
 import { useFormContext, useWatch } from 'react-hook-form'
-import { Loader2 } from 'lucide-react'
 
 import { ProfileAvatar } from '@/components/profile/ProfileAvatar'
 import { PROFILE_INPUT_CLASSES } from '@/components/profile/profile-styles'
 import { SectionCard } from '@/components/ui/section-card'
-import { Button } from '@/components/ui/button'
 import { FormField } from '@/components/ui/form-field'
 import { Input } from '@/components/ui/input'
 import { PROFILE_CONTENT } from '@/content/profile'
 import type { AccountProfile } from '@/types/profile.types'
 
-interface PersonalDataSectionProps {
-  onSave: () => void
-  isSaving: boolean
-  isDisabled: boolean
-}
-
 const { personal } = PROFILE_CONTENT
 
-export function PersonalDataSection({ onSave, isSaving, isDisabled }: PersonalDataSectionProps) {
+export function PersonalDataSection() {
   const {
     control,
     register,
@@ -59,11 +51,6 @@ export function PersonalDataSection({ onSave, isSaving, isDisabled }: PersonalDa
             />
           )}
         </FormField>
-
-        <Button type="button" variant="brand" size="xl" disabled={isDisabled} onClick={onSave}>
-          {isSaving ? <Loader2 aria-hidden="true" className="animate-spin" /> : null}
-          {isSaving ? personal.savingLabel : personal.saveLabel}
-        </Button>
       </div>
     </SectionCard>
   )

@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import {
   Table,
@@ -9,6 +10,13 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { PLAN_COMPARISON } from '@/content/plans'
+import { cn } from '@/lib/utils'
+
+const PLAN_COLUMNS = [
+  { id: 'start', name: 'Início', field: 'inicio', recommended: false },
+  { id: 'growth', name: 'Cresce', field: 'cresce', recommended: true },
+  { id: 'scale', name: 'Escala', field: 'escala', recommended: false },
+] as const
 
 export function PlanComparison() {
   return (
@@ -45,31 +53,47 @@ export function PlanComparison() {
         </Table>
       </Card>
 
-      <ul className="space-y-3 md:hidden">
-        {PLAN_COMPARISON.map((row) => (
-          <li key={row.id}>
-            <Card className="gap-0 p-4">
-              <p className="text-sm font-medium text-foreground">{row.feature}</p>
-              <dl className="mt-3 space-y-2 text-sm">
-                <div className="flex justify-between gap-4">
-                  <dt className="text-muted-foreground">Início</dt>
-                  <dd className="text-right text-foreground">{row.inicio}</dd>
-                </div>
-                <div className="flex justify-between gap-4">
-                  <dt className="text-muted-foreground">Cresce</dt>
-                  <dd className="text-right font-medium text-blue-600 dark:text-blue-400">
-                    {row.cresce}
+      <div className="space-y-4 md:hidden">
+        {PLAN_COLUMNS.map((plan) => (
+          <Card
+            key={plan.id}
+            className={cn('gap-0 p-5', plan.recommended && 'ring-blue-600/30')}
+            role="region"
+            aria-labelledby={`plan-comparison-${plan.id}`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <h3
+                id={`plan-comparison-${plan.id}`}
+                className="text-lg font-semibold text-foreground"
+              >
+                {plan.name}
+              </h3>
+              {plan.recommended ? (
+                <Badge
+                  variant="outline"
+                  className="h-auto rounded-full border-blue-600/30 bg-blue-600/10 px-3 py-1 text-blue-600 dark:text-blue-400"
+                >
+                  Recomendado
+                </Badge>
+              ) : null}
+            </div>
+
+            <dl className="mt-4 space-y-3 text-sm">
+              {PLAN_COMPARISON.map((row) => (
+                <div
+                  key={row.id}
+                  className="flex justify-between gap-4 border-b border-border pb-3 last:border-b-0 last:pb-0"
+                >
+                  <dt className="min-w-0 text-muted-foreground">{row.feature}</dt>
+                  <dd className="max-w-[55%] shrink-0 text-right font-medium text-foreground">
+                    {row[plan.field]}
                   </dd>
                 </div>
-                <div className="flex justify-between gap-4">
-                  <dt className="text-muted-foreground">Escala</dt>
-                  <dd className="text-right text-foreground">{row.escala}</dd>
-                </div>
-              </dl>
-            </Card>
-          </li>
+              ))}
+            </dl>
+          </Card>
         ))}
-      </ul>
+      </div>
     </>
   )
 }

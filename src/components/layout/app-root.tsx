@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 
 import { ScrollToTop } from '@/components/layout/scroll-to-top'
+import { SkipLink } from '@/components/layout/skip-link'
 import { SubscriptionPrompt } from '@/components/plans/SubscriptionPrompt'
 import { usePlan } from '@/contexts/plan-context'
 
@@ -27,6 +28,7 @@ export function AppRoot() {
 
   return (
     <>
+      <SkipLink />
       <ScrollToTop />
       <SubscriptionPrompt />
       <Outlet />

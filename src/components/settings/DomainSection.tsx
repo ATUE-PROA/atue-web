@@ -2,8 +2,6 @@ import { ShieldAlert, ShieldCheck } from 'lucide-react'
 
 import { SectionCard } from '@/components/ui/section-card'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { SETTINGS_CONTENT } from '@/content/settings'
 import { cn } from '@/lib/utils'
 import { formatDateTime } from '@/lib/settings'
@@ -29,18 +27,16 @@ export function DomainSection({ domain }: DomainSectionProps) {
   return (
     <SectionCard title={domainContent.title} description={domainContent.description}>
       <div className="space-y-2">
-        <Label htmlFor="monitored-domain" className="text-sm font-medium text-foreground">
-          {domainContent.fieldLabel}
-        </Label>
+        <p className="text-sm font-medium text-foreground">{domainContent.fieldLabel}</p>
 
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <Input
+          <p
             id="monitored-domain"
-            value={domain.domain}
-            readOnly
             aria-describedby={`${helpId} ${lastCheckedId}`}
-            className="h-11 rounded-lg border-input bg-muted/40 text-foreground sm:flex-1"
-          />
+            className="flex min-h-11 flex-1 items-center rounded-lg border border-border bg-muted/40 px-3 text-sm font-medium text-foreground"
+          >
+            {domain.domain}
+          </p>
 
           <Badge
             variant="outline"

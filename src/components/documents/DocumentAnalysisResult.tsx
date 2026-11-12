@@ -20,9 +20,11 @@ const SEVERITIES: readonly IssueSeverity[] = ['alta', 'media', 'baixa']
 
 interface DocumentAnalysisResultProps {
   result: DocumentAnalysisResultData
+  /** Quando informado, o próximo passo troca de aba em vez de usar a âncora. */
+  onShowDownloads?: () => void
 }
 
-export function DocumentAnalysisResult({ result }: DocumentAnalysisResultProps) {
+export function DocumentAnalysisResult({ result, onShowDownloads }: DocumentAnalysisResultProps) {
   const { report, document } = result
   const level = getScoreLevel(report.score)
   const sourceLabel =
@@ -144,14 +146,27 @@ export function DocumentAnalysisResult({ result }: DocumentAnalysisResultProps) 
       </div>
 
       <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-        <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
-          <a href="#central-de-downloads">
+        {onShowDownloads ? (
+          <Button
+            type="button"
+            variant="brand"
+            size="lg"
+            className="w-full sm:w-auto"
+            onClick={onShowDownloads}
+          >
             <FileDown aria-hidden="true" />
             {DOCUMENTS_CONTENT.result.downloadLink}
-          </a>
-        </Button>
+          </Button>
+        ) : (
+          <Button asChild variant="brand" size="lg" className="w-full sm:w-auto">
+            <a href="#central-de-downloads">
+              <FileDown aria-hidden="true" />
+              {DOCUMENTS_CONTENT.result.downloadLink}
+            </a>
+          </Button>
+        )}
 
-        <Button asChild variant="brand" size="lg" className="w-full sm:w-auto">
+        <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
           <Link to="/dashboard">
             <LayoutDashboard aria-hidden="true" />
             {DOCUMENTS_CONTENT.result.dashboardLink}

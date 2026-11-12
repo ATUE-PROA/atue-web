@@ -1,5 +1,7 @@
 import { BadgeCheck, FolderCheck, ShieldCheck } from 'lucide-react'
 
+import { cn } from '@/lib/utils'
+
 const BENEFITS = [
   {
     icon: ShieldCheck,
@@ -18,7 +20,12 @@ const BENEFITS = [
   },
 ]
 
-export function AuthBenefits() {
+interface AuthBenefitsProps {
+  /** No login, o benefício precisa caber acima do formulário no celular. */
+  compact?: boolean
+}
+
+export function AuthBenefits({ compact = false }: AuthBenefitsProps) {
   return (
     <ul className="mt-8 space-y-4">
       {BENEFITS.map(({ icon: Icon, title, description }) => (
@@ -29,7 +36,14 @@ export function AuthBenefits() {
           />
           <div>
             <p className="text-sm font-medium text-foreground">{title}</p>
-            <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground">{description}</p>
+            <p
+              className={cn(
+                'mt-0.5 text-sm leading-relaxed text-muted-foreground',
+                compact && 'hidden sm:block',
+              )}
+            >
+              {description}
+            </p>
           </div>
         </li>
       ))}
