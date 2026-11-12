@@ -1,39 +1,213 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { ArrowUpRight, CreditCard, Files, Upload } from 'lucide-react'
+import { FlaskConical, Globe, Info, RefreshCcw, Search } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import {
   DiagnosticRequestForm,
   type DiagnosticRequestStatus,
 } from '@/components/diagnostics/DiagnosticRequestForm'
+import { PriorityActions } from '@/components/diagnostics/PriorityActions'
 import { ScoreGauge } from '@/components/diagnostics/ScoreGauge'
 import { FindingsList } from '@/components/documents/FindingsList'
+import { SEVERITY_STYLES } from '@/components/documents/severity'
 import { ProductFooter } from '@/components/layout/product-footer'
 import { ProductHeader } from '@/components/layout/product-header'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
+import { SectionCard } from '@/components/ui/section-card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { DIAGNOSTICS_CONTENT } from '@/content/diagnostics'
-import { DASHBOARD_SHORTCUTS } from '@/content/navigation'
+import { SEVERITY_CONTENT } from '@/content/documents'
 import { formatDocumentDateTime } from '@/lib/documents'
-import { getScoreLevel } from '@/lib/diagnostics'
+import { getScoreLevel, SEVERITY_ORDER } from '@/lib/diagnostics'
+import { cn } from '@/lib/utils'
 import { getDiagnostic, requestDiagnostic } from '@/services/diagnostic'
 import type { DiagnosticReport } from '@/types/api'
 
 type LoadState = 'loading' | 'ready' | 'error'
 
-const SHORTCUT_ICONS = {
-  '/documents': Files,
-  '/form': Upload,
-  '/plans': CreditCard,
-} as const
-
 function DashboardShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <ProductHeader />
-      <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-10">{children}</main>
+      <main id="conteudo" className="mx-auto w-full max-w-6xl flex-1 px-6 py-10">
+        {children}
+      </main>
       <ProductFooter />
+    </div>
+  )
+}
+
+const { page, score, findings, empty, loadError, degraded, footerNote } = DIAGNOSTICS_CONTENT
+
+function DashboardHeader({ report }: { report: DiagnosticReport | null }) {
+  const level = report ? getScoreLevel(report.score) : null
+
+  return (
+    <header className="border-b border-border pb-8">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div className="min-w-0">
+          <Badge
+            variant="outline"
+            className="h-auto gap-1.5 rounded-full border-blue-600/30 bg-blue-600/10 px-3 py-1 text-xs text-foreground"
+          >
+            <FlaskConical aria-hidden="true" className="size-3" />
+            {page.demoBadge}
+          </Badge>
+
+          <h1 className="mt-3 text-display text-foreground">{page.title}</h1>
+          <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
+            {page.description}
+          </p>
+        </div>
+
+        <Button asChild variant="brand" size="xl" className="w-full sm:w-auto">
+          <a href="#novo-diagnostico">
+            <RefreshCcw aria-hidden="true" />
+            {report ? page.ctaUpdate : page.cta}
+          </a>
+        </Button>
+      </div>
+
+      {report && level ? (
+        <dl className="mt-6 flex flex-col gap-2 text-sm sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6">
+          <div className="flex items-center gap-2">
+            <dt className="text-muted-foreground">{page.statusLabel}:</dt>
+            <dd className="flex items-center gap-1.5 font-medium">
+              <span
+                aria-hidden="true"
+                className={cn('size-2.5 rounded-full', level.dotClassName)}
+              />
+              <span className={level.textClassName}>{level.label}</span>
+            </dd>
+          </div>
+
+          {report.url ? (
+            <div className="flex min-w-0 items-center gap-2">
+              <dt className="text-muted-foreground">{page.urlLabel}:</dt>
+              <dd className="flex min-w-0 items-center gap-1.5 font-medium text-foreground">
+                <Globe aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+                <span className="break-all">{report.url}</span>
+              </dd>
+            </div>
+          ) : null}
+
+          <div className="flex items-center gap-2">
+            <dt className="text-muted-foreground">{page.updatedLabel}</dt>
+            <dd className="font-medium text-foreground">
+              {formatDocumentDateTime(report.createdAt)}
+            </dd>
+          </div>
+        </dl>
+      ) : null}
+    </header>
+  )
+}
+
+function DiagnosticResults({ report }: { report: DiagnosticReport }) {
+  const { summary } = report
+
+  return (
+    <div className="mt-8 space-y-6">
+      {report.degraded ? (
+        <FormAlert tone="info" title={degraded.title} description={degraded.description} />
+      ) : null}
+
+      <div className="grid gap-6 md:grid-cols-2 md:items-start">
+        <SectionCard title={score.title} description={score.description}>
+          <div className="flex flex-col items-center">
+            <ScoreGauge score={report.score} />
+          </div>
+
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{score.scaleNote}</p>
+
+          <div className="mt-4 flex gap-2 rounded-lg bg-muted/50 p-3 text-sm leading-relaxed text-foreground">
+            <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+            <p>{score.disclaimer}</p>
+          </div>
+
+          <div className="mt-4 border-t border-border pt-4">
+            <h3 className="text-sm font-medium text-foreground">{score.dimensionsTitle}</h3>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed text-muted-foreground">
+              {score.dimensions.map((dimension) => (
+                <li key={dimension}>{dimension}</li>
+              ))}
+            </ul>
+          </div>
+        </SectionCard>
+
+        <PriorityActions issues={report.issues} />
+      </div>
+
+      <SectionCard title={findings.title} description={findings.description}>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div
+            role="group"
+            aria-label={findings.summaryLabel}
+            className="flex flex-wrap gap-x-4 gap-y-1 text-sm"
+          >
+            {SEVERITY_ORDER.map((severity) => (
+              <span
+                key={severity}
+                className="inline-flex items-center gap-1.5 text-muted-foreground"
+              >
+                <span
+                  aria-hidden="true"
+                  className={cn('size-2 rounded-full', SEVERITY_STYLES[severity].dotClassName)}
+                />
+                {SEVERITY_CONTENT[severity].label}:{' '}
+                <span className="font-medium text-foreground">{summary.bySeverity[severity]}</span>
+              </span>
+            ))}
+          </div>
+
+          <Link
+            to="/documents"
+            className="text-sm font-medium text-blue-600 dark:text-blue-400 transition-colors hover:text-blue-700 dark:hover:text-blue-300 focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
+          >
+            Ver central
+          </Link>
+        </div>
+
+        <FindingsList className="mt-4" issues={report.issues} emptyMessage={findings.empty} />
+
+        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{footerNote}</p>
+      </SectionCard>
+    </div>
+  )
+}
+
+function EmptyDiagnostic() {
+  return (
+    <SectionCard className="mt-8" title={empty.title} description={empty.description}>
+      <Button asChild variant="brand" size="xl" className="w-full sm:w-auto">
+        <a href="#novo-diagnostico">
+          <Search aria-hidden="true" />
+          {empty.cta}
+        </a>
+      </Button>
+    </SectionCard>
+  )
+}
+
+function DiagnosticSkeleton() {
+  return (
+    <div role="status" className="mt-8 space-y-6">
+      <span className="sr-only">Carregando diagnóstico...</span>
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="space-y-3 rounded-xl bg-card p-6 ring-1 ring-border">
+          <Skeleton className="h-5 w-40" />
+          <Skeleton className="mx-auto size-40 rounded-full" />
+          <Skeleton className="h-4 w-full" />
+        </div>
+        <div className="space-y-3 rounded-xl bg-card p-6 ring-1 ring-border">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-3/4" />
+          <Skeleton className="h-4 w-2/3" />
+        </div>
+      </div>
     </div>
   )
 }
@@ -83,205 +257,44 @@ export function Dashboard() {
     }
   }
 
-  if (loadState === 'loading') {
-    return (
-      <DashboardShell>
-        <div
-          role="status"
-          className="space-y-3 rounded-xl border border-border bg-card p-6 shadow-sm"
-        >
-          <span className="sr-only">Carregando diagnóstico...</span>
-          <Skeleton className="h-4 w-40" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4" />
-        </div>
-      </DashboardShell>
-    )
-  }
-
-  if (loadState === 'error') {
-    return (
-      <DashboardShell>
-        <FormAlert
-          tone="error"
-          title="Não foi possível carregar o diagnóstico"
-          description="Tente novamente. Nenhum dado foi alterado."
-        />
-        <Button
-          type="button"
-          variant="outline"
-          className="mt-4"
-          onClick={() => {
-            setLoadState('loading')
-            setReloadKey((current) => current + 1)
-          }}
-        >
-          Tentar novamente
-        </Button>
-      </DashboardShell>
-    )
-  }
-
-  const nivelScore = relatorio ? getScoreLevel(relatorio.score) : null
-
   return (
     <DashboardShell>
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            Painel de Controle
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">Bem-vindo(a)!</p>
+      <DashboardHeader report={relatorio} />
+
+      {loadState === 'loading' ? <DiagnosticSkeleton /> : null}
+
+      {loadState === 'error' ? (
+        <div className="mt-8">
+          <FormAlert tone="error" title={loadError.title} description={loadError.description} />
+          <Button
+            type="button"
+            variant="outline"
+            size="xl"
+            className="mt-4"
+            onClick={() => {
+              setLoadState('loading')
+              setReloadKey((current) => current + 1)
+            }}
+          >
+            <RefreshCcw aria-hidden="true" />
+            {loadError.retry}
+          </Button>
         </div>
+      ) : null}
 
-        <div className="flex flex-col gap-3 sm:items-end">
-          {nivelScore ? (
-            <div
-              className="flex items-center gap-2"
-              role="group"
-              aria-label={`Status geral: ${nivelScore.label}`}
-            >
-              <span className="text-sm font-medium text-foreground">Status geral:</span>
-              <span
-                aria-hidden="true"
-                className={`h-4 w-4 rounded-full ${nivelScore.dotClassName}`}
-              />
-              <span className={`text-sm font-medium ${nivelScore.textClassName}`}>
-                {nivelScore.label}
-              </span>
-            </div>
-          ) : null}
+      {relatorio && loadState !== 'loading' ? <DiagnosticResults report={relatorio} /> : null}
 
-          <div className="flex flex-wrap gap-2">
-            <Button asChild variant="outline" size="lg" className="w-fit">
-              <Link to="/form">
-                <Upload aria-hidden="true" />
-                Enviar documentos
-              </Link>
-            </Button>
-
-            <Button asChild variant="brand" size="lg" className="w-fit">
-              <Link to="/documents">
-                <Files aria-hidden="true" />
-                Central de Documentos
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </header>
+      {loadState === 'ready' && !relatorio ? <EmptyDiagnostic /> : null}
 
       <div className="mt-8">
         <DiagnosticRequestForm
+          hasReport={relatorio !== null}
           status={requestState}
           onSubmit={(url) => {
             void handleRequestDiagnostic(url)
           }}
         />
       </div>
-
-      <section aria-labelledby="shortcuts-heading" className="mt-8">
-        <h2
-          id="shortcuts-heading"
-          className="text-xs font-medium tracking-wide text-muted-foreground uppercase"
-        >
-          Atalhos
-        </h2>
-
-        <ul className="mt-3 grid gap-3 sm:grid-cols-3">
-          {DASHBOARD_SHORTCUTS.map((shortcut) => {
-            const Icon = SHORTCUT_ICONS[shortcut.to]
-
-            return (
-              <li key={shortcut.to}>
-                <Link
-                  to={shortcut.to}
-                  className="group flex h-full flex-col rounded-xl border border-border bg-card p-4 shadow-sm transition-colors hover:border-blue-600/40 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:hover:border-blue-400/40 dark:focus-visible:ring-blue-400/60"
-                >
-                  <span className="flex items-center justify-between gap-2">
-                    <span className="inline-flex size-8 items-center justify-center rounded-lg bg-blue-600/10 text-blue-700 dark:bg-blue-500/10 dark:text-blue-300">
-                      <Icon aria-hidden="true" className="size-4" />
-                    </span>
-                    <ArrowUpRight
-                      aria-hidden="true"
-                      className="size-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0"
-                    />
-                  </span>
-                  <span className="mt-3 text-sm font-medium text-foreground">{shortcut.label}</span>
-                  <span className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                    {shortcut.description}
-                  </span>
-                </Link>
-              </li>
-            )
-          })}
-        </ul>
-      </section>
-
-      {relatorio?.degraded ? (
-        <div className="mt-8">
-          <FormAlert
-            tone="info"
-            title={DIAGNOSTICS_CONTENT.degraded.title}
-            description={DIAGNOSTICS_CONTENT.degraded.description}
-          />
-        </div>
-      ) : null}
-
-      {relatorio ? (
-        <div className="mt-8 grid gap-6 md:grid-cols-2 md:items-start">
-          <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-card p-6 shadow-sm">
-            <h2 className="mb-4 text-lg font-semibold text-foreground">
-              {DIAGNOSTICS_CONTENT.score.title}
-            </h2>
-            <ScoreGauge score={relatorio.score} />
-          </div>
-
-          <section
-            aria-labelledby="findings-heading"
-            className="rounded-xl border border-border bg-card p-6 shadow-sm"
-          >
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <h2 id="findings-heading" className="text-lg font-semibold text-foreground">
-                  {DIAGNOSTICS_CONTENT.findings.title}
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {DIAGNOSTICS_CONTENT.findings.description}
-                </p>
-              </div>
-              <Link
-                to="/documents"
-                className="text-sm font-medium text-blue-700 transition-colors hover:text-blue-600 focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none dark:text-blue-300 dark:hover:text-blue-200"
-              >
-                Ver central
-              </Link>
-            </div>
-
-            <FindingsList
-              className="mt-4"
-              issues={relatorio.issues}
-              emptyMessage={DIAGNOSTICS_CONTENT.findings.empty}
-            />
-
-            <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-              Última atualização em {formatDocumentDateTime(relatorio.createdAt)}.{' '}
-              {DIAGNOSTICS_CONTENT.footerNote}
-            </p>
-          </section>
-        </div>
-      ) : (
-        <section
-          aria-labelledby="empty-diagnostic-heading"
-          className="mt-8 rounded-xl border border-border bg-card p-6 shadow-sm"
-        >
-          <h2 id="empty-diagnostic-heading" className="text-lg font-semibold text-foreground">
-            {DIAGNOSTICS_CONTENT.empty.title}
-          </h2>
-          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-            {DIAGNOSTICS_CONTENT.empty.description}
-          </p>
-        </section>
-      )}
     </DashboardShell>
   )
 }

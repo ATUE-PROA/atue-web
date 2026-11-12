@@ -15,7 +15,7 @@ export function BrandLink({ to = '/', onClick }: BrandLinkProps) {
       to={to}
       onClick={onClick}
       aria-label="ATUE"
-      className={`inline-flex items-center ${focusClasses}`}
+      className={`inline-flex shrink-0 items-center ${focusClasses}`}
     >
       <img
         src="/brand/atue-logo-light.svg"
@@ -42,7 +42,7 @@ interface SiteHeaderProps {
 
 export function SiteHeader({ children, submenu }: SiteHeaderProps) {
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-border/70 bg-background/80 backdrop-blur-xl backdrop-saturate-150">
       <div className="relative mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-6">
         {children}
       </div>

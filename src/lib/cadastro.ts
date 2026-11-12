@@ -18,4 +18,7 @@ export const cadastroSchema: z.ZodType<CadastroFormValues, CadastroFormValues> =
     .regex(PASSWORD_NUMBER_PATTERN, {
       message: 'A senha precisa conter pelo menos um número.',
     }),
+  consentimento: z.boolean().refine((value) => value, {
+    message: 'Para criar a conta, aceite os termos e a privacidade.',
+  }),
 })

@@ -3,6 +3,8 @@ import type { CompanySector } from '@/types/profile.types'
 export const PROFILE_CONTENT = {
   eyebrow: 'Dados pessoais e da empresa',
   title: 'Perfil',
+  description:
+    'Mantenha os dados da conta, da empresa e do encarregado de dados atualizados para os relatórios.',
   backToSite: 'Voltar ao painel',
   loading: 'Carregando perfil...',
   loadErrorTitle: 'Não foi possível carregar o perfil',
@@ -49,7 +51,7 @@ export const PROFILE_CONTENT = {
   company: {
     title: 'Dados da empresa',
     description:
-      'Informações institucionais exibidas nos relatórios e certificados de conformidade.',
+      'Informações institucionais exibidas nos relatórios e comprovantes gerados pela plataforma.',
     fields: {
       legalName: {
         label: 'Razão social',

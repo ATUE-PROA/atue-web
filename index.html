@@ -4,6 +4,18 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=4" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="O ATUE ajuda pequenas e médias empresas a avaliar, organizar e comprovar práticas de privacidade e segurança da informação."
+    />
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0A0A0A" media="(prefers-color-scheme: dark)" />
+    <meta property="og:title" content="ATUE — Conformidade digital" />
+    <meta
+      property="og:description"
+      content="Entenda o que falta, organize as evidências e comprove o que a sua empresa já faz."
+    />
+    <meta property="og:type" content="website" />
     <title>ATUE — Conformidade digital</title>
     <script>
       ;(function () {
@@ -13,13 +25,8 @@
         } catch (error) {
           stored = null
         }
-        var dark =
-          stored === 'dark'
-            ? true
-            : stored === 'light'
-              ? false
-              : window.matchMedia('(prefers-color-scheme: dark)').matches
-        document.documentElement.classList.toggle('dark', dark)
+        // O tema claro é o padrão do produto. O escuro é uma escolha explícita.
+        document.documentElement.classList.toggle('dark', stored === 'dark')
       })()
     </script>
   </head>

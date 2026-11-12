@@ -23,8 +23,11 @@ export async function requestDiagnostic(url: string): Promise<DiagnosticReport> 
     return mockRequestDiagnostic(url)
   }
 
-  return requestJson('/v1/diagnostics', parseDiagnosticReport, {
+  const report = await requestJson('/v1/diagnostics', parseDiagnosticReport, {
     method: 'POST',
     body: { url },
   })
+
+  // A API pode omitir a URL; a requisição já a informa para a tela.
+  return { ...report, url: report.url ?? url }
 }

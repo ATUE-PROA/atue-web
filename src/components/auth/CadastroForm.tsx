@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useEffect, useId, useState } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, Link } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 
+import { PasswordChecklist } from '@/components/auth/PasswordChecklist'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { FormField } from '@/components/ui/form-field'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { PasswordInput } from '@/components/ui/password-input'
 import { CADASTRO_CONTENT } from '@/content/cadastro'
 import { useAuth } from '@/contexts/auth-context'
@@ -21,10 +23,14 @@ type SubmissionResult = 'idle' | 'success' | 'error'
 const inputClasses =
   'h-11 rounded-lg border-input text-foreground placeholder:text-muted-foreground focus-visible:border-blue-600 focus-visible:ring-blue-600/40 dark:focus-visible:border-blue-400 dark:focus-visible:ring-blue-400/40'
 
+const linkClasses =
+  'rounded-md font-medium text-blue-600 dark:text-blue-400 transition-colors hover:text-blue-700 dark:hover:text-blue-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background'
+
 const {
   formTitle,
   formDescription,
   fields,
+  consent,
   submitLabel,
   submittingLabel,
   successTitle,
@@ -32,6 +38,9 @@ const {
   errorTitle,
   errorDescription,
   demoNotice,
+  signInQuestion,
+  signInLabel,
+  plansLabel,
 } = CADASTRO_CONTENT
 
 export function CadastroForm() {
@@ -39,10 +48,13 @@ export function CadastroForm() {
   const { signIn } = useAuth()
   const { resetPlan } = usePlan()
   const [result, setResult] = useState<SubmissionResult>('idle')
+  const checklistId = useId()
+  const consentLinksId = useId()
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<CadastroFormValues>({
     resolver: zodResolver(cadastroSchema),
@@ -51,8 +63,12 @@ export function CadastroForm() {
       email: '',
       empresa: '',
       senha: '',
+      consentimento: false,
     },
   })
+
+  const password = useWatch({ control, name: 'senha' })
+  const consentErrorId = `${checklistId}-consent-error`
 
   const isBusy = isSubmitting || result === 'success'
 
@@ -145,22 +161,63 @@ export function CadastroForm() {
           )}
         </FormField>
 
-        <FormField
-          label={fields.senha.label}
-          error={errors.senha?.message}
-          description={fields.senha.helpText}
-          required
-        >
-          {(field) => (
-            <PasswordInput
-              {...field}
-              placeholder={fields.senha.placeholder}
-              autoComplete={fields.senha.autoComplete}
-              className={inputClasses}
-              {...register('senha')}
-            />
-          )}
+        <FormField label={fields.senha.label} error={errors.senha?.message} required>
+          {(field) => {
+            const describedBy = [field['aria-describedby'], checklistId].filter(Boolean).join(' ')
+
+            return (
+              <>
+                <PasswordInput
+                  {...field}
+                  aria-describedby={describedBy}
+                  placeholder={fields.senha.placeholder}
+                  autoComplete={fields.senha.autoComplete}
+                  className={inputClasses}
+                  {...register('senha')}
+                />
+                <PasswordChecklist id={checklistId} password={password ?? ''} />
+              </>
+            )
+          }}
         </FormField>
+
+        <div className="space-y-2 pt-1">
+          <div className="flex items-start gap-3">
+            <input
+              id="consentimento"
+              type="checkbox"
+              aria-invalid={Boolean(errors.consentimento)}
+              aria-describedby={[consentLinksId, errors.consentimento ? consentErrorId : null]
+                .filter(Boolean)
+                .join(' ')}
+              className="mt-0.5 size-4 shrink-0 rounded border border-input accent-blue-600 focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none aria-invalid:border-destructive"
+              {...register('consentimento')}
+            />
+            <Label htmlFor="consentimento" className="text-sm leading-relaxed font-normal">
+              {consent.label}
+            </Label>
+          </div>
+
+          <p id={consentLinksId} className="text-xs leading-relaxed text-muted-foreground">
+            <Link to="/termos" className={linkClasses}>
+              {consent.termsLink}
+            </Link>
+            {' · '}
+            <Link to="/privacidade" className={linkClasses}>
+              {consent.privacyLink}
+            </Link>
+          </p>
+
+          {errors.consentimento ? (
+            <p
+              id={consentErrorId}
+              role="alert"
+              className="flex items-center gap-1.5 text-sm text-destructive"
+            >
+              {errors.consentimento.message}
+            </p>
+          ) : null}
+        </div>
 
         <Button type="submit" variant="brand" size="xl" className="w-full" disabled={isBusy}>
           {isSubmitting ? <Loader2 aria-hidden="true" className="animate-spin" /> : null}
@@ -171,19 +228,13 @@ export function CadastroForm() {
       <p className="mt-5 text-xs leading-relaxed text-muted-foreground">{demoNotice}</p>
 
       <p className="mt-4 text-sm text-muted-foreground">
-        Já tem uma conta?{' '}
-        <Link
-          to="/login"
-          className="rounded-md font-medium text-blue-700 transition-colors hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:text-blue-300 dark:hover:text-blue-200 dark:focus-visible:ring-blue-400/60"
-        >
-          Entrar
+        {signInQuestion}{' '}
+        <Link to="/login" className={linkClasses}>
+          {signInLabel}
         </Link>
         {' · '}
-        <Link
-          to="/plans"
-          className="rounded-md font-medium text-blue-700 transition-colors hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:text-blue-300 dark:hover:text-blue-200 dark:focus-visible:ring-blue-400/60"
-        >
-          Comparar planos
+        <Link to="/plans" className={linkClasses}>
+          {plansLabel}
         </Link>
       </p>
     </div>

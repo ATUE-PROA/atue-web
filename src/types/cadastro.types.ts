@@ -3,4 +3,5 @@ export interface CadastroFormValues {
   email: string
   empresa: string
   senha: string
+  consentimento: boolean
 }

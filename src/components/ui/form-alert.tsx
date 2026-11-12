@@ -25,10 +25,10 @@ const toneStyles = {
     description: 'text-destructive/90',
   },
   info: {
-    container: 'border-blue-600/30 bg-blue-600/10 dark:border-blue-500/30 dark:bg-blue-500/10',
+    container: 'border-blue-600/30 bg-blue-600/10',
     icon: 'text-blue-700 dark:text-blue-300',
-    title: 'text-blue-800 dark:text-blue-200',
-    description: 'text-blue-800/90 dark:text-blue-200/90',
+    title: 'text-blue-700 dark:text-blue-300',
+    description: 'text-blue-700 dark:text-blue-300',
   },
 } as const
 

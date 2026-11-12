@@ -7,14 +7,15 @@ import { NOT_FOUND_LINKS } from '@/content/navigation'
 
 export default function NotFoundPage() {
   return (
-    <main className="grid min-h-screen place-items-center bg-background p-6 text-foreground">
+    <main
+      id="conteudo"
+      className="grid min-h-screen place-items-center bg-background p-6 text-foreground"
+    >
       <div className="w-full max-w-lg text-center">
         <BrandLink />
 
-        <p className="mt-8 text-xs font-medium tracking-[0.2em] text-blue-600 uppercase dark:text-blue-400">
-          Erro 404
-        </p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight">Página não encontrada</h1>
+        <p className="text-eyebrow mt-8 text-blue-600 dark:text-blue-400">Erro 404</p>
+        <h1 className="text-display mt-3 text-foreground">Página não encontrada</h1>
         <p className="mt-2 leading-relaxed text-muted-foreground">
           O endereço acessado não existe ou foi movido. Use um dos atalhos abaixo para continuar.
         </p>

@@ -10,7 +10,7 @@ const buttonVariants = cva(
       variant: {
         default: 'bg-primary text-primary-foreground hover:bg-primary/80',
         brand:
-          'bg-blue-600 text-white hover:bg-blue-500 focus-visible:border-blue-600 focus-visible:ring-blue-600/60 dark:focus-visible:border-blue-400 dark:focus-visible:ring-blue-400/60',
+          'bg-blue-600 text-white hover:bg-blue-500 focus-visible:border-blue-600 focus-visible:ring-blue-600/60',
         inverse:
           'rounded-full bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-blue-600/60 dark:focus-visible:ring-blue-400/60',
         outline:

@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom'
 
 import { ProductFooter } from '@/components/layout/product-footer'
 import { ProductHeader } from '@/components/layout/product-header'
-import { CrossLinks } from '@/components/layout/cross-links'
 import { CompanySection } from '@/components/profile/CompanySection'
 import { ContactSection } from '@/components/profile/ContactSection'
 import { DpoSection } from '@/components/profile/DpoSection'
@@ -15,14 +14,12 @@ import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PROFILE_CONTENT } from '@/content/profile'
-import { PROFILE_SHORTCUTS } from '@/content/navigation'
 import { profileSchema } from '@/lib/profile'
 import { getProfile, updateProfile } from '@/services/profile'
 import type { AccountProfile } from '@/types/profile.types'
 
 type LoadState = 'loading' | 'ready' | 'error'
 type SaveResult = 'idle' | 'success' | 'error'
-type SaveAction = 'card' | 'page'
 
 const EMPTY_PROFILE: AccountProfile = {
   personal: {
@@ -53,7 +50,6 @@ export function Profile() {
   const [profile, setProfile] = useState<AccountProfile | null>(null)
   const [reloadKey, setReloadKey] = useState(0)
   const [saveResult, setSaveResult] = useState<SaveResult>('idle')
-  const [saveAction, setSaveAction] = useState<SaveAction | null>(null)
 
   const form = useForm<AccountProfile>({
     resolver: zodResolver(profileSchema),
@@ -65,8 +61,6 @@ export function Profile() {
     handleSubmit,
     formState: { isSubmitting },
   } = form
-
-  const isBusy = isSubmitting || saveAction !== null
 
   useEffect(() => {
     let isActive = true
@@ -103,32 +97,19 @@ export function Profile() {
     }
   }
 
-  const runSave = async (action: SaveAction) => {
-    setSaveResult('idle')
-    setSaveAction(action)
-
-    try {
-      await handleSubmit(onSubmit)()
-    } finally {
-      setSaveAction(null)
-    }
-  }
-
-  const isSavingCard = isSubmitting && saveAction === 'card'
-  const isSavingPage = isSubmitting && saveAction === 'page'
-
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <ProductHeader />
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-10 sm:py-14">
+      <main id="conteudo" className="mx-auto w-full max-w-6xl flex-1 px-6 py-10 sm:py-14">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="max-w-2xl">
-            <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-              {PROFILE_CONTENT.title}
-            </h1>
-            <p className="mt-3 text-xs font-medium tracking-[0.2em] text-blue-600 uppercase dark:text-blue-400">
+            <p className="text-eyebrow text-blue-600 dark:text-blue-400">
               {PROFILE_CONTENT.eyebrow}
+            </p>
+            <h1 className="text-display mt-3 text-foreground">{PROFILE_CONTENT.title}</h1>
+            <p className="mt-3 max-w-xl text-base leading-relaxed text-muted-foreground">
+              {PROFILE_CONTENT.description}
             </p>
           </div>
 
@@ -140,8 +121,6 @@ export function Profile() {
             {PROFILE_CONTENT.backToSite}
           </Link>
         </header>
-
-        <CrossLinks className="mt-6" ariaLabel="Atalhos do perfil" links={PROFILE_SHORTCUTS} />
 
         {loadState === 'loading' ? (
           <div
@@ -201,21 +180,15 @@ export function Profile() {
             <FormProvider {...form}>
               <form
                 noValidate
-                aria-busy={isBusy}
+                aria-busy={isSubmitting}
                 onSubmit={(event) => {
                   event.preventDefault()
-                  void runSave('page')
+                  void handleSubmit(onSubmit)()
                 }}
                 className="mt-10 grid gap-6 lg:grid-cols-2 lg:items-start"
               >
                 <div className="space-y-6">
-                  <PersonalDataSection
-                    onSave={() => {
-                      void runSave('card')
-                    }}
-                    isSaving={isSavingCard}
-                    isDisabled={isBusy}
-                  />
+                  <PersonalDataSection />
                   <ContactSection />
                 </div>
 
@@ -229,14 +202,14 @@ export function Profile() {
                       variant="brand"
                       size="xl"
                       className="w-full"
-                      disabled={isBusy}
+                      disabled={isSubmitting}
                     >
-                      {isSavingPage ? (
+                      {isSubmitting ? (
                         <Loader2 aria-hidden="true" className="animate-spin" />
                       ) : (
                         <Save aria-hidden="true" />
                       )}
-                      {isSavingPage ? actions.savingLabel : actions.saveLabel}
+                      {isSubmitting ? actions.savingLabel : actions.saveLabel}
                     </Button>
 
                     <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">

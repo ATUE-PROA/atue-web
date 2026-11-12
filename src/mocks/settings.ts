@@ -48,7 +48,7 @@ let settingsState: AccountSettings = {
     {
       id: 'slack',
       name: 'Slack',
-      status: 'connected',
+      status: 'available',
     },
   ],
 }

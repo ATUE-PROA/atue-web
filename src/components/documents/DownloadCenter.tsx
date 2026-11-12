@@ -1,6 +1,7 @@
-import { ChevronDown, Download, FileText, Loader2, Settings2 } from 'lucide-react'
+import { ChevronDown, Download, FileText, Loader2, Lock, Settings2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -30,6 +31,8 @@ interface DownloadCenterProps {
   items: readonly DownloadItem[]
   pending: PendingDownload | null
   feedback: DownloadFeedback | null
+  /** Relatórios gerados exigem plano superior; o bloqueio aparece antes do clique. */
+  canDownloadReports: boolean
   onDownload: (item: DownloadItem, format: DownloadFormat) => void
 }
 
@@ -37,10 +40,11 @@ interface DownloadGroupProps {
   category: DownloadCategory
   items: readonly DownloadItem[]
   pending: PendingDownload | null
+  locked: boolean
   onDownload: (item: DownloadItem, format: DownloadFormat) => void
 }
 
-function DownloadGroup({ category, items, pending, onDownload }: DownloadGroupProps) {
+function DownloadGroup({ category, items, pending, locked, onDownload }: DownloadGroupProps) {
   const content = DOWNLOAD_CATEGORY_CONTENT[category]
   const emptyMessage =
     category === 'report'
@@ -49,8 +53,21 @@ function DownloadGroup({ category, items, pending, onDownload }: DownloadGroupPr
 
   return (
     <div>
-      <h3 className="text-sm font-semibold text-foreground">{content.title}</h3>
+      <div className="flex flex-wrap items-center gap-2">
+        <h3 className="text-sm font-semibold text-foreground">{content.title}</h3>
+        {locked ? (
+          <Badge variant="outline" className="gap-1 rounded-full border-border">
+            <Lock aria-hidden="true" />
+            {DOCUMENTS_CONTENT.downloads.reportLockBadge}
+          </Badge>
+        ) : null}
+      </div>
       <p className="mt-1 text-sm text-muted-foreground">{content.description}</p>
+      {locked ? (
+        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+          {DOCUMENTS_CONTENT.downloads.reportLockNote}
+        </p>
+      ) : null}
 
       {items.length === 0 ? (
         <p className="mt-3 rounded-lg border border-dashed border-border bg-muted/30 p-4 text-sm text-muted-foreground">
@@ -91,6 +108,12 @@ function DownloadGroup({ category, items, pending, onDownload }: DownloadGroupPr
                       {dateLabel} {formatDocumentDate(item.updatedAt)} ·{' '}
                       {formatPageCount(item.pages)} · {formatLabels}
                     </p>
+                    {locked ? (
+                      <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                        <Lock aria-hidden="true" className="size-3.5 shrink-0" />
+                        {DOCUMENTS_CONTENT.downloads.reportLockBadge}
+                      </p>
+                    ) : null}
                   </div>
                 </div>
 
@@ -169,7 +192,13 @@ function DownloadGroup({ category, items, pending, onDownload }: DownloadGroupPr
   )
 }
 
-export function DownloadCenter({ items, pending, feedback, onDownload }: DownloadCenterProps) {
+export function DownloadCenter({
+  items,
+  pending,
+  feedback,
+  canDownloadReports,
+  onDownload,
+}: DownloadCenterProps) {
   const reports = items.filter((item) => item.category === 'report')
   const templates = items.filter((item) => item.category === 'template')
 
@@ -196,12 +225,14 @@ export function DownloadCenter({ items, pending, feedback, onDownload }: Downloa
           category="report"
           items={reports}
           pending={pending}
+          locked={!canDownloadReports}
           onDownload={onDownload}
         />
         <DownloadGroup
           category="template"
           items={templates}
           pending={pending}
+          locked={false}
           onDownload={onDownload}
         />
       </div>

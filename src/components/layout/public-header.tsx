@@ -44,7 +44,7 @@ export function PublicHeader() {
       <Link to="/login" className={linkClasses}>
         Entrar
       </Link>
-      <Button asChild variant="brand" size="lg" className="rounded-full">
+      <Button asChild variant="brand" size="lg">
         <Link to="/register">Cadastre-se</Link>
       </Button>
     </>
@@ -64,7 +64,7 @@ export function PublicHeader() {
           Entrar
         </Link>
       </Button>
-      <Button asChild variant="brand" size="xl" className="w-full rounded-full">
+      <Button asChild variant="brand" size="xl" className="w-full">
         <Link to="/register" onClick={() => setIsMenuOpen(false)}>
           Cadastre-se
         </Link>
@@ -78,7 +78,7 @@ export function PublicHeader() {
 
       <nav
         aria-label="Navegação principal"
-        className="absolute left-1/2 hidden -translate-x-1/2 md:block"
+        className="absolute left-1/2 hidden -translate-x-1/2 lg:block"
       >
         <ul className="flex items-center gap-6">
           {PUBLIC_NAV.map((item) => (
@@ -91,12 +91,12 @@ export function PublicHeader() {
         </ul>
       </nav>
 
-      <div className="hidden items-center gap-3 md:flex">
+      <div className="hidden items-center gap-3 lg:flex">
         {authActions}
         <ThemeToggle />
       </div>
 
-      <div className="flex items-center gap-2 md:hidden">
+      <div className="flex items-center gap-2 lg:hidden">
         <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
           <SheetTrigger asChild>
             <Button

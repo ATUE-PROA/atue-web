@@ -1,10 +1,11 @@
-import { AuthCenteredLayout } from '@/components/auth/AuthLayout'
+import { AuthLayout } from '@/components/auth/AuthLayout'
+import { AuthProofPanel } from '@/components/auth/AuthProofPanel'
 import { LoginForm } from '@/components/auth/LoginForm'
 
 export function Login() {
   return (
-    <AuthCenteredLayout>
+    <AuthLayout aside={<AuthProofPanel />}>
       <LoginForm />
-    </AuthCenteredLayout>
+    </AuthLayout>
   )
 }

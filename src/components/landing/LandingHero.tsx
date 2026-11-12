@@ -1,51 +1,112 @@
+import { useLayoutEffect, useRef } from 'react'
+import gsap from 'gsap'
+
+import ProductPreview from '@/components/landing/ProductPreview'
 import { Button } from '@/components/ui/button'
-import { LANDING_HERO } from '@/content/landing'
+import { PhotoFrame } from '@/components/ui/photo'
+import { LANDING_HERO, LANDING_PHOTOS } from '@/content/landing'
+
+const MOTION_QUERY = '(prefers-reduced-motion: no-preference)'
 
 export default function LandingHero() {
+  const sectionRef = useRef<HTMLElement>(null)
+
+  useLayoutEffect(() => {
+    const node = sectionRef.current
+    if (!node) return
+
+    const media = gsap.matchMedia()
+    media.add(
+      MOTION_QUERY,
+      () => {
+        const timeline = gsap.timeline({ defaults: { ease: 'power3.out' } })
+
+        timeline
+          .fromTo(
+            '[data-hero-item]',
+            { y: 26, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.8, stagger: 0.09 },
+          )
+          // O artefato de produto nunca começa invisível: apenas desliza para o lugar.
+          .fromTo('[data-hero-card]', { y: 32 }, { y: 0, duration: 0.8 }, '-=0.5')
+          .fromTo(
+            '[data-hero-photo]',
+            { y: 40, opacity: 0, scale: 0.985 },
+            { y: 0, opacity: 1, scale: 1, duration: 1, ease: 'power2.out' },
+            '-=0.45',
+          )
+
+        gsap.fromTo(
+          '[data-hero-photo] img',
+          { yPercent: -3, scale: 1.1 },
+          {
+            yPercent: 3,
+            scale: 1.1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '[data-hero-photo]',
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 0.6,
+            },
+          },
+        )
+
+        // Se a timeline não rodar (aba em segundo plano, falha de ticker), a
+        // primeira dobra não pode continuar invisível.
+        const safety = window.setTimeout(() => {
+          gsap.set('[data-hero-item]', { opacity: 1, y: 0 })
+        }, 1500)
+
+        return () => window.clearTimeout(safety)
+      },
+      node,
+    )
+
+    return () => media.revert()
+  }, [])
+
   return (
-    <section className="mx-auto w-full max-w-6xl px-6 py-16 sm:py-20 lg:py-28">
-      <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+    <section
+      ref={sectionRef}
+      className="mx-auto w-full max-w-6xl px-6 pt-12 pb-12 sm:pt-16 sm:pb-16 lg:pt-20"
+    >
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:items-center lg:gap-16">
         <div>
-          <p className="text-xs font-medium tracking-[0.2em] text-blue-600 uppercase dark:text-blue-400">
+          <p data-hero-item className="text-eyebrow text-blue-600 dark:text-blue-400">
             {LANDING_HERO.eyebrow}
           </p>
-          <h1 className="mt-5 text-4xl font-semibold tracking-tight text-balance text-foreground sm:text-5xl lg:text-6xl">
+          <h1 data-hero-item className="mt-4 text-display text-foreground">
             {LANDING_HERO.title}
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
+          <p data-hero-item className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
             {LANDING_HERO.description}
           </p>
-          <div className="mt-8">
-            <Button asChild variant="brand" size="lg" className="rounded-full">
-              <a href={LANDING_HERO.ctaHref}>{LANDING_HERO.ctaLabel}</a>
+
+          <div data-hero-item className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button asChild variant="brand" size="xl" className="h-auto min-h-11 whitespace-normal">
+              <a href={LANDING_HERO.primaryCtaHref}>{LANDING_HERO.primaryCtaLabel}</a>
+            </Button>
+            <Button
+              asChild
+              variant="outline"
+              size="xl"
+              className="h-auto min-h-11 whitespace-normal"
+            >
+              <a href={LANDING_HERO.secondaryCtaHref}>{LANDING_HERO.secondaryCtaLabel}</a>
             </Button>
           </div>
         </div>
 
-        <div
-          aria-hidden="true"
-          className="relative flex min-h-[320px] items-center justify-center overflow-hidden rounded-2xl border border-blue-300/60 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 p-8 sm:min-h-[400px] dark:border-white/10 dark:from-neutral-900 dark:via-neutral-950 dark:to-black"
-        >
-          <div className="absolute -top-24 -right-16 h-64 w-64 rounded-full bg-white/20 blur-3xl dark:bg-blue-500/20" />
-          <div className="absolute -bottom-20 -left-10 h-52 w-52 rounded-full bg-sky-300/30 blur-3xl dark:bg-indigo-500/10" />
+        <ProductPreview />
+      </div>
 
-          <div className="relative h-52 w-40 rotate-[-8deg] rounded-xl border border-white/40 bg-white/25 shadow-xl backdrop-blur-sm sm:h-64 sm:w-52 dark:border-white/10 dark:bg-neutral-700/40" />
-          <div className="relative z-10 -ml-12 h-64 w-44 rotate-[6deg] overflow-hidden rounded-xl border border-white/30 bg-neutral-900 shadow-2xl sm:h-72 sm:w-56">
-            <div className="grid grid-cols-4 gap-1.5 p-3">
-              {Array.from({ length: 24 }).map((_, index) => (
-                <span key={index} className="h-1.5 rounded-full bg-white/15" />
-              ))}
-            </div>
-            <div className="mx-3 mt-4 space-y-2">
-              <div className="h-2 w-3/4 rounded-full bg-blue-400" />
-              <div className="h-2 w-1/2 rounded-full bg-white/15" />
-              <div className="h-2 w-2/3 rounded-full bg-white/15" />
-            </div>
-            <div className="mx-3 mt-6 h-16 rounded-md bg-gradient-to-br from-blue-500 to-blue-600" />
-          </div>
-
-          <div className="absolute bottom-6 left-6 h-24 w-32 rotate-[-16deg] rounded-lg border border-white/40 bg-white/25 backdrop-blur-sm dark:border-white/10 dark:bg-neutral-700/40" />
-        </div>
+      <div data-hero-photo className="mt-12 overflow-hidden rounded-2xl sm:mt-16">
+        <PhotoFrame
+          {...LANDING_PHOTOS.hero}
+          priority
+          frameClassName="aspect-[4/3] sm:aspect-[16/9] lg:aspect-[2/1]"
+        />
       </div>
     </section>
   )

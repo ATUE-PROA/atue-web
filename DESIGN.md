@@ -29,8 +29,11 @@ Usada em landing page, cadastro, login e páginas institucionais. Usa os mesmos 
 | Foco                   | `ring-blue-600/60 dark:ring-blue-400/60`                        |
 | Ação primária          | `bg-blue-600 text-white hover:bg-blue-500`                      |
 | Ação neutra/invertida  | `bg-primary text-primary-foreground hover:bg-primary/90`        |
+| Fotografia             | `rounded-2xl bg-muted ring-1 ring-black/5 dark:ring-white/10`   |
 
-Mockups decorativos (visual do hero, prévia da autenticação, ilustração de “como funciona”) usam gradiente azul de marca no tema claro, como uma vitrine do produto, e continuam escuros no tema escuro. Eles podem usar `from-blue-500 via-blue-600 to-blue-700`, detalhes em `white/25` e `border-white/40` no claro, e `bg-neutral-950`, `border-white/10` e gradientes escuros no escuro; não são superfícies de leitura.
+A vitrine visual do site público é fotográfica (seção 6.25), não um mockup de interface. Não reintroduza mockups decorativos com gradiente sem uma necessidade nova aprovada; quando existirem, eles não são superfícies de leitura e continuam escuros no tema escuro.
+
+O site público também usa **fotografia editorial** (seção 6.25): imagens locais, com pessoas e ambientes reais, que contextualizam o conteúdo. A foto é conteúdo, não decoração: `alt` descritivo em pt-BR e quadro com proporção reservada. Texto sobre fotografia usa o scrim da seção 6.25 para manter contraste AA.
 
 ### 1.2 Superfície de produto
 
@@ -45,13 +48,13 @@ Usada na área logada, como o dashboard. Deriva dos tokens shadcn definidos em `
 | Ação primária    | `bg-primary text-primary-foreground` |
 | Erro             | `text-destructive`                   |
 
-As duas superfícies compartilham os mesmos tokens. No tema claro, `--primary`, `--ring`, `--muted`, `--accent`, `--secondary`, `--border` e `--input` são azulados: isso mantém landing, autenticação, planos e área logada com a mesma paleta de marca sem recriar estilos por tela. Use `dark:` apenas quando um valor precisar mudar entre temas (por exemplo, o azul de marca).
+As duas superfícies compartilham os mesmos tokens. No tema claro, `--primary` e `--ring` usam o azul institucional e os demais tokens usam neutros derivados: isso mantém landing, autenticação, planos e área logada com a mesma paleta de marca sem recriar estilos por tela. Use `dark:` apenas quando um valor precisar mudar entre temas (por exemplo, o azul de marca).
 
 A área logada usa `ProductHeader` (`src/components/layout/product-header.tsx`) como cabeçalho compartilhado entre painel, documentos, perfil e configurações. Ele combina `SiteHeader`, `BrandLink` com `to`, navegação por `NavLink` (painel, documentos, perfil e configurações), ícones com nomes acessíveis e `ThemeToggle`. Em mobile, os rótulos visuais dos links são ocultados, mas os nomes acessíveis permanecem.
 
 ### 1.3 Tema claro/escuro
 
-- O padrão segue `prefers-color-scheme` do navegador da pessoa.
+- O padrão é o tema claro. O tema escuro é uma escolha explícita do usuário.
 - `ThemeToggle` (`src/components/layout/theme-toggle.tsx`) alterna o tema e grava a escolha em `localStorage` com a chave `atue-theme`. Depois de uma escolha manual, o site deixa de seguir o sistema.
 - A classe `.dark` é aplicada em `<html>` por um script em `index.html` antes da primeira pintura (evita flash) e por `src/lib/theme.ts` ao alternar. `watchSystemTheme()` sincroniza o tema enquanto não houver escolha salva.
 - Use tokens (`bg-background`, `text-foreground`, `text-muted-foreground`, `border-border`, `border-input`, `bg-card`, `text-destructive`) em vez de neutrals fixos.
@@ -66,12 +69,13 @@ A área logada usa `ProductHeader` (`src/components/layout/product-header.tsx`) 
 
 A interface usa tokens semânticos. As cores abaixo ficam restritas a acentos, mockups decorativos e exceções documentadas.
 
-- `blue-600`: ação primária e acentos no tema claro.
+- `blue-600`: ação primária e acentos.
 - `blue-400`: acentos e foco no tema escuro.
 - `blue-500`: hover de ações de marca.
-- `neutral-950` a `neutral-700`: mockups decorativos escuros no tema escuro (hero, prévia de auth, ilustração).
-- `blue-50` a `blue-100`: superfícies de destaque no tema claro (cards de “como funciona”, chips de compromissos, painel de captura, benefícios e cartões de plano).
-- `white` e `white/10` a `white/40`: detalhes dentro dos mockups.
+- `blue-300`: acentos sobre fotografia escura.
+- `blue-50` a `blue-100`: superfícies de destaque pontuais no tema claro (chips de compromissos, painéis de captura e cartões de plano quando houver necessidade de contraste).
+- `white` e `white/10` a `white/40`: detalhes em superfícies escuras, como a faixa fotográfica de “Sobre”.
+- `black/20` a `black/85`: scrim sobre fotografia para garantir contraste do texto.
 
 ### 2.2 Paleta de interface
 
@@ -88,7 +92,7 @@ Estados nunca devem depender apenas de cor. Sempre combine cor, ícone e texto.
 | Alerta     | `bg-yellow-600/10 dark:bg-yellow-500/10` | `text-yellow-800 dark:text-yellow-200` | `border-yellow-600/30 dark:border-yellow-500/30` |
 | Informação | `bg-blue-600/10 dark:bg-blue-500/10`     | `text-blue-800 dark:text-blue-200`     | `border-blue-600/30 dark:border-blue-500/30`     |
 
-Para status operacionais no dashboard, use também um rótulo textual: “Conforme”, “Atenção”, “Crítico”. Não use verde/amarelo/vermelho sozinhos.
+Para status operacionais no dashboard, use também um rótulo textual: “Adequado”, “Atenção”, “Crítico”. Não use verde/amarelo/vermelho sozinhos.
 
 #### Score de conformidade
 
@@ -99,7 +103,7 @@ O indicador de score e o arco do gráfico usam a mesma faixa de cor, com rótulo
 | `< 25`         | vermelho — `bg-red-500` / `#ef4444`   | `Crítico`  |
 | `25` a `< 50`  | laranja — `bg-orange-500` / `#f97316` | `Atenção`  |
 | `50` a `< 75`  | amarelo — `bg-yellow-500` / `#eab308` | `Atenção`  |
-| `>= 75`        | verde — `bg-green-500` / `#22c55e`    | `Conforme` |
+| `>= 75`        | verde — `bg-green-500` / `#22c55e`    | `Adequado` |
 
 Os limites pertencem à faixa superior (`25` já é laranja, `50` já é amarelo, `75` já é verde). O texto do rótulo usa o tom `700` no tema claro e `400` no escuro para manter contraste.
 
@@ -116,12 +120,12 @@ Os limites pertencem à faixa superior (`25` já é laranja, `50` já é amarelo
 | ------------------------------------ | -------------------------------------------------------------------- |
 | `--background` / `--foreground`      | Página em ambos os temas.                                            |
 | `--card` / `--card-foreground`       | Cards e superfícies elevadas.                                        |
-| `--muted` / `--muted-foreground`     | Superfície discreta azulada no claro e texto secundário.             |
+| `--muted` / `--muted-foreground`     | Superfície neutra discreta no claro e texto secundário.              |
 | `--primary` / `--primary-foreground` | Ação primária e CTA invertido pelo tema; no claro é o azul de marca. |
 | `--secondary` / `--accent`           | Hover e seleção.                                                     |
 | `--destructive`                      | Erro e ações destrutivas.                                            |
 | `--border`, `--input`, `--ring`      | Bordas, campos e foco.                                               |
-| `--radius`                           | Raio base de `0.625rem`; os demais raios derivam dele.               |
+| `--radius`                           | Raio base de `0.75rem`; os demais raios derivam dele.                |
 | `--chart-1` a `--chart-5`            | Séries de gráficos.                                                  |
 | `--sidebar-*`                        | Navegação lateral do produto.                                        |
 
@@ -133,6 +137,7 @@ A classe `.dark` é aplicada em `<html>` pelo controle de tema (seção 1.3); os
 
 - **Fonte:** Geist Variable, carregada em `src/index.css`.
 - **Família:** `font-sans` em todo o app.
+- **Escala base:** `html { font-size: 120% }` (19.2px). Reproduz a leitura confortável de 120% de zoom e faz tipografia, espaçamento, raios e containers em `rem` crescerem juntos. Não fixe tamanhos de texto em `px`; use utilitários `text-*` para acompanhar a escala.
 - **Títulos:** `font-semibold tracking-tight`.
 - **Rótulos:** `text-sm font-medium`.
 - **Corpo:** `text-sm` ou `text-base`, com `leading-relaxed` em blocos longos.
@@ -158,10 +163,11 @@ Evite mais de três tamanhos de título na mesma seção. Não use `font-bold` c
 ## 4. Espaçamento e layout
 
 - Use a escala de 4px do Tailwind. Evite valores arbitrários.
-- **Container padrão:** `mx-auto w-full max-w-6xl px-6`.
+- **Container padrão:** `mx-auto w-full max-w-6xl px-6` (72rem, 1382px na escala base de 120%).
 - **Largura de leitura:** `max-w-xl` ou `max-w-2xl` para textos longos.
 - **Cabeçalho:** `h-16`.
 - **Seções de marketing:** `py-16 sm:py-20 lg:py-24`.
+- **Seções editoriais com fotografia:** `py-20 sm:py-28` para a faixa imersiva.
 - **Gap entre blocos:** `gap-6` a `gap-12`.
 - **Cards:** `p-6` ou `p-8`.
 - **Formulários:** `space-y-4` entre campos; `space-y-6` entre grupos.
@@ -178,9 +184,10 @@ O `html` reserva `scrollbar-gutter: stable` para que contêineres centralizados 
 
 ## 5. Raios, bordas e sombras
 
-- Base do tema: `--radius: 0.625rem`.
+- Base do tema: `--radius: 0.75rem`.
 - **Inputs e botões de formulário:** `rounded-lg`.
 - **Cards e blocos:** `rounded-xl`; o card principal de autenticação usa `rounded-2xl`.
+- **Fotografias:** `rounded-2xl` com `ring-1 ring-black/5 dark:ring-white/10`.
 - **Shells e containers grandes:** `rounded-2xl`.
 - **CTAs de marketing:** `rounded-full`.
 - **Badges/chips:** `rounded-full`.
@@ -199,7 +206,7 @@ Variantes disponíveis:
 
 - `default`: ação neutra baseada em tokens.
 - `brand`: ação primária em azul (`bg-blue-600 text-white hover:bg-blue-500`).
-- `inverse`: CTA de marketing em pílula usando `--primary`; no tema claro isso resolve para o azul de marca.
+- `inverse`: CTA de marketing em pílula usando `--primary`; isso resolve para o azul de marca.
 - `outline`, `secondary`, `ghost`, `destructive`, `link`: variações shadcn.
 
 Regras:
@@ -257,10 +264,10 @@ Use `src/components/ui/password-input.tsx` para senhas. O controle de mostrar/oc
 
 ### 6.6 Cards
 
-- Use `Card` (`src/components/ui/card.tsx`) como superfície base, com anel `ring-border` azulado no tema claro. `SectionCard` compõe `Card`, `CardHeader`, `CardContent` e `CardDescription`, mantendo `role="region"` e `aria-labelledby` para o título.
+- Use `Card` (`src/components/ui/card.tsx`) como superfície base, com anel `ring-border` neutro. `SectionCard` compõe `Card`, `CardHeader`, `CardContent` e `CardDescription`, mantendo `role="region"` e `aria-labelledby` para o título.
 - Cards: `p-6`; o `SectionCard` usa `CardHeader`/`CardContent` com `p-0` para preservar o espaçamento interno.
 - Card principal de autenticação: `rounded-2xl border border-border bg-card p-6 shadow-lg shadow-black/5 sm:p-8 dark:shadow-2xl dark:shadow-black/30`.
-- Card de plano: `article` com `rounded-xl border border-blue-100 bg-blue-50/40 p-6 shadow-sm dark:border-border dark:bg-card`; o plano recomendado usa `border-blue-600/50 bg-blue-50/80 ring-1 ring-blue-600/20` e um `Badge` textual “Recomendado”.
+- Card de plano: `article` com `rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8`; o plano recomendado usa `border-blue-600/40 ring-1 ring-blue-600/15 dark:border-blue-400/40 dark:ring-blue-400/15` e um `Badge` textual “Recomendado”. Não use preenchimento azul no cartão inteiro.
 - Título do card: `text-lg font-semibold`.
 - Não aninhe mais de dois níveis de card.
 
@@ -283,26 +290,26 @@ Use `src/components/ui/password-input.tsx` para senhas. O controle de mostrar/oc
 
 Use `src/components/auth/AuthLayout.tsx` como layout base de telas de autenticação.
 
-- Duas colunas em `lg`; coluna única abaixo disso.
+- Duas colunas em `lg`, alinhadas pelo topo (`lg:items-start`); coluna única abaixo disso.
 - Recebe o painel institucional como `aside` (no cadastro, `AuthBrandPanel`).
 - Recebe o formulário como `children`.
 - Card de formulário à direita.
 - Cabeçalho via `SiteHeader` e `BrandLink`, com caminho de volta. Quando já existe sessão ativa, o cabeçalho troca o caminho de volta por um botão `variant="brand"`: “Planos” (ícone `CreditCard`) enquanto não houver plano ativo e “Dashboard” (ícone `LayoutDashboard`) depois da assinatura simulada.
 - Para telas com um único card centralizado (login), use `AuthCenteredLayout` do mesmo arquivo; ele compartilha o cabeçalho e centraliza o conteúdo em `max-w-md`.
-- O painel institucional pode incluir elementos decorativos com gradientes e `aria-hidden`.
+- O painel institucional usa os benefícios em lista e a fotografia de `CADASTRO_CONTENT.brandPhoto` (seção 6.25), oculta em telas estreitas. Não use elementos decorativos com gradiente neste painel.
 - Não replique esse layout em páginas de produto.
 
 ### 6.10 SiteHeader e PublicHeader
 
 Use `src/components/layout/site-header.tsx` como cabeçalho das páginas públicas.
 
-- `SiteHeader` concentra `sticky top-0`, borda, fundo e o contêiner `max-w-6xl px-6`.
+- `SiteHeader` concentra `sticky top-0` e o contêiner `max-w-6xl px-6`. O material do cabeçalho é translúcido com desfoque: `border-b border-border/70 bg-background/80 backdrop-blur-xl backdrop-saturate-150`. Use essa receita apenas no cabeçalho fixo; não transforme outras superfícies em vidro.
 - `BrandLink` concentra a marca ATUE e deve ser usado em todas as páginas públicas. Renderiza `public/brand/atue-logo-light.svg` no tema claro e `public/brand/atue-logo-dark.svg` no escuro (839×302), sem filtros CSS. Aceita `to` (padrão `/`) para que a marca leve ao painel na área logada. O favicon é `public/favicon.svg`, o ícone sozinho, sem fundo, com o `viewBox` recortado no limite da arte para preencher o espaço da aba.
 - O botão de tema (`ThemeToggle`) fica no cabeçalho ao lado das ações, sempre visível em mobile e desktop.
 - Landing e planos usam `PublicHeader` (`src/components/layout/public-header.tsx`), que reúne a navegação pública, o `ThemeToggle` e as ações de autenticação. Landing e autenticação devem compartilhar esses componentes; não replique a estrutura do cabeçalho.
 - A navegação pública aparece no topo e é repetida no rodapé público (landing e planos): “Como funciona”, “Benefícios”, “Sobre” e “Planos”, mais “Cadastre-se”. Mantenha a lista em `src/content/navigation.ts` e o rodapé em `src/components/layout/public-footer.tsx`.
 - As ações de autenticação são idênticas entre landing e planos: “Entrar” como link e “Cadastre-se” como `Button variant="brand" size="lg"` em pílula (`rounded-full`). Quando há sessão ativa, ambas são substituídas por um `Button variant="brand" size="lg"`: “Planos” com `CreditCard` enquanto não houver plano ativo e “Dashboard” com `LayoutDashboard` depois da assinatura simulada.
-- O menu móvel usa `Sheet` (`src/components/ui/sheet.tsx`) com `SheetTrigger`, `SheetContent`, `SheetHeader` e `SheetTitle`; o Radix cuida de foco, Escape e overlay. Mantenha os mesmos destinos e ações, com botões de largura total e alvos de toque de pelo menos 44px.
+- O menu móvel usa `Sheet` (`src/components/ui/sheet.tsx`) com `SheetTrigger`, `SheetContent`, `SheetHeader` e `SheetTitle`; o Radix cuida de foco, Escape e overlay. O menu substitui a navegação até `lg`, quando a barra central e as ações de autenticação passam a caber. Mantenha os mesmos destinos e ações, com botões de largura total e alvos de toque de pelo menos 44px.
 - O logo mantém a mesma posição horizontal entre páginas, inclusive quando apenas uma delas tem barra de rolagem.
 
 ### 6.11 ProductHeader
@@ -396,7 +403,7 @@ Use `src/pages/Documents.tsx` como referência para a rota `/documents`.
 - A cópia deve deixar explícito que o arquivo permanece no dispositivo e que a IA é uma simulação local. Não afirme que houve leitura de conteúdo, upload ou processamento por modelo real.
 - O envio agrega os dados institucionais necessários ao relatório: CNPJ (com consulta OpenCNPJ), nome da empresa, e-mail de contato, encarregado (DPO) e finalidades do tratamento. Esses dados ficam em memória e alimentam o relatório gerado localmente.
 - Alternativa de demonstração: abaixo do anexo, `Select` dentro de `FormField` permite escolher um documento fictício. O campo fica desabilitado enquanto houver arquivo anexado; a lista lateral também permite selecionar um exemplo.
-- Ação principal: `Button variant="brand" size="xl"` com rótulo “Analisar com IA”, `aria-busy`, `Loader2` e bloqueio de envio duplicado. O botão permanece desabilitado até existir arquivo anexado ou documento de exemplo selecionado.
+- Ação principal: `Button variant="brand" size="xl"` com rótulo “Simular análise”, `aria-busy`, `Loader2` e bloqueio de envio duplicado. O botão permanece desabilitado até existir arquivo anexado ou documento de exemplo selecionado.
 - Ao iniciar a análise, role até o cartão de processamento com `scrollIntoView` e `scroll-mt-20` para compensar o cabeçalho fixo. Use `behavior: 'smooth'` por padrão e `'auto'` quando `prefers-reduced-motion: reduce`.
 - `FormAlert tone="info"` é obrigatório logo abaixo da ação, explicando que nenhum conteúdo é enviado ou processado por IA real e que a análise é determinística.
 - Achados: use `FindingsList`, que agrupa por severidade (`alta`, `media`, `baixa`) com título e contagem por grupo, renderiza `Badge` com cor + rótulo textual e abre explicação e recomendação em `Accordion` (`src/components/ui/accordion.tsx`).
@@ -459,7 +466,7 @@ Use `src/pages/Dashboard.tsx` como referência para a tela `/dashboard`.
 Use `src/pages/Plans.tsx`, `PlanProvider` (`src/contexts/PlanProvider.tsx`) e `SubscriptionPrompt` (`src/components/plans/SubscriptionPrompt.tsx`) como referência para o fluxo de acesso por plano.
 
 - Login e cadastro encaminham para `/plans`. A escolha do plano é o próximo passo, não o painel.
-- A página usa `PublicHeader` e `PublicFooter`, com superfícies azul-claras nos benefícios, cartões de plano e suporte, mantendo a mesma paleta da landing.
+- A página usa `PublicHeader` e `PublicFooter`. Os benefícios são uma grade de três colunas sem cartões: item com `border-t border-border pt-5`, ícone em `bg-blue-600/10` e título `text-base font-semibold`. Os cartões de plano usam a receita da seção 6.6. O cartão de suporte começa com uma fotografia `aspect-[16/9]` e mantém o restante do conteúdo em `p-6`.
 - `SubscriptionPrompt` usa o `AlertDialog` de `src/components/ui/alert-dialog.tsx` com `open={gate !== null}`. O fechamento (`onOpenChange`) chama `dismissGate`.
 - A ação principal usa `AlertDialogAction variant="brand"`: na confirmação de assinatura, “Assinar {plano}” ativa o plano em memória e leva ao painel; no bloqueio de recurso ou rota, navega para `/plans`.
 - O diálogo é modal: overlay escuro, foco preso e retorno de foco ao fechar. Escape, clique fora e “Agora não” fecham sem alterar o estado. A troca de rota também fecha; rotas de produto sem plano reabrem o pedido.
@@ -467,6 +474,30 @@ Use `src/pages/Plans.tsx`, `PlanProvider` (`src/contexts/PlanProvider.tsx`) e `S
 - Acesso sem plano a `/dashboard`, `/documents`, `/profile` ou `/settings` também abre o diálogo pedindo assinatura; a tela permanece visível atrás do overlay.
 - O chip do `ProductHeader` e o botão do `PublicHeader` refletem o estado: “Sem plano ativo” ou o nome do plano. O destino é `/plans` enquanto não houver acesso e `/dashboard` depois dele. Em telas estreitas, o chip mantém o ícone e oculta o rótulo, preservando o `aria-label`.
 - Toda a assinatura é simulada e vive apenas em memória. A copy deve dizer que nenhuma cobrança é realizada e que recarregar a página volta ao estado sem plano.
+
+### 6.25 Fotografia editorial
+
+As páginas públicas usam fotografias reais para aproximar a marca do público e explicar o contexto de cada seção.
+
+- Use `Photo` e `PhotoFrame` (`src/components/ui/photo.tsx`). `PhotoFrame` reserva a proporção no quadro (`frameClassName`) antes de a imagem carregar, evitando salto de layout; `Photo` preenche o quadro com `object-cover`.
+- Arquivos ficam em `public/photos/` e são referenciados por caminho absoluto (`/photos/...`). Não use URLs externas em runtime.
+- Toda foto é conteúdo: exige `alt` descritivo em pt-BR, com pessoas, ambiente e ação quando existirem. Não use `alt=""` para fotos narrativas.
+- A primeira imagem da dobra pode usar `priority` (carregamento imediato); as demais usam lazy loading.
+- Proporções: herói `aspect-[4/3] sm:aspect-[16/9] lg:aspect-[2/1]`; blocos editoriais e autenticação `aspect-[4/3]`; faixa de suporte `aspect-[16/9]`.
+- Direção de arte: pessoas trabalhando em ambientes reais, luz natural, composição editorial, proximidade e profissionalismo. Evite poses publicitárias, aperto de mão genérico, gráficos fictícios, robôs, circuitos e ilustrações de IA.
+- Cada foto precisa cumprir uma função narrativa. Se a seção funciona sem a imagem, remova a imagem.
+- **Texto sobre fotografia:** use a faixa `relative isolate overflow-hidden` com a foto absoluta e um scrim. Em telas estreitas, `bg-black/60` garante contraste; a partir de `sm`, use `bg-gradient-to-r from-black/85 via-black/65 to-black/30`. O texto fica em `text-white` (título) e `text-white/80` (apoio). Verifique contraste no tema claro e escuro.
+- Não aplique filtros de cor nas fotos; mantenha o tratamento natural para combinar com a paleta de marca.
+
+### 6.26 Entrada de seções (Reveal)
+
+Use `Reveal` (`src/components/ui/reveal.tsx`) para uma entrada discreta de blocos abaixo da dobra.
+
+- O conteúdo é sempre renderizado visível. O componente aplica apenas um deslocamento vertical discreto; nunca usa `opacity: 0` em conteúdo essencial.
+- Ao entrar na área visível, o bloco desliza para a posição final em `700ms ease-out`, com atraso opcional de até `80ms` (em segundos no GSAP).
+- Respeite `prefers-reduced-motion`: sem movimento e sem transição.
+- Não anime o que já está na primeira tela e não use `Reveal` em elementos interativos ou dentro de grades que dependem do item ser filho direto.
+- Não adicione animação de entrada em fluxos de formulário, confirmações ou carregamentos: nesses casos, o feedback de estado já comunica a mudança.
 
 ---
 
@@ -541,7 +572,8 @@ Obrigatório em toda tela:
 - Tamanhos: `size-4` em botões/inputs, `size-5` em listas, `size-6` em destaques.
 - Ícones decorativos recebem `aria-hidden="true"`.
 - Ícones que substituem texto precisam de nome acessível no controle.
-- Ilustrações devem ser construídas com CSS/gradientes e `aria-hidden`, sem URLs externas não revisadas.
+- Ilustrações e mockups devem ser construídos com CSS/gradientes e `aria-hidden`, sem URLs externas não revisadas.
+- Fotografias seguem a seção 6.25. Só use imagens locais revisadas em `public/photos/`, com `alt` em pt-BR e crédito registrado na seção 17.
 
 ---
 
@@ -604,6 +636,8 @@ Obrigatório em toda tela:
 
 - [ ] A tela funciona nos temas claro e escuro e usa tokens em vez de neutrals fixos.
 - [ ] Cores, raios, sombras e espaçamentos seguem as receitas deste guia.
+- [ ] Fotografias usam `PhotoFrame`, têm proporção reservada e `alt` descritivo em pt-BR.
+- [ ] Animações de entrada respeitam `prefers-reduced-motion` e não escondem conteúdo sem JavaScript.
 - [ ] Componentes compartilhados foram reutilizados.
 - [ ] Há um único `h1` e hierarquia de títulos coerente.
 - [ ] Inputs têm rótulo visível e `autoComplete`.
@@ -631,7 +665,10 @@ Obrigatório em toda tela:
 
 ## 17. Dívidas e próximos passos
 
-- Os mockups decorativos da landing e da prévia de autenticação usam gradiente azul no tema claro e paleta neutra escura no tema escuro.
+- Não há mockups decorativos na landing nem na autenticação; a vitrine visual dessas telas é fotográfica.
+- As fotografias em `public/photos/` são arquivos locais do Unsplash (licença Unsplash), baixados em resolução única e sem `srcset`. Antes de produção, avalie variantes responsivas e WebP/AVIF.
+- A landing, o cadastro e os planos usam fotografia; a área logada mantém o layout denso de produto, sem fotos, para preservar a leitura dos dados.
+- A escala base de 120% é global. Os breakpoints continuam em `px`, então cada faixa de largura comporta mais conteúdo do que com 120% de zoom do navegador; valide 320px, 768px e 1024px ao criar layouts novos.
 - O botão de tema não oferece um terceiro estado explícito “seguir sistema”; depois de uma escolha manual, a preferência salva prevalece.
 - O mock de login/cadastro não falha naturalmente; o caminho de erro existe, mas não é exercitável sem gatilho de teste.
 - As configurações da conta operam apenas em memória: salvar, conectar integração, alterar senha e solicitar exclusão são simulações e voltam ao estado inicial ao recarregar.
@@ -649,3 +686,56 @@ Obrigatório em toda tela:
 - Não há test runner configurado; a verificação é manual + lint + build.
 - Com `VITE_API_URL` preenchida, a leitura do histórico de diagnóstico ainda não está disponível na Core API; a tela apresenta estado vazio e oferece um novo diagnóstico.
 - O token JWT da Core API fica apenas em memória por decisão de segurança; recarregar a página encerra a sessão até existir um desenho de persistência revisado.
+
+---
+
+## 18. Redesign 2026 — decisões vigentes
+
+Esta seção documenta a iteração de redesign e prevalece sobre valores antigos deste guia quando houver conflito.
+
+### 18.1 Tema e cores
+
+- **Tema claro é o padrão.** O escuro é escolha explícita e não acompanha mais `prefers-color-scheme` na primeira visita.
+- A identidade cromática é fixa: preto `#0A0A0A`, superfície escura `#161616`, azul institucional `#2563EB`, cinza intermediário `#777777`, texto secundário `#A0A0A0`, divisores `#CACACA` e branco `#FFFFFF`.
+- O fundo claro é `#FFFFFF`, o texto principal é `#0A0A0A` e o card é `#FFFFFF`. O dark usa `#0A0A0A`, card `#161616` e texto `#FFFFFF`.
+- O azul institucional é `#2563EB` e não deve ser trocado por outro tom. Tons de apoio são derivados por opacidade (`/10`, `/20`) ou pelas escalas neutras, nunca por novas famílias de cor.
+- Não introduza verde, terracota, bege ou outra cor como identidade. Verde/amarelo/vermelho permanecem apenas como estados semânticos (sucesso, atenção, erro), sempre com ícone e texto.
+- `--muted-foreground` usa preto/branco com opacidade para manter contraste AA; não use `#A0A0A0` em texto pequeno.
+
+### 18.2 Tipografia
+
+- Títulos `h1`/`h2` usam Fraunces Variable; interface e corpo usam Geist Variable.
+- `text-display` é a classe canônica para H1 de página/hero; `text-section` para H2 de seção.
+- `text-eyebrow` substitui a repetição de `text-xs uppercase tracking-[0.2em]`.
+- O mínimo para metadados é `text-xs` (0,8125rem); textos essenciais usam `text-sm` ou maior.
+
+### 18.3 Componentes e navegação
+
+- `Button variant="brand"` usa `bg-blue-600` e `text-white`; CTAs de formulário não usam pílula. Pílula fica para chips.
+- O header do produto usa rótulos a partir de `lg`; abaixo disso, usa o `Sheet` “Menu da conta” com os mesmos destinos e o plano atual.
+- Não reintroduza os chips `CrossLinks` nas telas de produto; use o header e um único link de retorno.
+- Cards estáticos não devem acumular borda + ring + sombra. Use superfície e divisores; `shadow-soft` fica para o plano recomendado e elementos flutuantes.
+
+### 18.4 Dashboard
+
+- O topo mostra situação, URL analisada, data e próxima ação antes do formulário.
+- O índice usa “Adequado / Atenção / Crítico” e sempre traz a ressalva de que é demonstrativo, não certificação.
+- “Comece por aqui” lista as pendências prioritárias com o próximo passo; o formulário de novo diagnóstico fica no fim da página.
+- O dashboard não repete os atalhos em cards: a navegação já está no header e no footer.
+
+### 18.5 Documentos e envio
+
+- `/documents` separa “Analisar documento” e “Central de downloads” em abas acessíveis.
+- Nenhum documento de exemplo vem selecionado por padrão; a análise só habilita após escolha explícita.
+- A ação se chama “Simular análise” e o aviso de simulação permanece visível.
+- Relatórios bloqueados mostram “Requer plano Cresce” antes do clique; o gate continua disponível.
+- `/form` é um wizard de três etapas com stepper, arquivo customizado em pt-BR e revisão antes do envio.
+
+### 18.6 Auth, planos e confiança
+
+- Login oferece “Entrar na demonstração” e recuperação de senha explicitamente simulada.
+- Cadastro exige consentimento com links para Termos e Privacidade e mostra checklist de senha.
+- Planos têm um único banner de demonstração; o recomendado usa CTA sólido e os demais outline.
+- “Explorar demonstração” libera o plano Cresce em memória, sem cobrança, antes de exigir assinatura.
+- Páginas `/privacidade`, `/termos` e `/contato` são avisos honestos da demonstração, não políticas jurídicas; os dois rodapés linkam para elas.
+- “Falar com o suporte” aponta para `/contato`, não para o formulário de documentos.

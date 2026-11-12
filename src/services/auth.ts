@@ -53,6 +53,22 @@ export async function signIn(values: LoginFormValues): Promise<UserToken> {
   return session
 }
 
+/**
+ * Sessão de demonstração criada no próprio navegador, para explorar o produto
+ * sem conta. Não define token: nenhuma requisição real é feita em nome dela.
+ */
+export function startDemoSession(): UserToken {
+  return {
+    token: 'demo-session',
+    user: {
+      id: 'demo-user',
+      name: 'Visitante da demonstração',
+      email: 'demo@atue.app',
+      organizationId: 'demo-org',
+    },
+  }
+}
+
 export function signOut(): void {
   setAuthToken(null)
 }

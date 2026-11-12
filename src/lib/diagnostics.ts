@@ -71,7 +71,7 @@ export function getScoreLevel(score: number): ScoreLevel {
   }
 
   return {
-    label: 'Conforme',
+    label: 'Adequado',
     dotClassName: 'bg-green-500',
     textClassName: 'text-green-700 dark:text-green-400',
     barClassName: 'bg-green-500',
@@ -174,6 +174,7 @@ export function parseDiagnosticReport(payload: unknown): DiagnosticReport {
 
   const issues = readRequiredArray(payload, 'issues').map(parseIssueCategory)
   const score = readRequiredNumber(payload, 'score')
+  const url = readOptionalString(payload, 'url')
 
   return {
     id: readRequiredString(payload, 'id'),
@@ -181,6 +182,7 @@ export function parseDiagnosticReport(payload: unknown): DiagnosticReport {
     score,
     status: getStatusFromScore(score),
     createdAt: readRequiredString(payload, 'createdAt'),
+    url: url || undefined,
     summary: summarizeIssues(issues),
     issues,
     degraded: payload.degraded === true,

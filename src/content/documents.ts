@@ -9,7 +9,11 @@ export const DOCUMENTS_CONTENT = {
   loadErrorTitle: 'Não foi possível carregar a Central de Documentos',
   loadErrorDescription: 'Tente novamente. Nenhum arquivo foi lido ou alterado.',
   retryLabel: 'Tentar novamente',
-  shortcutsLabel: 'Atalhos da central',
+  tabs: {
+    label: 'Seções da Central de Documentos',
+    analyze: 'Analisar documento',
+    downloads: 'Central de downloads',
+  },
   catalog: {
     title: 'Documentos de exemplo',
     description:
@@ -41,13 +45,15 @@ export const DOCUMENTS_CONTENT = {
     sampleDescription:
       'Escolha um documento fictício para demonstrar o fluxo sem anexar um arquivo do dispositivo.',
     sampleLabel: 'Documento de exemplo',
+    samplePlaceholder: 'Nenhum documento selecionado',
     sampleHelp: 'Lista fictícia. O seletor de arquivos do sistema não é aberto por este campo.',
     selectedSourceLabel: 'Origem da análise',
     sourceFileLabel: 'Arquivo anexado neste dispositivo',
     sourceSampleLabel: 'Documento de exemplo da demonstração',
-    analyzeLabel: 'Analisar com IA',
-    analyzeBusyLabel: 'Analisando com IA simulada...',
-    demoNoticeTitle: 'A IA é uma simulação local',
+    analyzeLabel: 'Simular análise',
+    analyzeBusyLabel: 'Simulando análise...',
+    selectHint: 'Escolha um documento de exemplo ou anexe um arquivo para habilitar a análise.',
+    demoNoticeTitle: 'Esta análise é uma simulação local',
     demoNoticeDescription:
       'Nenhum conteúdo é enviado ou processado por um modelo de IA real. A análise é determinística e serve apenas para demonstrar o fluxo do produto.',
     progressTitle: 'Processando documento',
@@ -64,7 +70,7 @@ export const DOCUMENTS_CONTENT = {
     completedAtLabel: 'Concluída em',
     documentLabel: 'Documento',
     sourceLabel: 'Origem',
-    scoreLabel: 'Score de conformidade',
+    scoreLabel: 'Índice de conformidade',
     findingsTitle: 'Achados identificados',
     findingsDescription: 'Abra cada achado para ver a explicação simulada e a recomendação.',
     emptyFindings: 'Nenhum achado foi identificado neste documento de exemplo.',
@@ -81,6 +87,9 @@ export const DOCUMENTS_CONTENT = {
       'Relatórios e modelos com layout profissional, gerados no navegador em PDF, DOCX ou TXT, sempre com aviso de demonstração.',
     reportsTitle: 'Relatórios gerados',
     reportsDescription: 'Cada análise simulada adiciona um relatório a esta lista.',
+    reportLockBadge: 'Requer plano Cresce',
+    reportLockNote:
+      'Baixar relatórios gerados exige o plano Cresce. Ao tentar baixar, você verá a opção de assinatura.',
     templatesTitle: 'Modelos de documentos',
     templatesDescription:
       'Estruturas de referência para a equipe preencher. Não são documentos aprovados.',
