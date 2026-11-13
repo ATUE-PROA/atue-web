@@ -1,296 +1,285 @@
 # AGENTS.md — ATUE Web
 
-## 1. Project Context
+## 1. Product Context
 
-The `atue-web` repository contains the frontend SPA for **ATUE**, a B2B SaaS platform for digital compliance management, focused on LGPD and information security for small and medium-sized businesses.
+`atue-web` is the main frontend SPA for **ATUE**, a B2B SaaS platform for digital compliance and information security, focused on LGPD for small and medium-sized businesses.
 
-The current objective is to build a visual, responsive, reliable MVP for a Demoday presentation. Prioritize clear information hierarchy, data readability, intuitive workflows, and usability for non-technical users.
+The current objective is a visual, responsive, reliable MVP for Demoday. Prioritize clear information hierarchy, data readability, intuitive workflows and usability for non-technical users. The interface must communicate trust, organization and operational maturity.
 
-The frontend must communicate trust, organization, and operational maturity. Avoid unnecessary complexity, decorative elements that compete with data, and features outside the agreed MVP scope.
+Treat the product as a demonstration environment unless a backend contract proves otherwise. Do not claim that ATUE guarantees LGPD compliance, certifies security or replaces a real audit.
 
-## 2. Technology Stack
+## 2. Mandatory Reading Order
 
-Instalado e verificado no repositório:
+Before any change:
+
+1. Read this file.
+2. Read `DESIGN.md` **before any visual work** — new screens, components, styles, layout, copy hierarchy or interaction states.
+3. Inspect `package.json` and the relevant source files.
+4. Check the current Git diff and avoid overwriting unrelated work.
+
+`DESIGN.md` is the official and shared ATUE identity guide. It is byte-identical to `atue-apresentation/DESIGN.md`. This `AGENTS.md` prevails on architecture, behavior and technical constraints; `DESIGN.md` prevails on visual and interaction decisions. If they conflict, fix the documentation before implementing.
+
+## 3. Technology Stack
+
+Installed and used in this repository:
 
 - **Framework:** React 19.
-- **Language:** TypeScript 6 com `strict: true` em `tsconfig.app.json`.
-- **Build tool:** Vite 8.
-- **Styling:** Tailwind CSS v4 via `@tailwindcss/vite` (CSS-first, tokens em `src/index.css`), mais `@tailwindcss/typography`.
-- **UI components:** shadcn/ui (Radix), em `src/components/ui`, com configuração em `components.json`.
+- **Language:** TypeScript 6 with `strict: true` in `tsconfig.app.json`.
+- **Build:** Vite 8 with `@vitejs/plugin-react`.
+- **Styling:** Tailwind CSS v4 via `@tailwindcss/vite` (CSS-first, tokens in `src/index.css`) and `@tailwindcss/typography`.
+- **UI primitives:** shadcn/ui on Radix, in `src/components/ui`, configured by `components.json`.
 - **Icons:** Lucide React.
-- **Charts:** Recharts.
-- **Routing:** React Router 7 (`createBrowserRouter` em `src/routes.tsx`).
-- **HTTP:** Native Fetch API.
-- **Architecture:** Single-page application (SPA).
-- **Import alias:** `@/*` → `src/*`, configurado em `tsconfig.json`, `tsconfig.app.json` e `vite.config.ts`.
-- **CI:** `.github/workflows/ci.yml` roda `npm ci`, `npm run lint`, `npm run format:check` e `npm run build` no Node 24 (`.nvmrc`).
+- **Charts:** Recharts (used by `ScoreGauge`).
+- **Routing:** React Router 7 with `createBrowserRouter` in `src/routes.tsx`.
+- **Forms:** React Hook Form, Zod and `@hookform/resolvers`.
+- **Motion:** GSAP + ScrollTrigger (`Reveal`), `tw-animate-css` and `motion-reduce` utilities.
+- **Fonts:** Fontsource Geist Variable and Fraunces Variable.
+- **Formatting:** Prettier.
+- **HTTP:** native Fetch API.
+- **Import alias:** `@/*` → `src/*` in `tsconfig*.json` and `vite.config.ts`.
+- **CI:** `.github/workflows/ci.yml` runs `npm ci`, `npm run lint`, `npm run format:check` and `npm run build` on the Node version from `.nvmrc`.
 
-Instalados e usados no projeto: `React Hook Form`, `Zod`, `@hookform/resolvers` e `Prettier`. Ainda não instalado: test runner. As pastas `src/services`, `src/contexts` e `src/types` seguem a organização do projeto para as próximas changes.
+There is **no test runner** configured. Do not claim tests passed unless a real command was executed.
 
-O guia de design do projeto está em `DESIGN.md` e deve ser consultado antes de criar ou alterar telas, componentes e estilos.
+Scripts:
 
-Before introducing dependencies, inspect `package.json`, the lockfile, and existing implementations. Reuse installed libraries and established project conventions whenever possible.
+```bash
+npm run dev        # local development
+npm run lint       # ESLint
+npm run format     # Prettier write
+npm run format:check
+npm run build      # tsc -b && vite build (CI only; not for routine validation)
+npm run preview
+```
 
-Do not replace existing dependencies, configuration, or architectural decisions without a concrete technical justification.
+## 4. Repository Structure
 
-## 3. Engineering Principles
+```text
+src/
+  components/
+    auth/          authentication layouts and forms
+    diagnostics/   diagnostic form, score gauge, priority actions
+    documents/     intake, simulated analysis, findings, downloads
+    form/          multi-step document submission wizard
+    landing/       public landing sections
+    layout/        app shell, headers, footers, theme, navigation, scroll
+    plans/         plan cards, comparison, subscription gate
+    profile/       profile sections and styles
+    settings/      settings sections
+    ui/            shared primitives (shadcn and ATUE-specific)
+  content/         reviewable pt-BR copy
+  contexts/        AuthProvider and PlanProvider
+  lib/             pure logic, schemas, local generators (PDF/DOCX/TXT)
+  mocks/           deterministic demonstration data
+  pages/           route components (PascalCase)
+  services/        API access and mock boundary
+  types/           explicit domain and API contracts
+  index.css        design tokens and global styles
+  routes.tsx       route table
+```
 
-### 3.1. TypeScript and Type Safety
+## 5. Routes and Features
 
-- Avoid `any`. Prefer explicit types, interfaces, discriminated unions, and `unknown` with proper narrowing when necessary.
-- Define explicit types for component props, form payloads, service parameters, API responses, and domain entities.
-- Do not use type assertions merely to suppress compiler errors.
-- Handle nullable and optional values explicitly.
-- Keep types consistent with actual runtime data.
-- Use the project's existing TypeScript configuration and strictness settings.
+| Route                     | Purpose                                                                              |
+| ------------------------- | ------------------------------------------------------------------------------------ |
+| `/`                       | Public landing page: hero, benefits, how it works, photography, FAQ, domain capture. |
+| `/register`               | Simulated account creation with consent and password checklist.                      |
+| `/login`                  | Simulated login, demo entry and simulated password recovery.                         |
+| `/form`                   | Three-step document submission wizard with review before sending.                    |
+| `/plans`, `/plan`         | Plan comparison, FAQ, support and simulated subscription.                            |
+| `/dashboard`              | Demonstration compliance overview, score, priorities and new diagnostic form.        |
+| `/documents`              | Tabs for document analysis and local download center.                                |
+| `/profile`                | Editable profile with local-only avatar preview and simulated save.                  |
+| `/settings`               | Notifications, reports, domain, integrations, security and danger zone.              |
+| `/privacidade`, `/termos` | Honest demonstration notices, not legal policies.                                    |
+| `/contato`                | Simulated contact form.                                                              |
+| `*`                       | Not found page.                                                                      |
 
-### 3.2. Componentization
+Every route must be reachable through a visible control on another screen and must offer a clear path back. Shared destinations live in `src/content/navigation.ts`.
 
-Build small, focused, reusable functional components.
+## 6. Architecture and Data Boundaries
 
-Separate responsibilities into:
+- The app is a client-side SPA. `AppRoot` mounts skip link, scroll restoration, plan gate and route outlet.
+- `AuthProvider` owns the simulated session; `PlanProvider` owns the in-memory active plan and subscription gate.
+- HTTP access is centralized in `src/services/`; components and pages must not call `fetch` directly.
+- `VITE_API_URL` (see `.env.example`) selects the boundary:
+  - empty: deterministic mocks from `src/mocks/`;
+  - set: auth and diagnostic creation call the Core API.
+- `getDiagnostic` deliberately returns `null` when `VITE_API_URL` is set because the Core API does not yet expose history reads. The dashboard then shows the empty state.
+- Mocks are imported only by services, not by components or pages. Migrate direct imports when the feature is touched.
+- The JWT stays in module memory only; reload ends the session. Do not move it to `localStorage` without a reviewed security design.
+- Plan access is a visual/experience gate (dashboard, documents, profile, settings), not backend authorization.
+- `/form` performs one real external request: CNPJ lookup via `https://api.opencnpj.org` with a 10s timeout in `src/services/cnpj.ts`. It is optional and failures are surfaced; do not describe the app as fully offline.
+- Document analysis and report generation are local and deterministic. Generate PDF/DOCX/TXT in `src/lib/`; never upload file contents.
+- Never silently replace a failed production request with mock data.
 
-- **Application structure:** layout, navigation, sidebar, header, and page containers.
-- **Feature components:** diagnostic forms, evidence lists, compliance indicators, pending tasks, and dashboards.
-- **Shared UI:** buttons, dialogs, cards, tables, inputs, and other reusable primitives.
-- **Services:** API access and external communication.
-- **Types and domain models:** shared contracts and entities.
+## 7. Main Flows
 
-Keep business logic out of presentation components when extracting it improves clarity or testability. Do not abstract simple code merely to increase the number of files.
+1. **Public → auth → plans:** landing and institutional pages lead to `/register` or `/login`; both continue to `/plans`; choosing a plan activates it in memory and opens `/dashboard`.
+2. **Diagnostic:** `/dashboard` accepts a URL, validates it, calls the diagnostic service and renders score, status, indicators, findings and priority actions. Failures preserve the previous result.
+3. **Documents:** `/documents` accepts a real file input for metadata only or a fictitious sample, runs a deterministic analysis, renders findings and exposes local downloads.
+4. **Submission wizard:** `/form` collects company, contact/DPO and documents, reviews the data and submits through the service boundary.
+5. **Profile and settings:** edits are simulated in memory; success, error and retry are explicit; reload restores demonstration data.
+6. **Theme:** light is the default; `ThemeToggle` stores the choice in `localStorage` under `atue-theme`. The class is applied before first paint in `index.html`.
 
-Prefer explicit composition over implicit element manipulation. For form controls, use the `FormField` render prop instead of `cloneElement` or similar magic. Keep page composition visible: the page should show which layout, aside, and form it renders.
+## 8. Engineering Conventions
 
-Do not create types that merely mirror a copy object. Define copy with `as const` and let TypeScript infer it.
+### 8.1 TypeScript
 
-Follow the existing directory structure. If no clear structure exists, establish a minimal organization aligned with the features actually implemented.
+- Avoid `any`. Use explicit types, discriminated unions and `unknown` with narrowing.
+- Define explicit types for props, payloads, API responses and domain entities.
+- Do not use assertions to hide compiler errors.
+- Keep runtime data consistent with declared contracts.
 
-Every route added to the SPA must be reachable through a visible control on at least one other screen and must offer a clear path back. Keep shared navigation links revisable in `src/content/navigation.ts` and reuse the layout footer and cross-link components instead of duplicating link lists per page.
+### 8.2 Components
 
-### 3.3. Styling and Design
+- Small, focused functional components; composition over magic.
+- Page composition stays visible: layout, aside and form should be readable in the page file.
+- Do not abstract trivial code into more files.
+- Use the `FormField` render prop instead of `cloneElement`.
+- Define copy objects with `as const` and let TypeScript infer; do not create mirror types for copy.
+- Follow the existing naming and directory conventions.
 
-- Use Tailwind CSS utility classes for application styling.
-- Prefer existing shadcn/ui components over custom implementations when they satisfy the requirement.
-- Use Lucide React for interface icons.
-- Maintain consistent spacing, typography, colors, borders, and interaction states.
-- Follow `DESIGN.md` for surfaces, color roles, typography, spacing, radius, component recipes, states, and the design PR checklist.
-- Reuse the shared primitives documented in `DESIGN.md` (for example `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `ProductHeader`, `BrandLink`, `Switch`, `Select`, `AlertDialog`, `SectionCard`, `Card`, `Badge`, `Accordion`, `Sheet`, `Table`, `Avatar`, `Progress`, `Skeleton`) before creating local implementations.
-- Ensure responsive behavior across mobile and desktop viewports.
-- Avoid unnecessary inline styles, duplicated styling rules, and new CSS frameworks.
-- Do not modify global design tokens or shared components to solve a local problem unless the change is intentional and compatible with other screens.
-- Avoid arbitrary values when existing design tokens or utilities provide an adequate solution.
+### 8.3 Styling and Design
 
-The interface should be professional, restrained, and appropriate for a B2B compliance platform. Prioritize usability and information density over visual effects.
+- Use Tailwind utilities and the tokens in `src/index.css`.
+- Follow `DESIGN.md` for palette, typography, spacing, radii, surfaces, states, motion and accessibility.
+- Reuse shared primitives before creating local implementations: `Button`, `Input`, `Label`, `FormField`, `FormAlert`, `PasswordInput`, `AuthLayout`, `SiteHeader`, `ProductHeader`, `ProductFooter`, `BrandLink`, `Switch`, `Select`, `AlertDialog`, `SectionCard`, `Card`, `Badge`, `Accordion`, `Sheet`, `Table`, `Avatar`, `Progress`, `Skeleton`, `Reveal`.
+- Do not modify global tokens or shared primitives for a local problem unless the change is intentional and safe for every screen.
+- Do not introduce another CSS framework or a second icon/chart library.
+- Light theme is the default. Never encode a theme assumption in a page-specific palette.
 
-### 3.4. State Management
+### 8.4 State
 
-- Prefer local React state (`useState`) and component composition.
-- Lift state only when multiple components need to share it.
-- Use React Context only when it solves a concrete cross-cutting requirement.
-- Do not introduce Redux, Zustand, or another global state library without a demonstrated need.
-- Avoid duplicating derived state when it can be calculated from existing data.
-- Keep state transitions predictable and easy to follow.
+- Prefer local state and composition.
+- Use Context only for cross-cutting concerns; no Redux/Zustand without a demonstrated need.
+- Do not duplicate derived state.
 
-### 3.5. API Integration and Mock-First Development
+### 8.5 Forms
 
-Backend availability must not block frontend development.
+- Visible labels, explicit payload types, validation near the field, preserved input on failure, duplicate-submit protection.
+- Use React Hook Form + Zod; do not add another validation library.
+- Use `noValidate` on controlled forms.
+- Destructive or irreversible actions require an accessible `AlertDialog` and must state when they are simulated.
 
-- Centralize API access in the existing service layer, preferably `src/services/<feature>.ts` when compatible with the repository structure.
-- Keep HTTP requests out of presentational components.
-- Use typed parameters, payloads, and response contracts.
-- When an endpoint is unavailable, return structured, deterministic mock data through the same service boundary intended for the real implementation.
-- Keep mock data separate from production service logic where practical.
-- Import mocks only from services, not from components or pages. Migrate existing direct imports when the feature is touched.
-- Do not scatter hardcoded sample data throughout components.
-- Do not silently replace failed production requests with mock responses.
-- Handle loading, success, empty, and error states explicitly.
-- Keep API base URLs and environment-specific configuration outside application logic, using Vite environment variables where appropriate.
-- Local file previews (for example a profile photo) must validate type and size, revoke object URLs, and state explicitly that the file is not uploaded or persisted.
-- Never commit secrets, API keys, access tokens, or credentials.
+### 8.6 Accessibility
 
-Simulated document analysis:
+- Semantic landmarks; one `h1` per page; logical heading order.
+- Visible focus, keyboard access, accessible names for icon controls.
+- Errors linked with `aria-describedby`; status not conveyed by color alone.
+- Comfortable touch targets (at least 44px for primary mobile actions).
+- Decorative content uses `aria-hidden="true"`.
 
-- A real file input may be used as an attach control only when the requirement explicitly asks for it. Never read file contents, use `FileReader`, or send files to an upload endpoint without a real backend contract; use only file metadata (name, size, extension), validate accepted types and size, and state clearly that nothing is uploaded, stored, or processed by a real model.
-- Keep fictitious sample documents and a `Select` as an alternative path; state in the interface when the file remains on the device.
-- Model the analysis as deterministic steps in the service layer with typed progress callbacks. Do not present it as real AI or as a verified legal assessment.
-- Block duplicate submissions, expose the current step through an accessible status region, and support `prefers-reduced-motion`. When starting the analysis, scroll to the progress card with smooth behavior and fall back to instant scrolling under reduced motion.
-- Keep the analysis result in the shared mock state only when the workflow requires other screens to reflect it; label everything as demonstration data.
+### 8.7 Charts
 
-Local document generation:
+- Typed data, honest scales, clear labels/tooltips, responsive container, textual alternative when essential.
+- Use a chart only when it communicates better than a table or indicator.
 
-- Generate files in the browser only when a real document service is unavailable. Prefer small typed generators in `src/lib` over adding a dependency for simple reports.
-- Support only formats the project can generate reliably and explain when each one is useful. Current formats: PDF (sharing), DOCX (editing in Word/Google Docs) and TXT (plain text).
-- Generate DOCX as a valid OOXML/ZIP package with the standard parts and UTF-8 encoding; do not emit HTML renamed to `.docx`.
-- Keep typography, metadata, pagination, headers, footers and section hierarchy consistent across formats so generated files look professional and can be shared in a business context.
-- Include an explicit demonstration notice in every format and never imply legal validity or official certification.
-- Create and revoke object URLs, avoid storing documents, and surface preparing, success, and error states.
-- Keep generated content aligned with the same typed contracts and copy used by the interface.
+## 9. Implementation Rules
 
-Mocks must reflect plausible domain entities and consistent relationships. Do not present simulated data as verified production data.
+- Implement only requested, specified or necessary behavior.
+- Preserve unrelated functionality and avoid speculative refactors.
+- Do not add dependencies for functionality already supported.
+- Never remove functionality to simplify a new implementation.
+- Do not hide incomplete behavior behind a misleading UI state.
+- Do not read, upload or store user file contents without a real backend contract; metadata-only previews must say so.
+- Do not report a simulated save as real persistence.
+- Do not expose secrets, tokens or credentials in client code, storage or logs.
+- Do not use `dangerouslySetInnerHTML` for untrusted content.
+- Update types, services and consumers together when a contract changes.
+- Keep generated documents professional, consistently formatted and marked as demonstration artifacts.
+- Do not modify approved requirements or broaden scope silently.
 
-When the backend contract changes, update the corresponding types, services, and consuming components together.
+## 10. Technical Constraints
 
-### 3.6. Forms and Validation
+- No backend is implemented in this repository.
+- Only auth and diagnostic creation have real API paths; everything else is mock or local.
+- External runtime network is limited to the configured Core API and the OpenCNPJ lookup.
+- JWT remains in memory.
+- No test runner; use lint, formatting and TypeScript/build checks plus manual validation.
+- Production build is `tsc -b && vite build`; do not run it as a substitute for lint or type checks during routine edits.
+- Browser storage is limited to the theme preference and demonstration state that explicitly requires it.
+- Preserve the existing Vite/Tailwind/shadcn architecture.
+- Keep the app usable at 320px without horizontal page scroll.
 
-- Associate every input with a visible label or an appropriate accessible label.
-- Use semantic HTML and native form behavior where possible.
-- Type form payloads explicitly.
-- Validate required fields and relevant business constraints.
-- Display actionable validation errors near the affected fields.
-- Prevent duplicate submissions when appropriate.
-- Provide clear submission, success, and failure feedback.
-- Preserve user input when an operation fails, unless there is a specific reason not to.
-- Multiple submit triggers are acceptable only when they send the same payload, disable together, and share feedback.
-- Do not report a successful save when the operation has only been simulated.
-- Require an accessible `AlertDialog` confirmation before destructive or irreversible actions, and state explicitly when the action is simulated.
+## 11. Testing and Validation
 
-Use an existing validation library if one is already established in the project. Do not add one for a trivial form without justification.
+After implementation, run what exists:
 
-### 3.7. Accessibility and Semantics
+```bash
+npm run lint
+npm run format:check
+npx tsc -b
+```
 
-- Use semantic elements such as `<main>`, `<nav>`, `<section>`, `<article>`, and `<form>` where appropriate.
-- Ensure interactive elements are keyboard accessible.
-- Provide visible focus states.
-- Use buttons for actions and links for navigation.
-- Provide accessible names for icon-only controls.
-- Do not rely exclusively on color to communicate status.
-- Maintain readable contrast and meaningful heading hierarchy.
-- Use appropriate ARIA attributes when native HTML semantics are insufficient.
-- Ensure dialogs, menus, and other interactive components follow expected keyboard and focus behavior.
+`npm run build` is available but is not the default validation command; use it only when a full artifact check is required.
 
-### 3.8. Charts and Data Visualization
+Manual checks:
 
-When using Recharts:
+- Walk every route and confirm reachability and a path back.
+- Test light and dark themes.
+- Test 320px, 375px, 768px, 1024px and 1440px.
+- Test keyboard navigation, focus visibility and dialog/menu focus return.
+- Test `prefers-reduced-motion`.
+- Test loading, success, error and empty states for async flows.
+- Confirm generated PDF/DOCX/TXT open correctly and include the demonstration notice.
+- Confirm no sensitive data appears in the console.
+- Report the actual commands run and their actual results.
 
-- Provide explicitly typed chart data.
-- Use clear labels, legends, units, and meaningful tooltips.
-- Avoid misleading scales or visual representations.
-- Handle empty datasets and unavailable values.
-- Ensure charts remain usable within responsive containers.
-- Provide an alternative textual representation when necessary for accessibility.
-- Use charts only when they improve comprehension over a simpler indicator or table.
+Never claim a test, endpoint or visual check passed without evidence.
 
-## 4. Product and Domain Constraints
+## 12. Preservation Rules
 
-ATUE helps businesses organize and demonstrate their compliance posture. The frontend should support workflows such as:
+Do not regress:
 
-- Understanding the current compliance status.
-- Identifying gaps and outstanding tasks.
-- Organizing evidence associated with compliance requirements.
-- Tracking evidence freshness and pending updates.
-- Presenting relevant information clearly for internal review and external assessments.
+- Existing routes, destinations and navigation reachability.
+- The public/auth/product layout split and the shared headers/footers.
+- The simulated nature of auth, plans, diagnostics, document analysis, profile, settings and contact.
+- Demonstration notices and the prohibition on claiming real compliance or audits.
+- Plan gating behavior and its in-memory semantics.
+- Mock contracts and deterministic results used by more than one screen.
+- Local generation of PDF, DOCX and TXT without upload or persistence.
+- Metadata-only handling of attached files.
+- Theme behavior: light default, persisted explicit choice, no flash on load.
+- Accessibility, reduced-motion support and mobile usability.
+- The institutional palette and typography contract in `DESIGN.md`.
 
-Treat these as domain context, not as confirmation that every feature or endpoint already exists.
+## 13. OpenSpec Workflow
 
-Do not invent backend capabilities, completed assessments, verified compliance statuses, or integrations that have not been implemented.
+For non-trivial features, architectural changes, multi-component workflows, API contract changes or changes involving persistence/security:
 
-Do not claim that using ATUE automatically makes an organization LGPD-compliant or guarantees compliance with security requirements.
-
-Keep business terminology understandable to non-technical users. Explain technical concepts through concise interface copy rather than unnecessary jargon.
-
-Implement only features that are requested, specified, or necessary for an agreed workflow.
-
-## 5. OpenSpec Workflow
-
-OpenSpec is used to structure meaningful changes through explicit proposals, specifications, technical decisions, and implementation tasks.
-
-For non-trivial features, architectural changes, multi-component workflows, API contract changes, or changes involving persistence and security:
-
-1. Inspect the existing implementation and relevant project conventions.
-2. Identify the affected capabilities and dependencies.
-3. Create or update an OpenSpec change using the configured OpenCode integration.
+1. Inspect the implementation and conventions.
+2. Identify affected capabilities.
+3. Create or update an OpenSpec change.
 4. Define observable requirements and acceptance scenarios.
-5. Document relevant technical decisions and implementation tasks.
-6. Review the proposed scope before implementation.
-7. Implement the approved change incrementally.
-8. Run the applicable checks and verify the acceptance criteria.
-9. Update task status and archive the completed change according to the OpenSpec workflow.
+5. Record technical decisions and tasks.
+6. Review scope before implementation.
+7. Implement incrementally.
+8. Run checks and verify acceptance criteria.
+9. Update task status and archive the change.
 
-Use the commands and syntax supported by the installed OpenSpec version and OpenCode integration.
+Small isolated fixes follow the normal workflow without unnecessary specification overhead.
 
-For small, isolated fixes, follow the existing workflow without creating unnecessary specification overhead.
+## 14. Definition of Done
 
-Do not modify approved requirements or broaden scope silently. If implementation reveals a meaningful change in requirements, document and review that change before proceeding.
-
-## 6. Development Workflow
-
-Before making changes:
-
-1. Inspect the relevant source files and repository structure.
-2. Read `package.json` and identify available scripts.
-3. Review existing components, types, services, and styling conventions.
-4. Check the current Git diff and avoid overwriting unrelated work.
-5. Identify the smallest implementation that satisfies the requirement.
-
-During implementation:
-
-1. Make focused, incremental changes.
-2. Reuse existing components and utilities.
-3. Preserve unrelated functionality.
-4. Avoid speculative refactors and unnecessary dependencies.
-5. Keep the implementation aligned with existing API contracts and domain types.
-6. Do not introduce unrelated formatting changes or regenerate files unnecessarily.
-
-After implementation:
-
-1. Run the relevant linting and TypeScript checks available in the project.
-2. Run `npm run format:check`.
-3. Run the production build.
-4. Run relevant tests if configured.
-5. Fix regressions introduced by the change.
-6. Inspect the final diff for unintended modifications.
-7. Report what changed, what was verified, and any remaining limitations.
-
-Use the actual scripts defined in `package.json`. Do not assume that a test runner, linter, or type-check script exists.
-
-## 7. Security and Reliability
-
-- Never expose secrets or sensitive credentials in client-side code.
-- Treat all external data as untrusted.
-- Avoid unsafe HTML injection and unnecessary use of `dangerouslySetInnerHTML`.
-- Do not store sensitive authentication data in browser storage without an explicitly reviewed security design.
-- Do not assume frontend validation replaces backend validation.
-- Do not expose internal error details to end users.
-- Handle network failures and unexpected response formats safely.
-- Avoid logging tokens, credentials, or sensitive user data.
-- Do not introduce authorization assumptions that the backend cannot enforce.
-- Destructive actions in demo flows must be confirmed and must clearly state that no real account or data was deleted.
-
-## 8. Scope Control and Dependency Management
-
-- Prefer the simplest solution that satisfies the documented requirement.
-- Do not add a library for functionality already supported by the current stack.
-- Do not migrate frameworks, change the build tool, or introduce a new state-management architecture without explicit justification.
-- Do not modify unrelated screens, routes, shared tokens, or configuration.
-- Preserve existing public interfaces unless the change explicitly requires a compatible migration.
-- Never remove existing functionality simply to make a new implementation easier.
-- Do not conceal incomplete functionality behind misleading UI states.
-
-## 9. Definition of Done
-
-A change is complete when all applicable conditions are met:
-
-- [ ] The requested behavior is implemented.
+- [ ] Requested behavior is implemented.
 - [ ] Acceptance criteria are satisfied.
-- [ ] TypeScript types are explicit and consistent.
-- [ ] Loading, empty, error, and success states are handled where relevant.
+- [ ] Types are explicit and consistent.
+- [ ] Loading, empty, error and success states are handled.
 - [ ] The interface is responsive and accessible.
-- [ ] API integration or mocks follow the established service boundary.
-- [ ] No unrelated functionality has been modified.
-- [ ] Relevant lint, format, type, test, and build checks pass.
-- [ ] OpenSpec tasks and specifications reflect the final implementation when applicable.
+- [ ] `DESIGN.md` was followed and, if a new pattern exists, updated in both copies.
+- [ ] API/mocks respect the service boundary.
+- [ ] No unrelated functionality was modified.
+- [ ] Applicable lint, format and type checks pass.
 - [ ] Remaining limitations are documented honestly.
 
-## 10. Agent Communication
+## 15. Agent Communication
 
-Keep implementation reports concise, specific, and verifiable.
+Keep reports concise and verifiable. State:
 
-When completing a task, report:
+- **Implemented:** behavior and files changed.
+- **Validation:** commands executed and actual results.
+- **Limitations:** missing backend functionality, tests or unresolved decisions.
+- **Next steps:** only what is necessary to finish or unblock the work.
 
-- **Implemented:** the behavior and files changed.
-- **Validation:** checks executed and their actual results.
-- **Limitations:** missing backend functionality, incomplete tests, or unresolved decisions.
-- **Next steps:** only actions necessary to complete or unblock the requested work.
-
-Never claim that tests passed, a feature works, or an endpoint exists unless the available evidence supports that statement.
-
-When requirements are ambiguous and the ambiguity affects architecture, security, data integrity, or significant implementation cost, identify the uncertainty and request clarification or present explicit alternatives before committing to a consequential design decision.
+When ambiguity affects architecture, security, data integrity or significant cost, surface it before committing to a consequential decision.

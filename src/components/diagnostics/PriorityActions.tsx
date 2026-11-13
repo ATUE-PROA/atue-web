@@ -2,7 +2,6 @@ import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { SEVERITY_STYLES } from '@/components/documents/severity'
-import { Badge } from '@/components/ui/badge'
 import { SectionCard } from '@/components/ui/section-card'
 import { DIAGNOSTICS_CONTENT } from '@/content/diagnostics'
 import { SEVERITY_CONTENT } from '@/content/documents'
@@ -14,15 +13,16 @@ const PRIORITY_LIMIT = 3
 
 interface PriorityActionsProps {
   issues: readonly IssueCategory[]
+  variant?: 'card' | 'plain'
 }
 
-export function PriorityActions({ issues }: PriorityActionsProps) {
+export function PriorityActions({ issues, variant = 'card' }: PriorityActionsProps) {
   const priorities = sortIssuesBySeverity(issues).slice(0, PRIORITY_LIMIT)
   const { title, description, nextStepLabel, nextSteps, action, emptyTitle, emptyDescription } =
     DIAGNOSTICS_CONTENT.priorities
 
   return (
-    <SectionCard title={title} description={description}>
+    <SectionCard variant={variant} title={title} description={description}>
       {priorities.length === 0 ? (
         <div>
           <p className="text-sm font-medium text-foreground">{emptyTitle}</p>
@@ -48,12 +48,13 @@ export function PriorityActions({ issues }: PriorityActionsProps) {
 
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <Badge
-                        variant="outline"
-                        className={cn('rounded-full px-2 py-0.5', severityStyle.badgeClassName)}
-                      >
+                      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground">
+                        <span
+                          aria-hidden="true"
+                          className={cn('size-1.5 rounded-full', severityStyle.dotClassName)}
+                        />
                         {SEVERITY_CONTENT[issue.severity].label}
-                      </Badge>
+                      </span>
                       <h3 className="text-base font-medium text-foreground">{issue.name}</h3>
                     </div>
 

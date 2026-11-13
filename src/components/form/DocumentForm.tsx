@@ -221,7 +221,7 @@ export function DocumentForm() {
   ]
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-6 shadow-lg shadow-black/5 sm:p-8 dark:shadow-2xl dark:shadow-black/30">
+    <div className="rounded-2xl border border-border bg-card p-6 shadow-soft sm:p-8">
       <h2 id="form-title" className="text-xl font-semibold tracking-tight text-foreground">
         {formTitle}
       </h2>
