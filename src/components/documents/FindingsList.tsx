@@ -6,7 +6,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { Badge } from '@/components/ui/badge'
 import { SEVERITY_STYLES } from '@/components/documents/severity'
 import { DOCUMENTS_CONTENT, SEVERITY_CONTENT } from '@/content/documents'
 import { groupIssuesBySeverity } from '@/lib/diagnostics'
@@ -56,29 +55,24 @@ export function FindingsList({
               {SEVERITY_CONTENT[group.severity].description}
             </p>
 
-            <Accordion type="multiple" className="mt-2 space-y-3">
+            <Accordion type="multiple" className="mt-2">
               {group.issues.map((issue) => {
-                const SeverityIcon = severityStyle.icon
-
                 return (
                   <AccordionItem
                     key={issue.id}
                     value={issue.id}
-                    className="rounded-lg border border-border bg-background data-[state=open]:bg-muted/30 not-last:border-b-0"
+                    className="border-b border-border last:border-b-0"
                   >
-                    <AccordionTrigger className="items-start gap-3 p-3 hover:no-underline">
-                      <SeverityIcon
-                        aria-hidden="true"
-                        className="mt-0.5 size-4 shrink-0 text-muted-foreground"
-                      />
+                    <AccordionTrigger className="items-start gap-3 rounded-none px-0 py-4 hover:no-underline">
                       <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <Badge
-                            variant="outline"
-                            className={cn('rounded-full px-2 py-0.5', severityStyle.badgeClassName)}
-                          >
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground">
+                            <span
+                              aria-hidden="true"
+                              className={cn('size-1.5 rounded-full', severityStyle.dotClassName)}
+                            />
                             {SEVERITY_CONTENT[issue.severity].label}
-                          </Badge>
+                          </span>
                           {issue.category ? (
                             <span className="text-xs text-muted-foreground">{issue.category}</span>
                           ) : null}
@@ -93,7 +87,7 @@ export function FindingsList({
                     </AccordionTrigger>
 
                     {issue.explanation || issue.recommendation ? (
-                      <AccordionContent className="space-y-3 border-t border-border px-3 py-3">
+                      <AccordionContent className="space-y-3 border-t border-border py-3">
                         {issue.explanation ? (
                           <div>
                             <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">

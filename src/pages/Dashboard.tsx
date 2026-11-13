@@ -12,7 +12,6 @@ import { FindingsList } from '@/components/documents/FindingsList'
 import { SEVERITY_STYLES } from '@/components/documents/severity'
 import { ProductFooter } from '@/components/layout/product-footer'
 import { ProductHeader } from '@/components/layout/product-header'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
 import { SectionCard } from '@/components/ui/section-card'
@@ -48,13 +47,10 @@ function DashboardHeader({ report }: { report: DiagnosticReport | null }) {
     <header className="border-b border-border pb-8">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="min-w-0">
-          <Badge
-            variant="outline"
-            className="h-auto gap-1.5 rounded-full border-blue-600/30 bg-blue-600/10 px-3 py-1 text-xs text-foreground"
-          >
-            <FlaskConical aria-hidden="true" className="size-3" />
+          <p className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+            <FlaskConical aria-hidden="true" className="size-3.5" />
             {page.demoBadge}
-          </Badge>
+          </p>
 
           <h1 className="mt-3 text-display text-foreground">{page.title}</h1>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
@@ -115,14 +111,14 @@ function DiagnosticResults({ report }: { report: DiagnosticReport }) {
       ) : null}
 
       <div className="grid gap-6 md:grid-cols-2 md:items-start">
-        <SectionCard title={score.title} description={score.description}>
+        <SectionCard variant="plain" title={score.title} description={score.description}>
           <div className="flex flex-col items-center">
             <ScoreGauge score={report.score} />
           </div>
 
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{score.scaleNote}</p>
 
-          <div className="mt-4 flex gap-2 rounded-lg bg-muted/50 p-3 text-sm leading-relaxed text-foreground">
+          <div className="mt-4 flex gap-2 border-l-2 border-border pl-3 text-sm leading-relaxed text-foreground">
             <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
             <p>{score.disclaimer}</p>
           </div>
@@ -137,10 +133,10 @@ function DiagnosticResults({ report }: { report: DiagnosticReport }) {
           </div>
         </SectionCard>
 
-        <PriorityActions issues={report.issues} />
+        <PriorityActions issues={report.issues} variant="plain" />
       </div>
 
-      <SectionCard title={findings.title} description={findings.description}>
+      <SectionCard variant="plain" title={findings.title} description={findings.description}>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div
             role="group"
@@ -180,7 +176,12 @@ function DiagnosticResults({ report }: { report: DiagnosticReport }) {
 
 function EmptyDiagnostic() {
   return (
-    <SectionCard className="mt-8" title={empty.title} description={empty.description}>
+    <SectionCard
+      variant="plain"
+      className="mt-8"
+      title={empty.title}
+      description={empty.description}
+    >
       <Button asChild variant="brand" size="xl" className="w-full sm:w-auto">
         <a href="#novo-diagnostico">
           <Search aria-hidden="true" />

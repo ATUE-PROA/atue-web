@@ -94,7 +94,7 @@ export function LoginForm() {
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-6 shadow-lg shadow-black/5 sm:p-8 dark:shadow-2xl dark:shadow-black/30">
+    <div className="rounded-2xl border border-border bg-card p-6 shadow-soft sm:p-8">
       <h2 id="login-form-title" className="text-xl font-semibold text-foreground">
         {title}
       </h2>

@@ -71,7 +71,7 @@ export function getScoreLevel(score: number): ScoreLevel {
   }
 
   return {
-    label: 'Adequado',
+    label: 'Conforme',
     dotClassName: 'bg-green-500',
     textClassName: 'text-green-700 dark:text-green-400',
     barClassName: 'bg-green-500',
