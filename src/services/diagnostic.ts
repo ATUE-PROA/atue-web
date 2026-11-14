@@ -23,9 +23,10 @@ export async function requestDiagnostic(url: string): Promise<DiagnosticReport> 
     return mockRequestDiagnostic(url)
   }
 
-  const report = await requestJson('/v1/diagnostics', parseDiagnosticReport, {
+  const report = await requestJson('/api/v1/diagnostics', parseDiagnosticReport, {
     method: 'POST',
     body: { url },
+    headers: { 'Idempotency-Key': crypto.randomUUID() },
   })
 
   // A API pode omitir a URL; a requisição já a informa para a tela.
