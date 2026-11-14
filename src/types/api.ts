@@ -66,6 +66,8 @@ export interface SignUpPayload {
   name: string
   email: string
   organizationName: string
+  cnpj: string
+  sector: string
   password: string
 }
 

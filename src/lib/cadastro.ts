@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+import { isValidCnpj } from '@/lib/cnpj'
 import type { CadastroFormValues } from '@/types/cadastro.types'
 
 const PASSWORD_LETTER_PATTERN = /[A-Za-z]/
@@ -9,6 +10,8 @@ export const cadastroSchema: z.ZodType<CadastroFormValues, CadastroFormValues> =
   nome: z.string().trim().min(3, { message: 'O nome precisa ter pelo menos 3 caracteres.' }),
   email: z.string().trim().email({ message: 'Informe um e-mail válido.' }),
   empresa: z.string().trim().min(2, { message: 'Informe o nome da empresa.' }),
+  cnpj: z.string().trim().refine(isValidCnpj, { message: 'Informe um CNPJ válido.' }),
+  setor: z.string().trim().min(2, { message: 'Informe o setor da empresa.' }),
   senha: z
     .string()
     .min(8, { message: 'A senha precisa ter pelo menos 8 caracteres.' })

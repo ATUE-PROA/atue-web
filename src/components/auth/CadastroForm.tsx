@@ -1,5 +1,5 @@
 import { useEffect, useId, useState } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
+import { useForm, useWatch, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, Link } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
@@ -15,6 +15,7 @@ import { CADASTRO_CONTENT } from '@/content/cadastro'
 import { useAuth } from '@/contexts/auth-context'
 import { usePlan } from '@/contexts/plan-context'
 import { cadastroSchema } from '@/lib/cadastro'
+import { formatCnpj } from '@/lib/cnpj'
 import { signUp } from '@/services/auth'
 import type { CadastroFormValues } from '@/types/cadastro.types'
 
@@ -62,6 +63,8 @@ export function CadastroForm() {
       nome: '',
       email: '',
       empresa: '',
+      cnpj: '',
+      setor: '',
       senha: '',
       consentimento: false,
     },
@@ -157,6 +160,41 @@ export function CadastroForm() {
               autoComplete={fields.empresa.autoComplete}
               className={inputClasses}
               {...register('empresa')}
+            />
+          )}
+        </FormField>
+
+        <FormField label={fields.cnpj.label} error={errors.cnpj?.message} required>
+          {(field) => (
+            <Controller
+              control={control}
+              name="cnpj"
+              render={({ field: cnpjField }) => (
+                <Input
+                  {...field}
+                  {...cnpjField}
+                  type="text"
+                  placeholder={fields.cnpj.placeholder}
+                  autoComplete={fields.cnpj.autoComplete}
+                  inputMode="numeric"
+                  maxLength={18}
+                  className={inputClasses}
+                  onChange={(event) => cnpjField.onChange(formatCnpj(event.target.value))}
+                />
+              )}
+            />
+          )}
+        </FormField>
+
+        <FormField label={fields.setor.label} error={errors.setor?.message} required>
+          {(field) => (
+            <Input
+              {...field}
+              type="text"
+              placeholder={fields.setor.placeholder}
+              autoComplete={fields.setor.autoComplete}
+              className={inputClasses}
+              {...register('setor')}
             />
           )}
         </FormField>

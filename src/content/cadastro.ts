@@ -32,6 +32,16 @@ export const CADASTRO_CONTENT = {
       placeholder: 'Minha Empresa Ltda.',
       autoComplete: 'organization',
     },
+    cnpj: {
+      label: 'CNPJ',
+      placeholder: '00.000.000/0000-00',
+      autoComplete: 'off',
+    },
+    setor: {
+      label: 'Setor',
+      placeholder: 'Tecnologia',
+      autoComplete: 'organization-title',
+    },
     senha: {
       label: 'Senha',
       placeholder: 'Crie uma senha forte',
