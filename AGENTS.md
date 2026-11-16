@@ -53,7 +53,7 @@ npm run preview
 ```
 
 ## 4. Repository Structure
-
+GENTS
 ```text
 src/
   components/
