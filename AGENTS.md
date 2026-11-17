@@ -80,31 +80,36 @@ src/
 
 ## 5. Routes and Features
 
-| Route                     | Purpose                                                                              |
-| ------------------------- | ------------------------------------------------------------------------------------ |
-| `/`                       | Public landing page: hero, benefits, how it works, photography, FAQ, domain capture. |
-| `/register`               | Simulated account creation with consent and password checklist.                      |
-| `/login`                  | Simulated login, demo entry and simulated password recovery.                         |
-| `/form`                   | Three-step document submission wizard with review before sending.                    |
-| `/plans`, `/plan`         | Plan comparison, FAQ, support and simulated subscription.                            |
-| `/dashboard`              | Demonstration compliance overview, score, priorities and new diagnostic form.        |
-| `/documents`              | Tabs for document analysis and local download center.                                |
-| `/profile`                | Editable profile with local-only avatar preview and simulated save.                  |
-| `/settings`               | Notifications, reports, domain, integrations, security and danger zone.              |
-| `/privacidade`, `/termos` | Honest demonstration notices, not legal policies.                                    |
-| `/contato`                | Simulated contact form.                                                              |
-| `*`                       | Not found page.                                                                      |
+| Route                     | Purpose                                                                                          |
+| ------------------------- | ------------------------------------------------------------------------------------------------ |
+| `/`                       | Public landing page: hero, benefits, how it works, photography, FAQ, domain capture.             |
+| `/register`               | Account creation with consent and password checklist; real Core call when `VITE_API_URL` is set. |
+| `/login`                  | Login, demo entry and simulated password recovery; real Core call when configured.               |
+| `/form`                   | Three-step document submission wizard with review before sending.                                |
+| `/plans`, `/plan`         | Plan comparison, FAQ, support and simulated subscription.                                        |
+| `/dashboard`              | Demonstration compliance overview, score, priorities and new diagnostic form.                    |
+| `/documents`              | Tabs for document analysis and local download center.                                            |
+| `/profile`                | Editable profile with local-only avatar preview and simulated save.                              |
+| `/settings`               | Notifications, reports, domain, integrations, security and danger zone.                          |
+| `/privacidade`, `/termos` | Honest demonstration notices, not legal policies.                                                |
+| `/contato`                | Simulated contact form.                                                                          |
+| `*`                       | Not found page.                                                                                  |
 
 Every route must be reachable through a visible control on another screen and must offer a clear path back. Shared destinations live in `src/content/navigation.ts`.
 
 ## 6. Architecture and Data Boundaries
 
 - The app is a client-side SPA. `AppRoot` mounts skip link, scroll restoration, plan gate and route outlet.
-- `AuthProvider` owns the simulated session; `PlanProvider` owns the in-memory active plan and subscription gate.
+- `AuthProvider` owns the session (real when `VITE_API_URL` is set, deterministic demo otherwise); `PlanProvider` owns the in-memory active plan and subscription gate.
 - HTTP access is centralized in `src/services/`; components and pages must not call `fetch` directly.
 - `VITE_API_URL` (see `.env.example`) selects the boundary:
   - empty: deterministic mocks from `src/mocks/`;
-  - set: auth and diagnostic creation call the Core API.
+  - set: registration, login and diagnostic creation call the Core API.
+- Core routes live under `/api/v1` (`/api/v1/registration`, `/api/v1/auth/login`, `/api/v1/diagnostics`). Do not use the old `/v1` paths.
+- `POST /api/v1/diagnostics` requires `Authorization: Bearer` and `Idempotency-Key` (one UUID per submission).
+- Auth contract: `{ token, tokenType, expiresAt, user: { id, name, email, organizationId } }`. Registration payload: `{ name, email, organizationName, cnpj, sector, password }`.
+- Diagnostic contract: `{ id, organizationId, score, createdAt, url, issues: [{ id, name, severity, description, explanation, recommendation }], degraded }`, with `severity: 'alta' | 'media' | 'baixa'`. `status` and `summary` are derived in `src/lib/diagnostics.ts`.
+- The web never calls an LLM or the AI service directly. All AI work goes through the Core.
 - `getDiagnostic` deliberately returns `null` when `VITE_API_URL` is set because the Core API does not yet expose history reads. The dashboard then shows the empty state.
 - Mocks are imported only by services, not by components or pages. Migrate direct imports when the feature is touched.
 - The JWT stays in module memory only; reload ends the session. Do not move it to `localStorage` without a reviewed security design.
@@ -193,8 +198,8 @@ Every route must be reachable through a visible control on another screen and mu
 ## 10. Technical Constraints
 
 - No backend is implemented in this repository.
-- Only auth and diagnostic creation have real API paths; everything else is mock or local.
-- External runtime network is limited to the configured Core API and the OpenCNPJ lookup.
+- Only registration, login and diagnostic creation have real API paths; everything else is mock or local.
+- External runtime network is limited to the configured Core API and the OpenCNPJ lookup. Never call the AI service or an LLM provider from the browser.
 - JWT remains in memory.
 - No test runner; use lint, formatting and TypeScript/build checks plus manual validation.
 - Production build is `tsc -b && vite build`; do not run it as a substitute for lint or type checks during routine edits.
@@ -234,7 +239,8 @@ Do not regress:
 
 - Existing routes, destinations and navigation reachability.
 - The public/auth/product layout split and the shared headers/footers.
-- The simulated nature of auth, plans, diagnostics, document analysis, profile, settings and contact.
+- The demo fallback when `VITE_API_URL` is empty and the real auth/diagnostic paths when it is set.
+- The simulated nature of plans, document analysis, profile, settings and contact.
 - Demonstration notices and the prohibition on claiming real compliance or audits.
 - Plan gating behavior and its in-memory semantics.
 - Mock contracts and deterministic results used by more than one screen.
@@ -269,6 +275,8 @@ Small isolated fixes follow the normal workflow without unnecessary specificatio
 - [ ] The interface is responsive and accessible.
 - [ ] `DESIGN.md` was followed and, if a new pattern exists, updated in both copies.
 - [ ] API/mocks respect the service boundary.
+- [ ] Core routes use `/api/v1`, and the diagnostic call sends `Idempotency-Key`.
+- [ ] Auth and diagnostic payloads match the contract in §6.
 - [ ] No unrelated functionality was modified.
 - [ ] Applicable lint, format and type checks pass.
 - [ ] Remaining limitations are documented honestly.

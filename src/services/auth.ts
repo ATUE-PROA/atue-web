@@ -17,10 +17,12 @@ export async function signUp(values: CadastroFormValues): Promise<UserToken> {
     name: values.nome.trim(),
     email: values.email.trim(),
     organizationName: values.empresa.trim(),
+    cnpj: values.cnpj.trim(),
+    sector: values.setor.trim(),
     password: values.senha,
   }
 
-  const session = await requestJson('/v1/auth/register', parseUserToken, {
+  const session = await requestJson('/api/v1/registration', parseUserToken, {
     method: 'POST',
     body: payload,
   })
@@ -43,7 +45,7 @@ export async function signIn(values: LoginFormValues): Promise<UserToken> {
     password: values.senha,
   }
 
-  const session = await requestJson('/v1/auth/login', parseUserToken, {
+  const session = await requestJson('/api/v1/auth/login', parseUserToken, {
     method: 'POST',
     body: payload,
   })

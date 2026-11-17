@@ -36,6 +36,7 @@ interface RequestOptions {
   method?: HttpMethod
   body?: unknown
   signal?: AbortSignal
+  headers?: Record<string, string>
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -91,6 +92,12 @@ export async function requestJson<T>(
 
   if (authToken) {
     headers.set('Authorization', `Bearer ${authToken}`)
+  }
+
+  for (const [name, value] of Object.entries(options.headers ?? {})) {
+    if (!headers.has(name)) {
+      headers.set(name, value)
+    }
   }
 
   let response: Response
