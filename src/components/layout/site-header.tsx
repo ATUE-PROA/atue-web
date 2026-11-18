@@ -20,15 +20,15 @@ export function BrandLink({ to = '/', onClick }: BrandLinkProps) {
       <img
         src="/brand/atue-logo-light.svg"
         alt=""
-        width={839}
-        height={302}
+        width={3801}
+        height={1418}
         className="h-8 w-auto dark:hidden"
       />
       <img
         src="/brand/atue-logo-dark.svg"
         alt=""
-        width={839}
-        height={302}
+        width={3801}
+        height={1418}
         className="hidden h-8 w-auto dark:block"
       />
     </Link>
