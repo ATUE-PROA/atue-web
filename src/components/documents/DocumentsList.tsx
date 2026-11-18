@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { CheckCircle2, FileText } from 'lucide-react'
 
+import { SearchField } from '@/components/ui/search-field'
 import { SectionCard } from '@/components/ui/section-card'
 import { Badge } from '@/components/ui/badge'
 import { DOCUMENTS_CONTENT } from '@/content/documents'
-import { formatDocumentDate } from '@/lib/documents'
+import { formatDocumentDate, matchesSearch } from '@/lib/documents'
 import { cn } from '@/lib/utils'
 import type { SampleDocument, SampleDocumentId } from '@/types/documents.types'
 
@@ -22,16 +24,42 @@ export function DocumentsList({
   onSelect,
   disabled = false,
 }: DocumentsListProps) {
+  const [query, setQuery] = useState('')
+  const visibleDocuments = documents.filter((document) =>
+    matchesSearch(query, [document.name, document.kind, document.description]),
+  )
+
   return (
     <SectionCard
       title={DOCUMENTS_CONTENT.catalog.title}
       description={DOCUMENTS_CONTENT.catalog.description}
     >
-      {documents.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{DOCUMENTS_CONTENT.catalog.empty}</p>
+      <SearchField
+        className="mb-4"
+        label={DOCUMENTS_CONTENT.catalog.searchLabel}
+        placeholder={DOCUMENTS_CONTENT.catalog.searchPlaceholder}
+        value={query}
+        onValueChange={setQuery}
+      />
+
+      <p role="status" className="sr-only">
+        {query.trim()
+          ? DOCUMENTS_CONTENT.catalog.searchStatus.replace(
+              '{count}',
+              String(visibleDocuments.length),
+            )
+          : ''}
+      </p>
+
+      {visibleDocuments.length === 0 ? (
+        <p className="text-sm text-muted-foreground">
+          {documents.length === 0
+            ? DOCUMENTS_CONTENT.catalog.empty
+            : DOCUMENTS_CONTENT.catalog.searchEmpty}
+        </p>
       ) : (
         <ul className="space-y-3">
-          {documents.map((document) => {
+          {visibleDocuments.map((document) => {
             const isSelected = document.id === selectedId
             const wasAnalyzed = analyzedIds.includes(document.id)
 

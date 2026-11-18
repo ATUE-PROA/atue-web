@@ -21,6 +21,10 @@ export const DOCUMENTS_CONTENT = {
     selectedLabel: 'Selecionado',
     analyzedLabel: 'Analisado nesta sessão',
     empty: 'Nenhum documento de exemplo disponível.',
+    searchLabel: 'Buscar documento de exemplo',
+    searchPlaceholder: 'Nome, tipo ou descrição',
+    searchStatus: 'Resultados encontrados: {count}',
+    searchEmpty: 'Nenhum documento de exemplo corresponde à busca.',
   },
   intake: {
     title: 'Anexar e analisar documento',
@@ -96,6 +100,11 @@ export const DOCUMENTS_CONTENT = {
     emptyReports:
       'Nenhum relatório foi gerado ainda. Conclua uma análise simulada para criar o primeiro.',
     emptyTemplates: 'Nenhum modelo disponível.',
+    searchLabel: 'Buscar relatórios e modelos',
+    searchPlaceholder: 'Título ou descrição',
+    searchStatus: 'Resultados encontrados: {count}',
+    searchEmptyReports: 'Nenhum relatório corresponde à busca.',
+    searchEmptyTemplates: 'Nenhum modelo corresponde à busca.',
     downloadLabel: 'Baixar',
     downloadingLabel: 'Gerando {format}...',
     downloadAriaLabel: 'Escolher formato para baixar {title}',

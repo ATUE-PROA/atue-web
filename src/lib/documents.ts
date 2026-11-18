@@ -49,6 +49,19 @@ export function slugifyFilename(value: string): string {
     .replace(/^-+|-+$/g, '')
 }
 
+function normalizeSearchText(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+}
+
+export function matchesSearch(query: string, values: readonly string[]): boolean {
+  const term = normalizeSearchText(query.trim())
+
+  return term === '' || values.some((value) => normalizeSearchText(value).includes(term))
+}
+
 export function delay(ms: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(resolve, ms)
