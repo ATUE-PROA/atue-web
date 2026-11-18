@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { ChevronDown, Download, FileText, Loader2, Lock, Settings2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
@@ -12,13 +13,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { FormAlert } from '@/components/ui/form-alert'
+import { SearchField } from '@/components/ui/search-field'
 import { SectionCard } from '@/components/ui/section-card'
 import {
   DOCUMENTS_CONTENT,
   DOWNLOAD_CATEGORY_CONTENT,
   DOWNLOAD_FORMAT_CONTENT,
 } from '@/content/documents'
-import { formatDocumentDate, formatPageCount } from '@/lib/documents'
+import { formatDocumentDate, formatPageCount, matchesSearch } from '@/lib/documents'
 import type {
   DownloadCategory,
   DownloadFeedback,
@@ -41,15 +43,24 @@ interface DownloadGroupProps {
   items: readonly DownloadItem[]
   pending: PendingDownload | null
   locked: boolean
+  emptyMessage?: string
   onDownload: (item: DownloadItem, format: DownloadFormat) => void
 }
 
-function DownloadGroup({ category, items, pending, locked, onDownload }: DownloadGroupProps) {
+function DownloadGroup({
+  category,
+  items,
+  pending,
+  locked,
+  emptyMessage: emptyMessageOverride,
+  onDownload,
+}: DownloadGroupProps) {
   const content = DOWNLOAD_CATEGORY_CONTENT[category]
   const emptyMessage =
-    category === 'report'
+    emptyMessageOverride ??
+    (category === 'report'
       ? DOCUMENTS_CONTENT.downloads.emptyReports
-      : DOCUMENTS_CONTENT.downloads.emptyTemplates
+      : DOCUMENTS_CONTENT.downloads.emptyTemplates)
 
   return (
     <div>
@@ -199,8 +210,11 @@ export function DownloadCenter({
   canDownloadReports,
   onDownload,
 }: DownloadCenterProps) {
-  const reports = items.filter((item) => item.category === 'report')
-  const templates = items.filter((item) => item.category === 'template')
+  const [query, setQuery] = useState('')
+  const isSearching = query.trim() !== ''
+  const matchesQuery = (item: DownloadItem) => matchesSearch(query, [item.title, item.description])
+  const reports = items.filter((item) => item.category === 'report' && matchesQuery(item))
+  const templates = items.filter((item) => item.category === 'template' && matchesQuery(item))
 
   return (
     <SectionCard
@@ -220,12 +234,30 @@ export function DownloadCenter({
         />
       ) : null}
 
+      <SearchField
+        className="mt-4 max-w-md"
+        label={DOCUMENTS_CONTENT.downloads.searchLabel}
+        placeholder={DOCUMENTS_CONTENT.downloads.searchPlaceholder}
+        value={query}
+        onValueChange={setQuery}
+      />
+
+      <p role="status" className="sr-only">
+        {isSearching
+          ? DOCUMENTS_CONTENT.downloads.searchStatus.replace(
+              '{count}',
+              String(reports.length + templates.length),
+            )
+          : ''}
+      </p>
+
       <div className="mt-6 space-y-6">
         <DownloadGroup
           category="report"
           items={reports}
           pending={pending}
           locked={!canDownloadReports}
+          emptyMessage={isSearching ? DOCUMENTS_CONTENT.downloads.searchEmptyReports : undefined}
           onDownload={onDownload}
         />
         <DownloadGroup
@@ -233,6 +265,7 @@ export function DownloadCenter({
           items={templates}
           pending={pending}
           locked={false}
+          emptyMessage={isSearching ? DOCUMENTS_CONTENT.downloads.searchEmptyTemplates : undefined}
           onDownload={onDownload}
         />
       </div>
