@@ -1,36 +1,35 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { FlaskConical, Globe, Info, RefreshCcw, Search } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { FlaskConical, RefreshCcw } from 'lucide-react'
 
 import {
   DiagnosticRequestForm,
   type DiagnosticRequestStatus,
 } from '@/components/diagnostics/DiagnosticRequestForm'
-import { PriorityActions } from '@/components/diagnostics/PriorityActions'
-import { ScoreGauge } from '@/components/diagnostics/ScoreGauge'
-import { FindingsList } from '@/components/documents/FindingsList'
+import { NextStepCard } from '@/components/diagnostics/NextStepCard'
+import { PendingTable } from '@/components/diagnostics/PendingTable'
+import { ScoreIndex } from '@/components/diagnostics/ScoreIndex'
 import { SEVERITY_STYLES } from '@/components/documents/severity'
 import { ProductFooter } from '@/components/layout/product-footer'
 import { ProductHeader } from '@/components/layout/product-header'
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
-import { SectionCard } from '@/components/ui/section-card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { DIAGNOSTICS_CONTENT } from '@/content/diagnostics'
 import { SEVERITY_CONTENT } from '@/content/documents'
-import { formatDocumentDateTime } from '@/lib/documents'
-import { getScoreLevel, SEVERITY_ORDER } from '@/lib/diagnostics'
+import { SEVERITY_ORDER } from '@/lib/diagnostics'
 import { cn } from '@/lib/utils'
 import { getDiagnostic, requestDiagnostic } from '@/services/diagnostic'
 import type { DiagnosticReport } from '@/types/api'
 
 type LoadState = 'loading' | 'ready' | 'error'
 
+const { page, empty, loadError, degraded, pending, footerNote } = DIAGNOSTICS_CONTENT
+
 function DashboardShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <ProductHeader />
-      <main id="conteudo" className="mx-auto w-full max-w-6xl flex-1 px-6 py-10">
+      <main id="conteudo" className="mx-auto w-full max-w-7xl flex-1 px-6 py-8">
         {children}
       </main>
       <ProductFooter />
@@ -38,178 +37,82 @@ function DashboardShell({ children }: { children: ReactNode }) {
   )
 }
 
-const { page, score, findings, empty, loadError, degraded, footerNote } = DIAGNOSTICS_CONTENT
-
-function DashboardHeader({ report }: { report: DiagnosticReport | null }) {
-  const level = report ? getScoreLevel(report.score) : null
-
+function SeveritySummary({ report, className }: { report: DiagnosticReport; className?: string }) {
   return (
-    <header className="border-b border-border pb-8">
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-        <div className="min-w-0">
-          <p className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-            <FlaskConical aria-hidden="true" className="size-3.5" />
-            {page.demoBadge}
-          </p>
+    <section
+      className={cn('card-surface flex flex-col p-6 sm:p-8', className)}
+      aria-labelledby="resumo-titulo"
+    >
+      <h2 id="resumo-titulo" className="text-label text-muted-foreground">
+        {pending.severityTitle}
+      </h2>
 
-          <h1 className="mt-3 text-display text-foreground">{page.title}</h1>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            {page.description}
-          </p>
-        </div>
+      <p className="mt-4 flex items-baseline gap-2">
+        <span className="text-5xl leading-none font-bold tracking-tight text-foreground tabular-nums">
+          {report.issues.length}
+        </span>
+        <span className="text-sm text-muted-foreground">pendências</span>
+      </p>
 
-        <Button asChild variant="brand" size="xl" className="w-full sm:w-auto">
-          <a href="#novo-diagnostico">
-            <RefreshCcw aria-hidden="true" />
-            {report ? page.ctaUpdate : page.cta}
-          </a>
-        </Button>
-      </div>
-
-      {report && level ? (
-        <dl className="mt-6 flex flex-col gap-2 text-sm sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6">
-          <div className="flex items-center gap-2">
-            <dt className="text-muted-foreground">{page.statusLabel}:</dt>
-            <dd className="flex items-center gap-1.5 font-medium">
+      <dl className="mt-5 space-y-3">
+        {SEVERITY_ORDER.map((severity) => (
+          <div
+            key={severity}
+            className="flex items-center justify-between border-b border-border pb-3 last:border-b-0 last:pb-0"
+          >
+            <dt className="flex items-center gap-2 text-sm text-muted-foreground">
               <span
                 aria-hidden="true"
-                className={cn('size-2.5 rounded-full', level.dotClassName)}
+                className={cn('size-2 rounded-full', SEVERITY_STYLES[severity].dotClassName)}
               />
-              <span className={level.textClassName}>{level.label}</span>
+              {SEVERITY_CONTENT[severity].label}
+            </dt>
+            <dd className="text-xl font-semibold text-foreground tabular-nums">
+              {report.summary.bySeverity[severity]}
             </dd>
           </div>
+        ))}
+      </dl>
 
-          {report.url ? (
-            <div className="flex min-w-0 items-center gap-2">
-              <dt className="text-muted-foreground">{page.urlLabel}:</dt>
-              <dd className="flex min-w-0 items-center gap-1.5 font-medium text-foreground">
-                <Globe aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-                <span className="break-all">{report.url}</span>
-              </dd>
-            </div>
-          ) : null}
-
-          <div className="flex items-center gap-2">
-            <dt className="text-muted-foreground">{page.updatedLabel}</dt>
-            <dd className="font-medium text-foreground">
-              {formatDocumentDateTime(report.createdAt)}
-            </dd>
-          </div>
-        </dl>
-      ) : null}
-    </header>
+      <p className="mt-5 border-t border-border pt-4 text-xs leading-relaxed text-muted-foreground">
+        {footerNote}
+      </p>
+    </section>
   )
 }
 
-function DiagnosticResults({ report }: { report: DiagnosticReport }) {
-  const { summary } = report
-
+function DiagnosticSkeleton() {
   return (
-    <div className="mt-8 space-y-6">
-      {report.degraded ? (
-        <FormAlert tone="info" title={degraded.title} description={degraded.description} />
-      ) : null}
-
-      <div className="grid gap-6 md:grid-cols-2 md:items-start">
-        <SectionCard variant="plain" title={score.title} description={score.description}>
-          <div className="flex flex-col items-center">
-            <ScoreGauge score={report.score} />
-          </div>
-
-          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{score.scaleNote}</p>
-
-          <div className="mt-4 flex gap-2 border-l-2 border-border pl-3 text-sm leading-relaxed text-foreground">
-            <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-            <p>{score.disclaimer}</p>
-          </div>
-
-          <div className="mt-4 border-t border-border pt-4">
-            <h3 className="text-sm font-medium text-foreground">{score.dimensionsTitle}</h3>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed text-muted-foreground">
-              {score.dimensions.map((dimension) => (
-                <li key={dimension}>{dimension}</li>
-              ))}
-            </ul>
-          </div>
-        </SectionCard>
-
-        <PriorityActions issues={report.issues} variant="plain" />
+    <div role="status" className="mt-8 grid gap-5 lg:grid-cols-12">
+      <span className="sr-only">Carregando diagnóstico…</span>
+      <div className="card-surface space-y-3 p-6 sm:p-8 lg:col-span-7">
+        <Skeleton className="h-4 w-40" />
+        <Skeleton className="h-14 w-28" />
+        <Skeleton className="h-2 w-full rounded-full" />
+        <Skeleton className="h-4 w-2/3" />
       </div>
-
-      <SectionCard variant="plain" title={findings.title} description={findings.description}>
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div
-            role="group"
-            aria-label={findings.summaryLabel}
-            className="flex flex-wrap gap-x-4 gap-y-1 text-sm"
-          >
-            {SEVERITY_ORDER.map((severity) => (
-              <span
-                key={severity}
-                className="inline-flex items-center gap-1.5 text-muted-foreground"
-              >
-                <span
-                  aria-hidden="true"
-                  className={cn('size-2 rounded-full', SEVERITY_STYLES[severity].dotClassName)}
-                />
-                {SEVERITY_CONTENT[severity].label}:{' '}
-                <span className="font-medium text-foreground">{summary.bySeverity[severity]}</span>
-              </span>
-            ))}
-          </div>
-
-          <Link
-            to="/documents"
-            className="text-sm font-medium text-blue-600 dark:text-blue-400 transition-colors hover:text-blue-700 dark:hover:text-blue-300 focus-visible:ring-2 focus-visible:ring-blue-600/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
-          >
-            Ver central
-          </Link>
-        </div>
-
-        <FindingsList className="mt-4" issues={report.issues} emptyMessage={findings.empty} />
-
-        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{footerNote}</p>
-      </SectionCard>
+      <div className="card-surface space-y-3 p-6 sm:p-8 lg:col-span-5">
+        <Skeleton className="h-4 w-32" />
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-8 w-full" />
+      </div>
+      <div className="card-surface h-28 lg:col-span-12" />
     </div>
   )
 }
 
 function EmptyDiagnostic() {
   return (
-    <SectionCard
-      variant="plain"
-      className="mt-8"
-      title={empty.title}
-      description={empty.description}
-    >
-      <Button asChild variant="brand" size="xl" className="w-full sm:w-auto">
-        <a href="#novo-diagnostico">
-          <Search aria-hidden="true" />
-          {empty.cta}
-        </a>
+    <section className="card-surface mt-8 p-6 sm:p-8">
+      <h2 className="text-lg font-semibold text-foreground">{empty.title}</h2>
+      <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-muted-foreground">
+        {empty.description}
+      </p>
+      <Button asChild variant="brand" size="xl" className="mt-5">
+        <a href="#novo-diagnostico">{empty.cta}</a>
       </Button>
-    </SectionCard>
-  )
-}
-
-function DiagnosticSkeleton() {
-  return (
-    <div role="status" className="mt-8 space-y-6">
-      <span className="sr-only">Carregando diagnóstico...</span>
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="space-y-3 rounded-xl bg-card p-6 ring-1 ring-border">
-          <Skeleton className="h-5 w-40" />
-          <Skeleton className="mx-auto size-40 rounded-full" />
-          <Skeleton className="h-4 w-full" />
-        </div>
-        <div className="space-y-3 rounded-xl bg-card p-6 ring-1 ring-border">
-          <Skeleton className="h-5 w-32" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4" />
-          <Skeleton className="h-4 w-2/3" />
-        </div>
-      </div>
-    </div>
+    </section>
   )
 }
 
@@ -260,7 +163,22 @@ export function Dashboard() {
 
   return (
     <DashboardShell>
-      <DashboardHeader report={relatorio} />
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <p className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+            <FlaskConical aria-hidden="true" className="size-3.5" />
+            {page.demoBadge}
+          </p>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground">{page.title}</h1>
+        </div>
+
+        <Button asChild variant="brand" size="xl" className="w-full sm:w-auto">
+          <a href="#novo-diagnostico">
+            <RefreshCcw aria-hidden="true" />
+            {relatorio ? page.ctaUpdate : page.cta}
+          </a>
+        </Button>
+      </header>
 
       {loadState === 'loading' ? <DiagnosticSkeleton /> : null}
 
@@ -283,19 +201,40 @@ export function Dashboard() {
         </div>
       ) : null}
 
-      {relatorio && loadState !== 'loading' ? <DiagnosticResults report={relatorio} /> : null}
+      {relatorio && loadState === 'ready' ? (
+        <div
+          key={`${relatorio.createdAt}-${relatorio.score}`}
+          className="mt-8 animate-in fade-in slide-in-from-bottom-2 duration-300 motion-reduce:animate-none"
+        >
+          {relatorio.degraded ? (
+            <div className="mb-5">
+              <FormAlert tone="info" title={degraded.title} description={degraded.description} />
+            </div>
+          ) : null}
+
+          <div className="grid gap-5 lg:grid-cols-12">
+            <ScoreIndex
+              className="lg:col-span-7"
+              score={relatorio.score}
+              createdAt={relatorio.createdAt}
+              url={relatorio.url}
+            />
+            <SeveritySummary className="lg:col-span-5" report={relatorio} />
+            <NextStepCard className="lg:col-span-12" issues={relatorio.issues} />
+            <PendingTable className="lg:col-span-12" issues={relatorio.issues} />
+          </div>
+        </div>
+      ) : null}
 
       {loadState === 'ready' && !relatorio ? <EmptyDiagnostic /> : null}
 
-      <div className="mt-8">
-        <DiagnosticRequestForm
-          hasReport={relatorio !== null}
-          status={requestState}
-          onSubmit={(url) => {
-            void handleRequestDiagnostic(url)
-          }}
-        />
-      </div>
+      <DiagnosticRequestForm
+        hasReport={relatorio !== null}
+        status={requestState}
+        onSubmit={(url) => {
+          void handleRequestDiagnostic(url)
+        }}
+      />
     </DashboardShell>
   )
 }

@@ -58,6 +58,11 @@ export interface LandingFaqItem {
   readonly answer: string
 }
 
+export interface LandingSectionCopy {
+  readonly title: string
+  readonly description: string
+}
+
 export interface LandingSectionIntro {
   readonly eyebrow: string
   readonly title: string

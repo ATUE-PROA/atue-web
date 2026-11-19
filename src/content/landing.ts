@@ -6,6 +6,7 @@ import type {
   LandingHeroContent,
   LandingPhoto,
   LandingProductPreview,
+  LandingSectionCopy,
   LandingSectionIntro,
   LandingStep,
   LandingTrustFact,
@@ -20,8 +21,29 @@ export const LANDING_HERO = {
   primaryCtaLabel: 'Fazer diagnóstico gratuito',
   primaryCtaHref: '#avaliar',
   secondaryCtaLabel: 'Ver como funciona',
-  secondaryCtaHref: '#como-funciona',
+  secondaryCtaHref: '#beneficios',
 } as const satisfies LandingHeroContent
+
+export const LANDING_SECTIONS = {
+  features: {
+    title: 'Tudo o que a conformidade exige, em um só lugar.',
+    description:
+      'Diagnóstico, evidências e relatórios deixam de morar em planilhas separadas. Cada card mostra o que já está organizado.',
+  },
+  sample: {
+    title: 'É isto que você recebe.',
+    description:
+      'Um índice de 0 a 100, cada pendência explicada e o próximo passo. Você revisa antes de compartilhar.',
+  },
+  plans: {
+    title: 'Planos que acompanham a operação.',
+    description: 'Comece pelo essencial e evolua quando a operação crescer.',
+  },
+  faq: {
+    title: 'Dúvidas frequentes',
+    description: 'O que a plataforma faz — e o que ela não faz.',
+  },
+} as const satisfies Record<string, LandingSectionCopy>
 
 export const LANDING_PREVIEW = {
   badge: 'Demonstração',

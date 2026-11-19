@@ -42,8 +42,8 @@ interface SiteHeaderProps {
 
 export function SiteHeader({ children, submenu }: SiteHeaderProps) {
   return (
-    <header className="sticky top-0 z-50 border-b border-border/70 bg-background/80 backdrop-blur-xl backdrop-saturate-150">
-      <div className="relative mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-6">
+    <header className="sticky top-0 z-50 border-b border-border/70 bg-background/70 backdrop-blur-xl backdrop-saturate-150">
+      <div className="relative mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-6">
         {children}
       </div>
       {submenu}

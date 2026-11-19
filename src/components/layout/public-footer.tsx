@@ -13,7 +13,7 @@ interface PublicFooterProps {
 export function PublicFooter({ description, copyright }: PublicFooterProps) {
   return (
     <footer className="border-t border-border bg-background">
-      <div className="mx-auto w-full max-w-6xl px-6 py-12">
+      <div className="mx-auto w-full max-w-7xl px-6 py-12">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <BrandLink />
