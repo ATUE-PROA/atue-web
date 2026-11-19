@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form'
 
 import { Button } from '@/components/ui/button'
 import { FormAlert } from '@/components/ui/form-alert'
-import { FormField } from '@/components/ui/form-field'
 import { Input } from '@/components/ui/input'
 import { DIAGNOSTICS_CONTENT } from '@/content/diagnostics'
 import { diagnosticRequestSchema } from '@/lib/diagnostics'
@@ -20,24 +19,7 @@ interface DiagnosticRequestFormProps {
 }
 
 const inputClasses =
-  'h-11 rounded-lg border-input text-foreground placeholder:text-muted-foreground focus-visible:border-blue-600 focus-visible:ring-blue-600/40 dark:focus-visible:border-blue-400 dark:focus-visible:ring-blue-400/40'
-
-const {
-  title,
-  updateTitle,
-  description,
-  updateDescription,
-  label,
-  placeholder,
-  helpText,
-  submitLabel,
-  updateSubmitLabel,
-  submittingLabel,
-  successTitle,
-  successDescription,
-  errorTitle,
-  errorDescription,
-} = DIAGNOSTICS_CONTENT.request
+  'h-11 rounded-[16px] border-input text-foreground placeholder:text-muted-foreground focus-visible:border-blue-600 focus-visible:ring-blue-600/40 dark:focus-visible:border-blue-400 dark:focus-visible:ring-blue-400/40'
 
 export function DiagnosticRequestForm({
   onSubmit,
@@ -54,49 +36,37 @@ export function DiagnosticRequestForm({
   })
 
   const isRunning = status === 'running'
+  const { label, placeholder, helpText, submitLabel, updateSubmitLabel, submittingLabel } =
+    DIAGNOSTICS_CONTENT.request
 
   return (
-    <section
-      id="novo-diagnostico"
-      aria-labelledby="diagnostic-request-title"
-      className="scroll-mt-24 rounded-xl bg-card p-6 ring-1 ring-border"
-    >
-      <h2 id="diagnostic-request-title" className="text-lg font-semibold text-foreground">
-        {hasReport ? updateTitle : title}
-      </h2>
-      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-        {hasReport ? updateDescription : description}
-      </p>
-
+    <section id="novo-diagnostico" aria-labelledby="diagnostic-request-title" className="mt-5">
       <form
         onSubmit={handleSubmit((values) => onSubmit(values.url.trim()))}
         noValidate
         aria-busy={isRunning}
         aria-labelledby="diagnostic-request-title"
-        className="mt-5 space-y-4"
+        className="flex flex-col gap-3 sm:flex-row sm:items-end"
       >
-        <FormField label={label} error={errors.url?.message} description={helpText} required>
-          {(field) => (
-            <Input
-              {...field}
-              type="url"
-              placeholder={placeholder}
-              autoComplete="url"
-              inputMode="url"
-              spellCheck={false}
-              className={inputClasses}
-              {...register('url')}
-            />
-          )}
-        </FormField>
+        <div className="sm:max-w-sm sm:flex-1">
+          <label htmlFor="diagnostic-url" className="text-label block text-muted-foreground">
+            {label}
+          </label>
+          <Input
+            id="diagnostic-url"
+            type="url"
+            placeholder={placeholder}
+            autoComplete="url"
+            inputMode="url"
+            spellCheck={false}
+            className={`mt-1.5 ${inputClasses}`}
+            aria-invalid={Boolean(errors.url)}
+            aria-describedby={errors.url ? 'diagnostic-url-error' : 'diagnostic-url-help'}
+            {...register('url')}
+          />
+        </div>
 
-        <Button
-          type="submit"
-          variant="brand"
-          size="xl"
-          className="w-full sm:w-auto"
-          disabled={isRunning}
-        >
+        <Button type="submit" variant="brand" size="xl" disabled={isRunning} className="shrink-0">
           {isRunning ? (
             <Loader2 aria-hidden="true" className="animate-spin" />
           ) : (
@@ -106,12 +76,34 @@ export function DiagnosticRequestForm({
         </Button>
       </form>
 
+      {errors.url ? (
+        <p id="diagnostic-url-error" role="alert" className="mt-2 text-sm text-destructive">
+          {errors.url.message}
+        </p>
+      ) : (
+        <p id="diagnostic-url-help" className="mt-2 text-xs leading-relaxed text-muted-foreground">
+          {helpText}
+        </p>
+      )}
+
       {status === 'success' ? (
-        <FormAlert tone="success" title={successTitle} description={successDescription} />
+        <div className="mt-3">
+          <FormAlert
+            tone="success"
+            title={DIAGNOSTICS_CONTENT.request.successTitle}
+            description={DIAGNOSTICS_CONTENT.request.successDescription}
+          />
+        </div>
       ) : null}
 
       {status === 'error' ? (
-        <FormAlert tone="error" title={errorTitle} description={errorDescription} />
+        <div className="mt-3">
+          <FormAlert
+            tone="error"
+            title={DIAGNOSTICS_CONTENT.request.errorTitle}
+            description={DIAGNOSTICS_CONTENT.request.errorDescription}
+          />
+        </div>
       ) : null}
     </section>
   )

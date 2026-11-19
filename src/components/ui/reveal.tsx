@@ -34,10 +34,10 @@ export function Reveal({ children, className, delay = 0 }: RevealProps) {
     media.add(MOTION_QUERY, () => {
       gsap.fromTo(
         node,
-        { y: 28 },
+        { y: 16 },
         {
           y: 0,
-          duration: 0.8,
+          duration: 0.42,
           delay,
           ease: 'power3.out',
           scrollTrigger: { trigger: node, start: 'top 88%', once: true },
@@ -79,7 +79,7 @@ interface StaggerProps {
 }
 
 /** Entrada em cascata para listas e grades curtas. */
-export function Stagger({ children, className, items, delay = 0, stagger = 0.09 }: StaggerProps) {
+export function Stagger({ children, className, items, delay = 0, stagger = 0.08 }: StaggerProps) {
   const ref = useRef<HTMLDivElement>(null)
 
   useLayoutEffect(() => {
@@ -94,10 +94,10 @@ export function Stagger({ children, className, items, delay = 0, stagger = 0.09 
     media.add(MOTION_QUERY, () => {
       gsap.fromTo(
         targets,
-        { y: 22 },
+        { y: 16 },
         {
           y: 0,
-          duration: 0.65,
+          duration: 0.42,
           delay,
           stagger,
           ease: 'power3.out',

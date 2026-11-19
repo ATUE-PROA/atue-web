@@ -40,23 +40,13 @@ export interface IssueSeverityGroup {
 }
 
 export function getScoreLevel(score: number): ScoreLevel {
-  if (score < 25) {
+  if (score < 50) {
     return {
       label: 'Crítico',
       dotClassName: 'bg-red-500',
       textClassName: 'text-red-600 dark:text-red-400',
       barClassName: 'bg-red-500',
       chartColor: '#ef4444',
-    }
-  }
-
-  if (score < 50) {
-    return {
-      label: 'Atenção',
-      dotClassName: 'bg-orange-500',
-      textClassName: 'text-orange-700 dark:text-orange-400',
-      barClassName: 'bg-orange-500',
-      chartColor: '#f97316',
     }
   }
 

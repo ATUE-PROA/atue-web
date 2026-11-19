@@ -1,26 +1,24 @@
 import { PublicHeader } from '@/components/layout/public-header'
 import { PublicFooter } from '@/components/layout/public-footer'
 import LandingHero from '@/components/landing/LandingHero'
-import TrustStrip from '@/components/landing/TrustStrip'
-import FeatureStrip from '@/components/landing/FeatureStrip'
-import HowItWorks from '@/components/landing/HowItWorks'
-import BuildSection from '@/components/landing/BuildSection'
+import Features from '@/components/landing/Features'
+import Amostra from '@/components/landing/Amostra'
+import Planos from '@/components/landing/Planos'
 import LandingFaq from '@/components/landing/LandingFaq'
-import DomainCapture from '@/components/landing/DomainCapture'
+import CtaFinal from '@/components/landing/CtaFinal'
 import { LANDING_FOOTER } from '@/content/landing'
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-[100dvh] overflow-x-clip bg-background text-foreground">
       <PublicHeader />
       <main id="conteudo">
         <LandingHero />
-        <TrustStrip />
-        <FeatureStrip />
-        <HowItWorks />
-        <BuildSection />
+        <Features />
+        <Amostra />
+        <Planos />
         <LandingFaq />
-        <DomainCapture />
+        <CtaFinal />
       </main>
       <PublicFooter description={LANDING_FOOTER.description} copyright={LANDING_FOOTER.copyright} />
     </div>

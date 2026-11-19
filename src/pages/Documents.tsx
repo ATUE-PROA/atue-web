@@ -271,13 +271,12 @@ export function Documents() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <ProductHeader />
 
-      <main id="conteudo" className="mx-auto w-full max-w-6xl flex-1 px-6 py-10 sm:py-14">
-        <header className="max-w-2xl">
-          <p className="text-eyebrow text-blue-600 dark:text-blue-400">
-            {DOCUMENTS_CONTENT.eyebrow}
-          </p>
-          <h1 className="text-display mt-3 text-foreground">{DOCUMENTS_CONTENT.title}</h1>
-          <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+      <main id="conteudo" className="mx-auto w-full max-w-7xl flex-1 px-6 py-8">
+        <header className="max-w-3xl">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+            {DOCUMENTS_CONTENT.title}
+          </h1>
+          <p className="mt-2 text-base leading-relaxed text-muted-foreground">
             {DOCUMENTS_CONTENT.description}
           </p>
         </header>
@@ -290,12 +289,12 @@ export function Documents() {
               <Skeleton className="h-10 w-44" />
             </div>
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
-              <div className="space-y-3 rounded-xl border border-border bg-card p-6 shadow-sm">
+              <div className="card-surface space-y-3 p-6">
                 <Skeleton className="h-5 w-48" />
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-24 w-full" />
               </div>
-              <div className="space-y-3 rounded-xl border border-border bg-card p-6 shadow-sm">
+              <div className="card-surface space-y-3 p-6">
                 <Skeleton className="h-5 w-40" />
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-3/4" />

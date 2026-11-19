@@ -1,75 +1,60 @@
 export const DIAGNOSTICS_CONTENT = {
   page: {
-    title: 'Visão geral',
-    description:
-      'Aqui você vê o que precisa de atenção, o que já está organizado e qual é o próximo passo. Os resultados vêm de uma análise demonstrativa do site.',
+    title: 'Painel',
     demoBadge: 'Demonstração',
-    statusLabel: 'Situação atual',
-    urlLabel: 'Site analisado',
-    updatedLabel: 'Última análise em',
-    cta: 'Gerar novo diagnóstico',
-    ctaUpdate: 'Atualizar diagnóstico',
+    cta: 'Gerar análise',
+    ctaUpdate: 'Atualizar análise',
   },
-  request: {
-    title: 'Gerar novo diagnóstico',
-    updateTitle: 'Atualizar diagnóstico',
-    description:
-      'Informe a URL do site da sua empresa para gerar o primeiro diagnóstico demonstrativo.',
-    updateDescription:
-      'Informe uma URL para substituir o diagnóstico atual por um novo resultado demonstrativo.',
-    label: 'URL do site',
-    placeholder: 'https://cliente.com.br',
-    helpText:
-      'Informe o endereço completo. Nesta demonstração, a análise é simulada e nenhum site é acessado.',
-    submitLabel: 'Gerar diagnóstico',
-    updateSubmitLabel: 'Atualizar diagnóstico',
-    submittingLabel: 'Analisando site...',
-    successTitle: 'Diagnóstico atualizado',
-    successDescription:
-      'O resultado no topo da página foi atualizado para a URL informada. Nenhum site foi acessado.',
-    errorTitle: 'Não foi possível gerar o diagnóstico',
-    errorDescription: 'Tente novamente. O resultado anterior foi mantido.',
-  },
-  score: {
+  index: {
     title: 'Índice de conformidade',
-    description: 'Resume, de 0 a 100, como as dimensões avaliadas aparecem no site analisado.',
-    caption: 'de 100',
-    ariaLabel: 'Índice de conformidade',
-    scaleNote: 'Quanto maior o número, mais dimensões aparecem organizadas na simulação.',
+    scaleNote: 'de 100',
+    updatedLabel: 'Última análise em',
     disclaimer:
-      'Este índice é um indicador demonstrativo. Não é certificação, laudo nem garantia de conformidade com a LGPD.',
-    dimensionsTitle: 'O que a simulação considera',
+      'Indicador demonstrativo. Não é certificação, laudo nem garantia de conformidade com a LGPD.',
+    dimensionsLabel: 'O que é avaliado',
     dimensions: [
       'Transparência: política de privacidade acessível e finalidades de tratamento.',
       'Cookies e rastreamento: escolha do visitante antes de cookies não essenciais.',
       'Retenção de dados: prazos e critérios de eliminação informados.',
     ],
   },
-  priorities: {
-    title: 'Comece por aqui',
-    description:
-      'As pendências que pedem atenção primeiro. Você não precisa resolver tudo hoje; comece pela primeira.',
-    nextStepLabel: 'Próximo passo',
-    nextSteps: {
-      alta: 'Corrija esta pendência primeiro e registre a correção como evidência.',
-      media: 'Planeje a correção e anexe a evidência quando concluir.',
-      baixa: 'Ajuste quando as pendências principais estiverem resolvidas.',
+  pending: {
+    title: 'Pendências',
+    description: 'Ordenadas por severidade.',
+    severityTitle: 'Pendências por severidade',
+    columns: {
+      severity: 'Severidade',
+      item: 'Pendência',
+      recommendation: 'O que fazer',
     },
-    action: 'Organizar evidências na Central de Documentos',
-    emptyTitle: 'Nada urgente no momento',
-    emptyDescription:
-      'Nenhuma pendência foi registrada no diagnóstico atual. Mantenha as evidências atualizadas para sustentar esse resultado.',
+    empty: 'Nenhuma pendência no diagnóstico atual.',
+    viewAll: 'Ver todas na Central de Documentos',
   },
-  findings: {
-    title: 'Todas as pendências',
-    description: 'Agrupadas por severidade, com explicação simulada e recomendação para cada item.',
-    empty: 'Nenhuma pendência encontrada no diagnóstico atual.',
-    summaryLabel: 'Resumo por severidade',
+  nextStep: {
+    title: 'Próximo passo',
+    pendingLabel: 'Pendência prioritária',
+    action: 'Organizar evidência',
+    viewAll: 'Ver todas as pendências',
+    emptyTitle: 'Nada urgente agora',
+    emptyDescription:
+      'Nenhuma pendência registrada. Mantenha as evidências atualizadas para sustentar esse resultado.',
+  },
+  request: {
+    label: 'Nova análise',
+    placeholder: 'https://cliente.com.br',
+    submitLabel: 'Analisar',
+    updateSubmitLabel: 'Atualizar',
+    submittingLabel: 'Analisando…',
+    helpText: 'Análise simulada. Nenhum site é acessado e o resultado anterior é substituído.',
+    successTitle: 'Análise atualizada',
+    successDescription: 'O resultado no topo da página foi atualizado para a URL informada.',
+    errorTitle: 'Não foi possível analisar',
+    errorDescription: 'Tente novamente. O resultado anterior foi mantido.',
   },
   empty: {
-    title: 'Nenhum diagnóstico ainda',
+    title: 'Nenhuma análise ainda',
     description:
-      'Informe a URL do site da empresa para ver um índice demonstrativo, as pendências priorizadas e o próximo passo. A análise é simulada, leva alguns segundos e não acessa o site.',
+      'Informe o site da empresa para ver o índice, as pendências priorizadas e o próximo passo.',
     cta: 'Gerar meu primeiro diagnóstico',
   },
   loadError: {
